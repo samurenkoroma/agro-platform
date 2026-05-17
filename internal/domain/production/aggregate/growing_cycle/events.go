@@ -77,7 +77,7 @@ func NewHarvestCompleted(id vo.ID) CycleHarvestCompleted {
 	return CycleHarvestCompleted{
 		BaseEvent: ev.NewBaseEvent(
 			id,
-			EventPartialHarvest,
+			EventHarvestCompleted,
 		),
 	}
 }
