@@ -1,4 +1,4 @@
-.PHONY: build run test up down
+.PHONY: build run up down tidy swag
 
 build:
 	go build -o bin/agroapp ./cmd/agroapp
@@ -11,3 +11,9 @@ up:
 
 down:
 	docker compose down
+
+tidy:
+	go mod tidy
+
+swag:
+	swag init -g internal/interfaces/httpapi/router.go
