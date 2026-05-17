@@ -3,18 +3,11 @@ package growingcycle
 import (
 	"time"
 
+	harvestrecord "github.com/samurenkoroma/agro-platform/internal/domain/production/entity/harvest_record"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 
-func New(
-	farmID vo.ID,
-
-	cropID vo.ID,
-
-	unitID vo.ID,
-
-	method GrowingMethod,
-) *Aggregate {
+func New(farmID vo.ID, cropID vo.ID, unitID vo.ID, method GrowingMethod) *Aggregate {
 
 	root := GrowingCycle{
 		ID: vo.NewID(),
@@ -45,9 +38,7 @@ func New(
 	return a
 }
 
-func (
-	a *Aggregate,
-) Start() error {
+func (a *Aggregate) Start() error {
 
 	if a.Root.Status !=
 		Planned {
@@ -70,9 +61,7 @@ func (
 	return nil
 }
 
-func (
-	a *Aggregate,
-) Pause() error {
+func (a *Aggregate) Pause() error {
 
 	if a.Root.Status !=
 		Active {
@@ -92,9 +81,7 @@ func (
 	return nil
 }
 
-func (
-	a *Aggregate,
-) Resume() error {
+func (a *Aggregate) Resume() error {
 
 	if a.Root.Status !=
 		Paused {
@@ -115,10 +102,75 @@ func (
 }
 func (
 	a *Aggregate,
-) Harvest() error {
+) StartHarvest() error {
+
+	if a.Root.Status != Active {
+
+		return ErrInvalidTransition
+	}
+
+	a.Root.Status =
+		Harvesting
+
+	a.AddEvent(
+		NewHarvestStarted(
+			a.Root.ID,
+		),
+	)
+
+	return nil
+}
+
+func (
+	a *Aggregate,
+) AddHarvest(
+	q vo.Quantity,
+
+	grade *string,
+) error {
+
+	if a.Root.Status != Harvesting &&
+		a.Root.Status != Active {
+
+		return ErrInvalidTransition
+	}
+
+	record :=
+		harvestrecord.HarvestRecord{
+
+			ID: vo.NewID(),
+
+			CycleID: a.Root.ID,
+
+			Quantity: q,
+
+			Grade: grade,
+
+			HarvestedAt: time.Now(),
+		}
+
+	a.Root.Harvests =
+		append(
+			a.Root.Harvests,
+			record,
+		)
+
+	a.Root.Status =
+		Harvesting
+
+	a.AddEvent(
+		NewPartialHarvest(a.Root.ID, record.ID),
+	)
+
+	return nil
+}
+
+func (
+	a *Aggregate,
+) CompleteHarvest() error {
 
 	if a.Root.Status !=
-		Active {
+		Harvesting {
 
 		return ErrInvalidTransition
 	}
@@ -132,7 +184,7 @@ func (
 		&now
 
 	a.AddEvent(
-		NewCycleHarvested(
+		NewHarvestCompleted(
 			a.Root.ID,
 		),
 	)
@@ -140,9 +192,7 @@ func (
 	return nil
 }
 
-func (
-	a *Aggregate,
-) Fail() error {
+func (a *Aggregate) Fail() error {
 
 	if a.Root.Status !=
 		Active {
@@ -167,9 +217,7 @@ func (
 	return nil
 }
 
-func (
-	a *Aggregate,
-) Archive() error {
+func (a *Aggregate) Archive() error {
 
 	if a.Root.Status !=
 		Harvested &&

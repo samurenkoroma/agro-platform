@@ -4,6 +4,7 @@ import (
 	"time"
 
 	ev "github.com/samurenkoroma/agro-platform/internal/domain/shared/event"
+
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 
@@ -20,6 +21,8 @@ type GrowingCycle struct {
 
 	Method GrowingMethod
 
+	Granularity ProductionGranularity
+
 	ProtocolID *vo.ID
 
 	Status GrowingStatus
@@ -28,13 +31,17 @@ type GrowingCycle struct {
 
 	LayoutSnapshotID *vo.ID
 
-	StartedAt time.Time
-
 	ExpectedHarvestAt *time.Time
+
+	StartedAt *time.Time
 
 	CompletedAt *time.Time
 
 	Metadata vo.Metadata
+
+	CreatedAt time.Time
+
+	UpdatedAt time.Time
 }
 
 type Aggregate struct {

@@ -7,6 +7,8 @@ const (
 
 	Active GrowingStatus = "ACTIVE"
 
+	Harvesting GrowingStatus = "HARVESTING"
+
 	Paused GrowingStatus = "PAUSED"
 
 	Harvested GrowingStatus = "HARVESTED"

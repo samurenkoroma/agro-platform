@@ -14,11 +14,14 @@ const (
 
 	EventResumed = "growing_cycle.resumed"
 
-	EventHarvested = "growing_cycle.harvested"
-
 	EventFailed = "growing_cycle.failed"
 
-	EventArchived = "growing_cycle.archived"
+	EventArchived       = "growing_cycle.archived"
+	EventHarvestStarted = "growing_cycle.harvest.started"
+
+	EventPartialHarvest = "growing_cycle.harvest.partial"
+
+	EventHarvestCompleted = "growing_cycle.harvest.completed"
 )
 
 type CycleCreated struct {
@@ -34,9 +37,6 @@ type CyclePaused struct {
 type CycleResumed struct {
 	ev.BaseEvent
 }
-type CycleHarvested struct {
-	ev.BaseEvent
-}
 type CycleFailed struct {
 	ev.BaseEvent
 }
@@ -44,10 +44,45 @@ type CycleArchived struct {
 	ev.BaseEvent
 }
 
-func NewCycleCreated(
-	id vo.ID,
-) CycleCreated {
+type CycleHarvestStarted struct {
+	ev.BaseEvent
+}
+type CyclePartialHarvest struct {
+	RecordId vo.ID
+	ev.BaseEvent
+}
+type CycleHarvestCompleted struct {
+	ev.BaseEvent
+}
 
+func NewHarvestStarted(id vo.ID) CycleHarvestStarted {
+	return CycleHarvestStarted{
+		BaseEvent: ev.NewBaseEvent(
+			id,
+			EventHarvestStarted,
+		),
+	}
+}
+
+func NewPartialHarvest(id vo.ID, i vo.ID) CyclePartialHarvest {
+	return CyclePartialHarvest{
+		RecordId: i,
+		BaseEvent: ev.NewBaseEvent(
+			id,
+			EventPartialHarvest,
+		),
+	}
+}
+func NewHarvestCompleted(id vo.ID) CycleHarvestCompleted {
+	return CycleHarvestCompleted{
+		BaseEvent: ev.NewBaseEvent(
+			id,
+			EventPartialHarvest,
+		),
+	}
+}
+
+func NewCycleCreated(id vo.ID) CycleCreated {
 	return CycleCreated{
 		BaseEvent: ev.NewBaseEvent(
 			id,
@@ -80,14 +115,7 @@ func NewCycleResumed(id vo.ID) CycleResumed {
 		),
 	}
 }
-func NewCycleHarvested(id vo.ID) CycleHarvested {
-	return CycleHarvested{
-		BaseEvent: ev.NewBaseEvent(
-			id,
-			EventHarvested,
-		),
-	}
-}
+
 func NewCycleFailed(id vo.ID) CycleFailed {
 	return CycleFailed{
 		BaseEvent: ev.NewBaseEvent(
