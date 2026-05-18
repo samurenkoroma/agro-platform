@@ -27,3 +27,14 @@ Automation
 
 Analytics
 ❌ Yield reports
+
+
+
+
+touch aggregate.go movement.go type.go reference.go events.go errors.go
+│
+└── warehouse/
+├── aggregate.go
+├── warehouse.go
+├── events.go
+└── errors.go
