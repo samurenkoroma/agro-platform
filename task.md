@@ -1,21 +1,29 @@
-##### 1. Spatial
-- ✅ ProductionUnit
-- ✅ LayoutSnapshot
-##### 2. Production
-- ✅ GrowingCycle
-##### 3. Production
-- ✅ → PlantAggregate
-##### 4. Production
-- ✅ → Slot entity
-##### 5. Production
-- ✅ → Substrate
-##### 6. Production
-*[ ] → HarvestBatch
+Spatial
+✅ ProductionUnit
+✅ hierarchy
+✅ snapshots
 
-##### 7. Production
-*[ ] → YieldBatch
+Production
+✅ GrowingCycle
+✅ Plant
+✅ Slot
+✅ Substrate
+✅ Harvest
 
-##### 8. Operations
+Operations
+❌ Tasks
+❌ Timeline
 
+Inventory
+❌ Seeds
+❌ Fertilizers
 
-aggregate.go plant.go status.go stage.go errors.go events.go health.go
+Environment
+❌ Sensors
+❌ Telemetry
+
+Automation
+❌ Threshold rules
+
+Analytics
+❌ Yield reports
