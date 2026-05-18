@@ -3,7 +3,6 @@ package growingcycle
 import (
 	"time"
 
-	harvestrecord "github.com/samurenkoroma/agro-platform/internal/domain/production/entity/harvest_record"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 
@@ -48,9 +47,8 @@ func (a *Aggregate) Start() error {
 
 	a.Root.Status =
 		Active
-
-	a.Root.StartedAt =
-		time.Now()
+	now := time.Now()
+	a.Root.StartedAt = &now
 
 	a.AddEvent(
 		NewCycleStarted(
@@ -116,50 +114,6 @@ func (
 		NewHarvestStarted(
 			a.Root.ID,
 		),
-	)
-
-	return nil
-}
-
-func (
-	a *Aggregate,
-) AddHarvest(
-	q vo.Quantity,
-
-	grade *string,
-) error {
-
-	if a.Root.Status != Harvesting &&
-		a.Root.Status != Active {
-
-		return ErrInvalidTransition
-	}
-
-	record :=
-		harvestrecord.HarvestRecord{
-
-			ID: vo.NewID(),
-
-			CycleID: a.Root.ID,
-
-			Quantity: q,
-
-			Grade: grade,
-
-			HarvestedAt: time.Now(),
-		}
-
-	a.Root.Harvests =
-		append(
-			a.Root.Harvests,
-			record,
-		)
-
-	a.Root.Status =
-		Harvesting
-
-	a.AddEvent(
-		NewPartialHarvest(a.Root.ID, record.ID),
 	)
 
 	return nil
