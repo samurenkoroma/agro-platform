@@ -4,11 +4,11 @@
 ##### 2. Production
 - ✅ GrowingCycle
 ##### 3. Production
-*[ ] → PlantAggregate
+- ✅ → PlantAggregate
 ##### 4. Production
-*[ ] → Slot entity
+- ✅ → Slot entity
 ##### 5. Production
-*[ ] → Substrate
+- ✅ → Substrate
 ##### 6. Production
 *[ ] → HarvestBatch
 
