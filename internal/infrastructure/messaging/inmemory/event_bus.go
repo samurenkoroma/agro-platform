@@ -4,41 +4,43 @@ import (
 	"context"
 	"sync"
 
-	"github.com/samurenkoroma/agro-platform/internal/domain/shared/event"
-	"github.com/samurenkoroma/agro-platform/internal/shared/bus"
+	eb "github.com/samurenkoroma/agro-platform/internal/shared/bus/event"
 )
 
-type InMemoryEventBus struct {
-	handlers map[string][]bus.EventHandler
-	mu       sync.RWMutex
+type EventBus struct {
+	mu sync.RWMutex
+
+	handlers map[string][]func(context.Context, eb.Event) error
 }
 
-func NewInMemoryEventBus() *InMemoryEventBus {
-	return &InMemoryEventBus{
-		handlers: make(map[string][]bus.EventHandler),
+func NewEventBus() *EventBus {
+	return &EventBus{
+		handlers: make(map[string][]func(context.Context, eb.Event) error),
 	}
 }
 
-func (b *InMemoryEventBus) Register(eventName string, handler bus.EventHandler) {
+func (b *EventBus) Subscribe(name string, handler any) {
+	h := handler.(func(context.Context, eb.Event) error)
+
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	b.handlers[eventName] = append(b.handlers[eventName], handler)
+	b.handlers[name] = append(b.handlers[name], h)
 }
 
-func (b *InMemoryEventBus) Publish(
-	ctx context.Context,
-	events []event.DomainEvent,
-) error {
+func (b *EventBus) Publish(ctx context.Context, events ...eb.Event) error {
+	b.mu.RLock()
+	defer b.mu.RUnlock()
 
-	for _, e := range events {
+	for _, event := range events {
+		name := event.EventName()
 
-		b.mu.RLock()
-		handlers := b.handlers[e.EventType()]
-		b.mu.RUnlock()
+		handlers := b.handlers[name]
 
 		for _, h := range handlers {
-			if err := h(ctx, e); err != nil {
+			err := h(ctx, event)
+
+			if err != nil {
 				return err
 			}
 		}
