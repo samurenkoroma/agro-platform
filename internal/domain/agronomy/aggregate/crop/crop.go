@@ -8,6 +8,7 @@ import (
 )
 
 type Crop struct {
+	ev.AggregateRoot
 	ID                vo.ID
 	Name              string
 	ScientificName    *string
@@ -19,7 +20,42 @@ type Crop struct {
 	ArchivedAt        *time.Time
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
-	Root Crop
+func New(name string, category CropCategory) *Crop {
+	now := time.Now()
+
+	root := &Crop{
+		ID:        vo.NewID(),
+		Name:      name,
+		Category:  category,
+		Metadata:  vo.NewMetadata(),
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	root.AddEvent(NewCropCreated(root.ID))
+
+	return root
+}
+
+func (a *Crop) Rename(name string) {
+	a.Name = name
+	a.UpdatedAt = time.Now()
+
+	a.AddEvent(NewCropRenamed(a.ID))
+}
+
+func (a *Crop) AssignProtocol(id vo.ID) {
+	a.DefaultProtocolID = &id
+	a.UpdatedAt = time.Now()
+
+	a.AddEvent(NewProtocolAssigned(a.ID, id))
+}
+
+func (a *Crop) Archive() {
+	now := time.Now()
+
+	a.ArchivedAt = &now
+	a.UpdatedAt = now
+
+	a.AddEvent(NewCropArchived(a.ID))
 }

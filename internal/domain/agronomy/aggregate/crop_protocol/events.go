@@ -24,11 +24,13 @@ func NewProtocolCreated(id vo.ID) ProtocolCreated {
 
 type StageAdded struct {
 	ev.BaseEvent
+	StageId vo.ID
 }
 
-func NewStageAdded(id vo.ID) StageAdded {
+func NewStageAdded(id vo.ID, i vo.ID) StageAdded {
 	return StageAdded{
 		BaseEvent: ev.NewBaseEvent(id, EventStageAdded),
+		StageId:   id,
 	}
 }
 

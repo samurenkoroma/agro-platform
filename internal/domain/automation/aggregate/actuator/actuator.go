@@ -8,6 +8,7 @@ import (
 )
 
 type Actuator struct {
+	ev.AggregateRoot
 	ID               vo.ID
 	Type             Type
 	FarmID           vo.ID
@@ -19,7 +20,21 @@ type Actuator struct {
 	ArchivedAt       *time.Time
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
-	Root Actuator
+func New(farmID vo.ID, actuatorType Type) *Actuator {
+	now := time.Now()
+
+	root := &Actuator{
+		ID:       vo.NewID(),
+		Type:     actuatorType,
+		FarmID:   farmID,
+		Status:   Enabled,
+		Metadata: vo.NewMetadata(),
+
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	root.AddEvent(NewActuatorCreated(root.ID))
+
+	return root
 }

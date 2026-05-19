@@ -8,6 +8,7 @@ import (
 )
 
 type OperationEvent struct {
+	ev.AggregateRoot
 	ID               vo.ID
 	Type             OperationType
 	FarmID           vo.ID
@@ -22,7 +23,17 @@ type OperationEvent struct {
 	Metadata         vo.Metadata
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
-	Root OperationEvent
+func New(farmID vo.ID, opType OperationType) *OperationEvent {
+	root := &OperationEvent{
+		ID:        vo.NewID(),
+		FarmID:    farmID,
+		Type:      opType,
+		Timestamp: time.Now(),
+		Payload:   make(Payload),
+		Metadata:  vo.NewMetadata(),
+	}
+
+	//root.AddEvent(NewOperationCreated(root.ID))
+
+	return root
 }

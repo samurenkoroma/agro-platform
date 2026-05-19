@@ -8,6 +8,7 @@ import (
 )
 
 type Rule struct {
+	ev.AggregateRoot
 	ID        vo.ID
 	Name      string
 	FarmID    vo.ID
@@ -21,7 +22,23 @@ type Rule struct {
 	ArchivedAt *time.Time
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
-	Root Rule
+func New(farmID vo.ID, name string, trigger Trigger, action Action) *Rule {
+	now := time.Now()
+
+	root := &Rule{
+		ID:       vo.NewID(),
+		Name:     name,
+		FarmID:   farmID,
+		Status:   Enabled,
+		Trigger:  trigger,
+		Action:   action,
+		Metadata: vo.NewMetadata(),
+
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	root.AddEvent(NewRuleCreated(root.ID))
+
+	return root
 }

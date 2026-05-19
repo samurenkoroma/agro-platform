@@ -8,6 +8,7 @@ import (
 )
 
 type HarvestBatch struct {
+	ev.AggregateRoot
 	ID               vo.ID
 	GrowingCycleID   vo.ID
 	ProductionUnitID vo.ID
@@ -21,7 +22,22 @@ type HarvestBatch struct {
 	CreatedAt        time.Time
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
-	Root HarvestBatch
+func New(cycleID vo.ID, unitID vo.ID, q vo.Quantity, grade QualityGrade) *HarvestBatch {
+	now := time.Now()
+
+	root := &HarvestBatch{
+		ID:               vo.NewID(),
+		GrowingCycleID:   cycleID,
+		ProductionUnitID: unitID,
+		Quantity:         q,
+		Grade:            grade,
+		Marketable:       true,
+		HarvestedAt:      now,
+		CreatedAt:        now,
+		Metadata:         vo.NewMetadata(),
+	}
+
+	root.AddEvent(NewHarvestBatchCreated(root.ID))
+
+	return root
 }

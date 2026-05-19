@@ -8,6 +8,7 @@ import (
 )
 
 type Stress struct {
+	ev.AggregateRoot
 	ID          vo.ID
 	Name        string
 	Type        StressType
@@ -20,7 +21,43 @@ type Stress struct {
 	ArchivedAt  *time.Time
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
-	Root Stress
+func New(name string, stressType StressType) *Stress {
+	now := time.Now()
+
+	root := &Stress{
+		ID:        vo.NewID(),
+		Name:      name,
+		Type:      stressType,
+		Triggers:  make([]Trigger, 0),
+		Symptoms:  make([]Symptom, 0),
+		Metadata:  vo.NewMetadata(),
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	root.AddEvent(NewStressCreated(root.ID))
+
+	return root
+}
+
+func (a *Stress) AddTrigger(trigger Trigger) {
+	a.Triggers = append(a.Triggers, trigger)
+	a.UpdatedAt = time.Now()
+
+	a.AddEvent(NewTriggerAdded(a.ID))
+}
+
+func (a *Stress) AddSymptom(s Symptom) {
+	a.Symptoms = append(a.Symptoms, s)
+	a.UpdatedAt = time.Now()
+
+	a.AddEvent(NewSymptomAdded(a.ID))
+}
+
+func (a *Stress) Archive() {
+	now := time.Now()
+	a.ArchivedAt = &now
+	a.UpdatedAt = now
+
+	a.AddEvent(NewStressArchived(a.ID))
 }

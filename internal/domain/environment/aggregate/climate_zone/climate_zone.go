@@ -8,6 +8,7 @@ import (
 )
 
 type ClimateZone struct {
+	ev.AggregateRoot
 	ID         vo.ID
 	FarmID     vo.ID
 	Name       string
@@ -18,8 +19,34 @@ type ClimateZone struct {
 	ArchivedAt *time.Time
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
+func New(farmID vo.ID, name string) *ClimateZone {
+	now := time.Now()
 
-	Root ClimateZone
+	root := &ClimateZone{
+		ID:       vo.NewID(),
+		FarmID:   farmID,
+		Name:     name,
+		Metadata: vo.NewMetadata(),
+
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	root.AddEvent(NewClimateZoneCreated(root.ID))
+
+	return root
+}
+
+func (a *ClimateZone) UpdateTarget(target Target) error {
+
+	if a.ArchivedAt != nil {
+		return ErrArchivedZone
+	}
+
+	a.Target = target
+	a.UpdatedAt = time.Now()
+
+	a.AddEvent(NewClimateZoneTargetUpdated(a.ID))
+
+	return nil
 }

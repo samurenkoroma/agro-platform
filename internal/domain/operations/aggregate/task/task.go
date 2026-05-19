@@ -10,6 +10,7 @@ import (
 )
 
 type Task struct {
+	ev.AggregateRoot
 	ID               vo.ID
 	Title            string
 	Description      *string
@@ -29,7 +30,57 @@ type Task struct {
 	ArchivedAt       *time.Time
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
-	Root Task
+func New(farmID vo.ID, title string) *Task {
+	now := time.Now()
+
+	root := &Task{
+		ID:        vo.NewID(),
+		FarmID:    farmID,
+		Title:     title,
+		Status:    Todo,
+		Priority:  Medium,
+		Metadata:  vo.NewMetadata(),
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	root.AddEvent(NewTaskCreated(root.ID))
+
+	return root
+}
+
+func (a *Task) Assign(userID vo.ID) {
+	a.Assignment = &Assignment{UserID: userID}
+
+	a.UpdatedAt = time.Now()
+
+	a.AddEvent(NewTaskAssigned(a.ID, userID))
+}
+
+func (a *Task) Start() {
+
+	a.Status = InProgress
+
+	a.UpdatedAt = time.Now()
+
+	a.AddEvent(NewTaskStarted(a.ID))
+}
+
+func (a *Task) Complete() {
+	now := time.Now()
+
+	a.Status = Done
+	a.CompletedAt = &now
+	a.UpdatedAt = now
+
+	a.AddEvent(NewTaskCompleted(a.ID))
+}
+
+func (a *Task) Cancel() {
+
+	a.Status = Cancelled
+
+	a.UpdatedAt = time.Now()
+
+	a.AddEvent(NewTaskCancelled(a.ID))
 }

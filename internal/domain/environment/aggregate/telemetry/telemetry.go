@@ -8,19 +8,26 @@ import (
 )
 
 type Telemetry struct {
-	ID vo.ID
-
-	SensorID vo.ID
-
-	Value Value
-
+	ev.AggregateRoot
+	ID        vo.ID
+	SensorID  vo.ID
+	Value     Value
 	Timestamp time.Time
-
-	Metadata vo.Metadata
+	Metadata  vo.Metadata
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
+func New(sensorID vo.ID, value float64) *Telemetry {
+	root := &Telemetry{
+		ID:       vo.NewID(),
+		SensorID: sensorID,
+		Value: Value{
+			Value: value,
+		},
+		Timestamp: time.Now(),
+		Metadata:  vo.NewMetadata(),
+	}
 
-	Root Telemetry
+	root.AddEvent(NewTelemetryCreated(root.ID))
+
+	return root
 }

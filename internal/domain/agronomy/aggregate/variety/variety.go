@@ -8,6 +8,7 @@ import (
 )
 
 type Variety struct {
+	ev.AggregateRoot
 	ID         vo.ID
 	CropID     vo.ID
 	Name       string
@@ -24,7 +25,58 @@ type Variety struct {
 	ArchivedAt *time.Time
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
-	Root Variety
+func New(cropID vo.ID, name string) *Variety {
+	now := time.Now()
+
+	root := &Variety{
+		ID:        vo.NewID(),
+		CropID:    cropID,
+		Name:      name,
+		Metadata:  vo.NewMetadata(),
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	root.AddEvent(NewVarietyCreated(root.ID))
+
+	return root
+}
+
+func (a *Variety) UpdateMaturity(m MaturityProfile) {
+	a.Maturity = m
+	a.UpdatedAt = time.Now()
+
+	a.AddEvent(NewMaturityUpdated(a.ID))
+}
+
+func (a *Variety) UpdateGrowth(g GrowthProfile) {
+	a.Growth = g
+
+	a.AddEvent(NewGrowthUpdated(a.ID))
+}
+
+func (a *Variety) UpdateHarvest(h HarvestProfile) {
+	a.Harvest = h
+
+	a.AddEvent(NewHarvestUpdated(a.ID))
+}
+
+func (a *Variety) UpdateYield(y YieldPotential) {
+	a.Yield = y
+
+	a.AddEvent(NewYieldUpdated(a.ID))
+}
+
+func (a *Variety) UpdateTolerance(t EnvironmentTolerance) {
+	a.Tolerance = t
+
+	a.AddEvent(NewToleranceUpdated(a.ID))
+}
+
+func (a *Variety) Archive() {
+	now := time.Now()
+	a.ArchivedAt = &now
+	a.UpdatedAt = now
+
+	a.AddEvent(NewVarietyArchived(a.ID))
 }

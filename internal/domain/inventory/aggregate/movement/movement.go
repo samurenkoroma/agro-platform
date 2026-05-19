@@ -8,6 +8,7 @@ import (
 )
 
 type Movement struct {
+	ev.AggregateRoot
 	ID        vo.ID
 	ItemID    vo.ID
 	Type      Type
@@ -17,8 +18,17 @@ type Movement struct {
 	Metadata  vo.Metadata
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
+func New(itemID vo.ID, mType Type, quantity float64) *Movement {
+	root := &Movement{
+		ID:        vo.NewID(),
+		ItemID:    itemID,
+		Type:      mType,
+		Quantity:  quantity,
+		Timestamp: time.Now(),
+		Metadata:  vo.NewMetadata(),
+	}
 
-	Root Movement
+	root.AddEvent(NewMovementCreated(root.ID))
+
+	return root
 }

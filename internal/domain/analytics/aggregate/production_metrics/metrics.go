@@ -8,25 +8,38 @@ import (
 )
 
 type Metrics struct {
-	ID vo.ID
-
-	FarmID vo.ID
-
-	GrowingCycleID *vo.ID
-
+	ev.AggregateRoot
+	ID               vo.ID
+	FarmID           vo.ID
+	GrowingCycleID   *vo.ID
 	ProductionUnitID *vo.ID
-
-	Consumption Consumption
-
-	Efficiency Efficiency
-
-	Metadata vo.Metadata
-
-	CalculatedAt time.Time
+	Consumption      Consumption
+	Efficiency       Efficiency
+	Metadata         vo.Metadata
+	CalculatedAt     time.Time
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
+func New(farmID vo.ID) *Metrics {
 
-	Root Metrics
+	root := &Metrics{
+		ID: vo.NewID(),
+
+		FarmID: farmID,
+
+		Consumption: Consumption{},
+
+		Efficiency: Efficiency{},
+
+		CalculatedAt: time.Now(),
+
+		Metadata: vo.NewMetadata(),
+	}
+
+	root.AddEvent(
+		NewMetricsCalculated(
+			root.ID,
+		),
+	)
+
+	return root
 }

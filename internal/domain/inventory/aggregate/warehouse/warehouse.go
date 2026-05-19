@@ -8,6 +8,7 @@ import (
 )
 
 type Warehouse struct {
+	ev.AggregateRoot
 	ID         vo.ID
 	FarmID     vo.ID
 	Name       string
@@ -18,8 +19,28 @@ type Warehouse struct {
 	ArchivedAt *time.Time
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
+func New(farmID vo.ID, name string) *Warehouse {
+	now := time.Now()
 
-	Root Warehouse
+	root := &Warehouse{
+		ID:        vo.NewID(),
+		FarmID:    farmID,
+		Name:      name,
+		Metadata:  vo.NewMetadata(),
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	root.AddEvent(NewWarehouseCreated(root.ID))
+
+	return root
+}
+
+func (a *Warehouse) Archive() {
+	now := time.Now()
+
+	a.ArchivedAt = &now
+	a.UpdatedAt = now
+
+	a.AddEvent(NewWarehouseArchived(a.ID))
 }

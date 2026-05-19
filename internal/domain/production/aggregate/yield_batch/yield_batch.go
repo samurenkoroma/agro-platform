@@ -8,6 +8,7 @@ import (
 )
 
 type YieldBatch struct {
+	ev.AggregateRoot
 	ID             vo.ID
 	GrowingCycleID vo.ID
 	PlantID        vo.ID
@@ -21,7 +22,22 @@ type YieldBatch struct {
 	CreatedAt      time.Time
 }
 
-type Aggregate struct {
-	ev.AggregateRoot
-	Root YieldBatch
+func New(cycleID vo.ID, plantID vo.ID, q vo.Quantity, grade QualityGrade) *YieldBatch {
+	now := time.Now()
+
+	root := &YieldBatch{
+		ID:             vo.NewID(),
+		GrowingCycleID: cycleID,
+		PlantID:        plantID,
+		Quantity:       q,
+		Grade:          grade,
+		Marketable:     true,
+		HarvestedAt:    now,
+		CreatedAt:      now,
+		Metadata:       vo.NewMetadata(),
+	}
+
+	root.AddEvent(NewYieldBatchCreated(root.ID))
+
+	return root
 }
