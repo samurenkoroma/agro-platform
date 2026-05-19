@@ -1,20 +1,19 @@
 package repository
 
-import (
-	environmentrepo "github.com/samurenkoroma/agro-platform/internal/domain/environment/repository"
-	operationsrepo "github.com/samurenkoroma/agro-platform/internal/domain/operations/repository"
-	productionrepo "github.com/samurenkoroma/agro-platform/internal/domain/production/repository"
-	spatialrepo "github.com/samurenkoroma/agro-platform/internal/domain/spatial/repository"
-)
-
 type Provider interface {
-	ProductionUnit() spatialrepo.ProductionUnitRepository
+	Spatial() SpatialProvider
 
-	GrowingCycle() productionrepo.GrowingCycleRepository
+	Production() ProductionProvider
 
-	Plant() productionrepo.PlantRepository
+	Agronomy() AgronomyProvider
 
-	Task() operationsrepo.TaskRepository
+	Operations() OperationsProvider
 
-	Sensor() environmentrepo.SensorRepository
+	Inventory() InventoryProvider
+
+	Environment() EnvironmentProvider
+
+	Automation() AutomationProvider
+
+	Analytics() AnalyticsProvider
 }

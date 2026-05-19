@@ -7,8 +7,8 @@ import (
 )
 
 type GrowingCycleRepository interface {
-	Save(aggregate *gc.Aggregate) error
-	GetByID(id vo.ID) (*gc.Aggregate, error)
-	GetActiveByUnit(unitID vo.ID) ([]*gc.Aggregate, error)
+	Save(aggregate *gc.GrowingCycle) error
+	GetByID(id vo.ID) (*gc.GrowingCycle, error)
+	GetActiveByUnit(unitID vo.ID) ([]*gc.GrowingCycle, error)
 	Delete(id vo.ID) error
 }

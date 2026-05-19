@@ -7,8 +7,8 @@ import (
 )
 
 type ProductionUnitRepository interface {
-	Save(aggregate *pu.Aggregate) error
-	GetByID(id vo.ID) (*pu.Aggregate, error)
-	GetChildren(parentID vo.ID) ([]*pu.Aggregate, error)
+	Save(aggregate *pu.ProductionUnit) error
+	GetByID(id vo.ID) (*pu.ProductionUnit, error)
+	GetChildren(parentID vo.ID) ([]*pu.ProductionUnit, error)
 	Delete(id vo.ID) error
 }
