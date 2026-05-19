@@ -1,19 +1,11 @@
 package repository
 
-type Provider interface {
-	Spatial() SpatialProvider
+import "errors"
 
-	Production() ProductionProvider
-
-	Agronomy() AgronomyProvider
-
-	Operations() OperationsProvider
-
-	Inventory() InventoryProvider
-
-	Environment() EnvironmentProvider
-
-	Automation() AutomationProvider
-
-	Analytics() AnalyticsProvider
+type RepositoryProvider interface {
+	ProviderName() string
 }
+
+var (
+	ErrInvalidProviderType = errors.New("invalid provider type")
+)

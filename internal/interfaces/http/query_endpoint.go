@@ -13,7 +13,7 @@ type QueryPayload struct {
 	Data  json.RawMessage `json:"data"`
 }
 
-func QueryEndpoint(router query.Router) http.HandlerFunc {
+func QueryEndpoint(router queries.Router) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 

@@ -136,3 +136,27 @@ func (a *Plant) Die() error {
 
 	return nil
 }
+
+func (a *Plant) MoveStage(stageID vo.ID) error {
+
+	if a.Status == Harvested {
+
+		return ErrAlreadyHarvested
+	}
+	if a.Status == Discarded {
+
+		return ErrAlreadyDiscarded
+	}
+	if a.Status == Dead {
+
+		return ErrPlantDead
+	}
+
+	now := time.Now()
+	a.CurrentStageID = &stageID
+	a.UpdatedAt = now
+
+	a.AddEvent(NewPlantStageChanged(a.ID, stageID))
+
+	return nil
+}

@@ -7,7 +7,7 @@ import (
 )
 
 type SlotRepository interface {
-	Save(aggregate *slot.Aggregate) error
-	GetByID(id vo.ID) (*slot.Aggregate, error)
-	GetByUnit(unitID vo.ID) ([]*slot.Aggregate, error)
+	Save(aggregate *slot.Slot) error
+	GetByID(id vo.ID) (*slot.Slot, error)
+	GetByUnit(unitID vo.ID) ([]*slot.Slot, error)
 }

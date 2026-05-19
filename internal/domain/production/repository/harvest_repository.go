@@ -7,7 +7,7 @@ import (
 )
 
 type HarvestRepository interface {
-	Save(aggregate *harvest.Aggregate) error
-	GetByID(id vo.ID) (*harvest.Aggregate, error)
-	GetByCycle(cycleID vo.ID) ([]*harvest.Aggregate, error)
+	Save(aggregate *harvest.HarvestBatch) error
+	GetByID(id vo.ID) (*harvest.HarvestBatch, error)
+	GetByCycle(cycleID vo.ID) ([]*harvest.HarvestBatch, error)
 }

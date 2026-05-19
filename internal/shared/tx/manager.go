@@ -3,5 +3,5 @@ package tx
 import "context"
 
 type Manager interface {
-	Begin(ctx context.Context) (Transaction, error)
+	Begin(ctx context.Context) (UnitOfWork, error)
 }

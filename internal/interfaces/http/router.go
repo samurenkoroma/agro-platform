@@ -6,14 +6,12 @@ import (
 	"github.com/samurenkoroma/agro-platform/internal/application/command"
 	"github.com/samurenkoroma/agro-platform/internal/application/query"
 	"github.com/samurenkoroma/agro-platform/internal/interfaces/http/response"
-	repository "github.com/samurenkoroma/agro-platform/internal/shared/tx"
 )
 
 // RouterConfig конфигурация роутера
 type RouterConfig struct {
-	CommandRouter command.Router
-	QueryRouter   query.Router
-	UowFactory    repository.Factory
+	CommandRouter commands.Router
+	QueryRouter   queries.Router
 }
 
 // NewRouter создает новый HTTP роутер

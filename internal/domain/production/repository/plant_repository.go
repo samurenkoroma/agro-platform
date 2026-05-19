@@ -7,8 +7,8 @@ import (
 )
 
 type PlantRepository interface {
-	Save(aggregate *plant.Aggregate) error
-	GetByID(id vo.ID) (*plant.Aggregate, error)
-	GetByCycle(cycleID vo.ID) ([]*plant.Aggregate, error)
+	Save(aggregate *plant.Plant) error
+	GetByID(id vo.ID) (*plant.Plant, error)
+	GetByCycle(cycleID vo.ID) ([]*plant.Plant, error)
 	Delete(id vo.ID) error
 }

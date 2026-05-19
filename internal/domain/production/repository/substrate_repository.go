@@ -7,6 +7,6 @@ import (
 )
 
 type SubstrateRepository interface {
-	Save(aggregate *substrate.Aggregate) error
-	GetByID(id vo.ID) (*substrate.Aggregate, error)
+	Save(aggregate *substrate.Substrate) error
+	GetByID(id vo.ID) (*substrate.Substrate, error)
 }

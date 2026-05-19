@@ -13,7 +13,7 @@ type CommandPayload struct {
 	Data    json.RawMessage `json:"data"`
 }
 
-func CommandEndpoint(router command.Router) http.HandlerFunc {
+func CommandEndpoint(router commands.Router) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 

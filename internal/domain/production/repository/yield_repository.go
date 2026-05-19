@@ -7,7 +7,7 @@ import (
 )
 
 type YieldRepository interface {
-	Save(aggregate *yieldbatch.Aggregate) error
-	GetByID(id vo.ID) (*yieldbatch.Aggregate, error)
-	GetByHarvest(harvestID vo.ID) ([]*yieldbatch.Aggregate, error)
+	Save(aggregate *yieldbatch.YieldBatch) error
+	GetByID(id vo.ID) (*yieldbatch.YieldBatch, error)
+	GetByHarvest(harvestID vo.ID) ([]*yieldbatch.YieldBatch, error)
 }
