@@ -3,8 +3,7 @@ package yieldrecord
 import (
 	"time"
 
-	ev "github.com/samurenkoroma/agro-platform/internal/domain/shared/event"
-
+	ev "github.com/samurenkoroma/agro-platform/internal/domain/shared/aggregate"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 

@@ -3,7 +3,7 @@ package productionunit
 import (
 	"time"
 
-	"github.com/samurenkoroma/agro-platform/internal/domain/shared/event"
+	"github.com/samurenkoroma/agro-platform/internal/domain/shared/aggregate"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 	"github.com/samurenkoroma/agro-platform/internal/domain/spatial/entity/geometry"
 )
@@ -34,7 +34,7 @@ type ProductionUnit struct {
 }
 
 type Aggregate struct {
-	event.AggregateRoot
+	aggregate.AggregateRoot
 
 	Root ProductionUnit
 }

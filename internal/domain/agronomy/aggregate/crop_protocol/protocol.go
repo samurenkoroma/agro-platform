@@ -4,7 +4,7 @@ import (
 	"time"
 
 	gc "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/growing_cycle"
-	ev "github.com/samurenkoroma/agro-platform/internal/domain/shared/event"
+	ev "github.com/samurenkoroma/agro-platform/internal/domain/shared/aggregate"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 
