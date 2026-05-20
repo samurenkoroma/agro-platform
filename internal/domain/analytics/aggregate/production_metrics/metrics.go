@@ -8,7 +8,7 @@ import (
 )
 
 type Metrics struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID               vo.ID
 	FarmID           vo.ID
 	GrowingCycleID   *vo.ID

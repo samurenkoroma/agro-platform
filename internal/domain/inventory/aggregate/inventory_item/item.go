@@ -8,7 +8,7 @@ import (
 )
 
 type Item struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID          vo.ID
 	Name        string
 	Type        Type

@@ -48,5 +48,5 @@ func (r *router) Dispatch(ctx context.Context, name string, payload []byte) (any
 		return nil, err
 	}
 
-	return q.handler(ctx, decoded)
+	return q.handler.Ask(ctx, decoded)
 }

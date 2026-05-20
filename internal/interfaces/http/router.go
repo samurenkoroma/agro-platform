@@ -3,54 +3,57 @@ package http
 import (
 	"net/http"
 
-	"github.com/samurenkoroma/agro-platform/internal/application/command"
-	"github.com/samurenkoroma/agro-platform/internal/application/query"
+	"github.com/samurenkoroma/agro-platform/internal/application/commands"
+	"github.com/samurenkoroma/agro-platform/internal/application/queries"
 	"github.com/samurenkoroma/agro-platform/internal/interfaces/http/response"
+	"github.com/samurenkoroma/agro-platform/internal/shared/tx"
 )
 
 // RouterConfig конфигурация роутера
 type RouterConfig struct {
 	CommandRouter commands.Router
 	QueryRouter   queries.Router
+	UowFactory    tx.Factory
+	//JWTService    *jwt.Service
 }
 
 // NewRouter создает новый HTTP роутер
 func NewRouter(cfg RouterConfig) http.Handler {
 	mux := http.NewServeMux()
 
-	//// ========== AUTH ЭНДПОИНТЫ (без CQRS) ==========
+	// ========== AUTH ЭНДПОИНТЫ (без CQRS) ==========
 	//authHandler := auth.NewAuthHandler(cfg.UowFactory, cfg.JWTService)
-	//
+
 	//mux.HandleFunc("POST /auth/register", authHandler.Register)
 	//mux.HandleFunc("POST /auth/login", authHandler.Login)
-	////mux.HandleFunc("GET /auth/me", authHandler.Me)
-	//
+	//mux.HandleFunc("GET /auth/me", authHandler.Me)
+
 	//authMiddleware := NewAuthMiddleware(cfg.JWTService)
-	////// Защищенные эндпоинты (требуют аутентификации)
-	////mux.Handle("POST /auth/logout", authMiddleware.Authenticate(
-	////	http.HandlerFunc(authHandler.Logout),
-	////))
-	////mux.Handle("GET /auth/me", authMiddleware.Authenticate(
-	////	http.HandlerFunc(authHandler.Me),
-	////))
-	//
-	//// ========== CQRS ЭНДПОИНТЫ ==========
-	//// Команды и запросы идут через единый endpoint с аутентификацией
-	//
-	//protectedMux := http.NewServeMux()
-	//protectedMux.Handle("/commands/", CommandEndpoint(cfg.CommandRouter))
-	//protectedMux.Handle("/queries/", QueryEndpoint(cfg.QueryRouter))
-	//
-	//// Применяем middleware для защиты
+	//// Защищенные эндпоинты (требуют аутентификации)
+	//mux.Handle("POST /auth/logout", authMiddleware.Authenticate(
+	//	http.HandlerFunc(authHandler.Logout),
+	//))
+	//mux.Handle("GET /auth/me", authMiddleware.Authenticate(
+	//	http.HandlerFunc(authHandler.Me),
+	//))
+
+	// ========== CQRS ЭНДПОИНТЫ ==========
+	// Команды и запросы идут через единый endpoint с аутентификацией
+
+	protectedMux := http.NewServeMux()
+	protectedMux.Handle("/commands/", CommandEndpoint(cfg.CommandRouter))
+	protectedMux.Handle("/queries/", QueryEndpoint(cfg.QueryRouter))
+
+	// Применяем middleware для защиты
 	//protectedHandler := authMiddleware.Authenticate(protectedMux)
-	//
-	//// Монтируем защищенные эндпоинты
-	//mux.Handle("/api/", http.StripPrefix("/api", protectedHandler))
-	//
-	//// Опционально: эндпоинт для health check (без аутентификации)
-	//mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
-	//	response.Success(map[string]string{"status": "ok"}).WriteJSON(w, http.StatusOK)
-	//})
+
+	// Монтируем защищенные эндпоинты
+	mux.Handle("/api/", http.StripPrefix("/api", protectedMux))
+
+	// Опционально: эндпоинт для health check (без аутентификации)
+	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
+		response.Success(map[string]string{"status": "ok"}).WriteJSON(w, http.StatusOK)
+	})
 
 	// Применяем глобальные middleware (логирование, CORS, recovery)
 	return withGlobalMiddleware(mux)

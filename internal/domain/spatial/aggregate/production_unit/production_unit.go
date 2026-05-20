@@ -9,7 +9,7 @@ import (
 )
 
 type ProductionUnit struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID            vo.ID
 	FarmID        vo.ID
 	ParentID      *vo.ID

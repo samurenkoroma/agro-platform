@@ -8,7 +8,7 @@ import (
 )
 
 type Movement struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID        vo.ID
 	ItemID    vo.ID
 	Type      Type

@@ -1,22 +1,34 @@
 package main
 
 import (
+	"context"
 	"log"
+	"net/http"
 
 	"github.com/samurenkoroma/agro-platform/internal/bootstrap"
+	configs "github.com/samurenkoroma/agro-platform/internal/shared/config"
+	"github.com/samurenkoroma/agro-platform/pkg/db"
 )
 
 func main() {
+	conf := configs.LoadConfig()
+	ctx := context.Background()
 
-	app, err := bootstrap.New()
+	conn, err := db.NewDB(ctx, conf.Db.Dsn)
+	if err != nil {
+		return
+	}
+	defer conn.Close()
 
+	app, err := bootstrap.Build(ctx, conn, conf)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = app.Run()
+	log.Println("server started on :8080")
 
-	if err != nil {
+	if err := http.ListenAndServe(":8080", app.HTTPHandler); err != nil {
 		log.Fatal(err)
 	}
+
 }

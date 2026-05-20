@@ -10,7 +10,7 @@ import (
 )
 
 type Task struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID               vo.ID
 	Title            string
 	Description      *string

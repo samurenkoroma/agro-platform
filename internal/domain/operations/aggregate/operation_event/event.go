@@ -8,7 +8,7 @@ import (
 )
 
 type OperationEvent struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID               vo.ID
 	Type             OperationType
 	FarmID           vo.ID

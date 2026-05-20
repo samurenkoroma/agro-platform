@@ -9,17 +9,12 @@ import (
 const CommandName = "spatial.create_production_unit"
 
 type Command struct {
-	FarmID vo.ID
-
-	Name string
-
-	Type pu.ProductionUnitType
-
+	FarmID   vo.ID
+	Name     string
+	Type     pu.ProductionUnitType
 	ParentID *vo.ID
 }
 
-func (
-	Command,
-) CommandName() string {
+func (Command) CommandName() string {
 	return CommandName
 }

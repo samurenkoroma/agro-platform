@@ -8,7 +8,7 @@ import (
 )
 
 type Rule struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID        vo.ID
 	Name      string
 	FarmID    vo.ID

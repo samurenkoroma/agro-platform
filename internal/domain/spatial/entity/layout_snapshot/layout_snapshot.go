@@ -25,7 +25,7 @@ type LayoutSnapshot struct {
 }
 
 type Aggregate struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 
 	Root LayoutSnapshot
 }

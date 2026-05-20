@@ -8,7 +8,7 @@ import (
 )
 
 type GrowingCycle struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID                vo.ID
 	FarmID            vo.ID
 	CropID            vo.ID

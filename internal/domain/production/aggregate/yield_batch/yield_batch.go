@@ -8,7 +8,7 @@ import (
 )
 
 type YieldBatch struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID             vo.ID
 	GrowingCycleID vo.ID
 	PlantID        vo.ID

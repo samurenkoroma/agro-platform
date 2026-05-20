@@ -8,7 +8,7 @@ import (
 )
 
 type Telemetry struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID        vo.ID
 	SensorID  vo.ID
 	Value     Value

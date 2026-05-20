@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/samurenkoroma/agro-platform/internal/application/query"
+	"github.com/samurenkoroma/agro-platform/internal/application/queries"
 	"github.com/samurenkoroma/agro-platform/internal/interfaces/http/response"
 )
 

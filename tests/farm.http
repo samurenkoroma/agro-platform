@@ -1,0 +1,33 @@
+POST http://localhost:8080/api/commands/
+Content-Type: application/json
+
+{
+  "command": "spatial.create_production_unit",
+  "data": {
+    "type": "greenhouse",
+    "name": "shalasawdadawdawdh",
+    "attributes": {
+      "length": 12,
+      "width": 4
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        30.0162001,
+        45.9007626
+      ]
+    }
+  }
+}
+
+###
+
+POST http://localhost:8080/api/queries/
+Content-Type: application/json
+
+{
+  "query": "GetCurrentFarm",
+  "data": {
+    "id": "tomato"
+  }
+}

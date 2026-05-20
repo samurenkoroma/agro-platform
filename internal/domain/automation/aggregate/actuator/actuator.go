@@ -8,7 +8,7 @@ import (
 )
 
 type Actuator struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID               vo.ID
 	Type             Type
 	FarmID           vo.ID

@@ -8,7 +8,9 @@ import (
 // Decoder преобразует сырой payload (json, grpc, etc)
 // в конкретный query struct
 type Decoder func([]byte) (any, error)
-type Handler func(ctx context.Context, payload any) (any, error)
+type Handler interface {
+	Ask(ctx context.Context, payload any) (any, error)
+}
 
 //type HandlerFunc func(ctx context.Context, payload any) (any, error)
 

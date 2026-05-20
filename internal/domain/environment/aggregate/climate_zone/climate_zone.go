@@ -8,7 +8,7 @@ import (
 )
 
 type ClimateZone struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID         vo.ID
 	FarmID     vo.ID
 	Name       string

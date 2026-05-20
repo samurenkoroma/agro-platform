@@ -15,8 +15,7 @@ type productionUnitRepository struct {
 }
 
 func (r *productionUnitRepository) Save(aggregate *pu.ProductionUnit) error {
-	//TODO implement me
-	panic("implement me")
+	return nil
 }
 
 func (r *productionUnitRepository) GetByID(id vo.ID) (*pu.ProductionUnit, error) {

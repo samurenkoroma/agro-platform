@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 )
 
-type Handler func(ctx context.Context, cmd any) (any, error)
+type Handler interface {
+	Handle(ctx context.Context, cmd any) (any, error)
+}
 type DecoderFunc func([]byte) (any, error)
 
 type Router interface {

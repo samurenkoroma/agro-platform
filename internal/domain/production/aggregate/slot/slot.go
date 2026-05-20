@@ -8,7 +8,7 @@ import (
 )
 
 type Slot struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID               vo.ID
 	ProductionUnitID vo.ID
 	Code             string

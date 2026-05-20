@@ -8,7 +8,7 @@ import (
 )
 
 type Disease struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID             vo.ID
 	Name           string
 	ScientificName *string

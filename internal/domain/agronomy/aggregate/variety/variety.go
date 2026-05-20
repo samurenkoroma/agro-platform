@@ -8,7 +8,7 @@ import (
 )
 
 type Variety struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID         vo.ID
 	CropID     vo.ID
 	Name       string

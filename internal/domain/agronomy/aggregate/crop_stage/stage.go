@@ -21,6 +21,6 @@ type CropStage struct {
 }
 
 type Aggregate struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	Root CropStage
 }

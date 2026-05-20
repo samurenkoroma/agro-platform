@@ -8,7 +8,7 @@ import (
 )
 
 type HarvestBatch struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID               vo.ID
 	GrowingCycleID   vo.ID
 	ProductionUnitID vo.ID

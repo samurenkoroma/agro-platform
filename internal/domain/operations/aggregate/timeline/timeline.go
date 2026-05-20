@@ -8,7 +8,7 @@ import (
 )
 
 type Timeline struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID               vo.ID
 	FarmID           vo.ID
 	ProductionUnitID *vo.ID

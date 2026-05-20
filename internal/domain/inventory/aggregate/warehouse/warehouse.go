@@ -8,7 +8,7 @@ import (
 )
 
 type Warehouse struct {
-	ev.AggregateRoot
+	ev.BaseAggregate
 	ID         vo.ID
 	FarmID     vo.ID
 	Name       string
