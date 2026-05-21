@@ -3,6 +3,7 @@ package agronomy
 import (
 	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop"
 	protocol "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop_protocol"
+	stage "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop_stage"
 	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/variety"
 )
 
@@ -67,5 +68,21 @@ func scanStage(root *protocol.StageProfile) []any {
 		&root.Nutrition,
 		&root.Water,
 		&root.VPD,
+	}
+}
+
+func scanCropStage(root *stage.CropStage) []any {
+	return []any{
+		&root.ID,
+		&root.CropID,
+		&root.Code,
+		&root.Name,
+		&root.BBCH,
+		&root.Order,
+		&root.DurationDays,
+		&root.Metadata,
+		&root.CreatedAt,
+		&root.UpdatedAt,
+		&root.ArchivedAt,
 	}
 }

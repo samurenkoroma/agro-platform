@@ -19,10 +19,23 @@ type agronomyProvider struct {
 	db             repository.DB
 	inMemory       bool
 	crops          domain.CropRepository
+	cropsStages    domain.CropStageRepository
 	varieties      domain.VarietyRepository
 	protocols      domain.CropProtocolRepository
 	diseases       domain.DiseaseRepository
 	stressProfiles domain.StressRepository
+}
+
+func (p *agronomyProvider) CropsStages() domain.CropStageRepository {
+	if p.cropsStages != nil {
+		return p.cropsStages
+	}
+	if p.inMemory {
+		p.cropsStages = inmemory.NewCropStageRepository()
+	} else {
+		p.cropsStages = postgres.NewCropStageRepository(p.db)
+	}
+	return p.cropsStages
 }
 
 func (p *agronomyProvider) Crops() domain.CropRepository {

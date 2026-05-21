@@ -13,11 +13,13 @@ type CropStage struct {
 	Code         string
 	Name         string
 	Order        int
-	BBCHCode     *string
-	ExpectedDays *int
+	BBCH         *string
+	DurationDays *int
 	ExpectedGDD  *float64
 	Metadata     vo.Metadata
 	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	ArchivedAt   *time.Time
 }
 
 type Aggregate struct {
