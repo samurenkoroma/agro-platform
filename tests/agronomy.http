@@ -10,6 +10,19 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:8080/api/commands/
+Content-Type: application/json
+
+{
+  "command": "agronomy.create_variety",
+  "data": {
+    "name": "shalasawdada",
+    "cropId": "6b3eddf7-2947-4c0f-abbd-09df638902b0"
+  }
+}
+
+
+###
 
 POST http://localhost:8080/api/queries/
 Content-Type: application/json

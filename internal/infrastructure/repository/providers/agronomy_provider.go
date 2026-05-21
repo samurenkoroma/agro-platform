@@ -3,7 +3,7 @@ package providers
 import (
 	domain "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/repository"
 	inmemory "github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/inmemory/agronomy"
-	postgres "github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/postgres/agronomy/crop"
+	postgres "github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/postgres/agronomy"
 	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
@@ -38,8 +38,16 @@ func (p *agronomyProvider) Crops() domain.CropRepository {
 }
 
 func (p *agronomyProvider) Varieties() domain.VarietyRepository {
-	//TODO implement me
-	panic("implement me")
+	if p.varieties != nil {
+		return p.varieties
+	}
+	if p.inMemory {
+		p.varieties = inmemory.NewVarietyRepository()
+	} else {
+		p.varieties = postgres.NewVarietyRepository(p.db)
+	}
+
+	return p.varieties
 }
 
 func (p *agronomyProvider) Protocols() domain.ProtocolRepository {
