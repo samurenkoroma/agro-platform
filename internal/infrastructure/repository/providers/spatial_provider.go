@@ -17,7 +17,7 @@ func (p *spatialProvider) ProviderName() string {
 	return "spatial"
 }
 
-func NewSpatialProvider(db repository.DB, inMemory bool) repository.RepositoryProvider {
+func NewSpatialProvider(db repository.DB, inMemory bool) domain.SpatialProvider {
 	return &spatialProvider{db: db, inMemory: inMemory}
 }
 

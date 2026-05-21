@@ -1,14 +1,14 @@
 package crop
 
 import (
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/repository"
 )
 
 type Repository struct {
-	db *pgxpool.Pool
+	db uow.DB
 }
 
-func New(db *pgxpool.Pool) repository.CropRepository {
+func NewCropRepository(db uow.DB) repository.CropRepository {
 	return &Repository{db: db}
 }

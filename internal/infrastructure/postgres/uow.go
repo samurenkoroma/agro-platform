@@ -8,9 +8,11 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/samurenkoroma/agro-platform/internal/application/provider"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/domain/shared/aggregate"
 	"github.com/samurenkoroma/agro-platform/internal/domain/shared/event"
+	"github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/providers"
 	"github.com/samurenkoroma/agro-platform/internal/shared/bus"
 	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
@@ -39,9 +41,9 @@ func NewUnitOfWork(ctx context.Context, pool *pgxpool.Pool, bus bus.EventBus) uo
 	}
 }
 
-func (u *unitOfWork) Execute(ctx context.Context, deps uow.ProviderDeps, fn func(provider repository.RepositoryProvider) (any, error)) (any, error) {
+func (u *unitOfWork) Execute(ctx context.Context, deps provider.ProviderDeps, fn func(provider repository.RepositoryProvider) (any, error)) (any, error) {
 	// Создаем провайдер для этой транзакции
-	provider := uow.BuildProvider(u.pool, deps)
+	provider := providers.BuildProvider(u.pool, deps)
 
 	tx, err := u.pool.Begin(ctx)
 	if err != nil {

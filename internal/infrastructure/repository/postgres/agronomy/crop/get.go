@@ -5,7 +5,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	entity "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/crop"
+	entity "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop"
 
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )

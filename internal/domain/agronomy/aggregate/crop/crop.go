@@ -20,13 +20,12 @@ type Crop struct {
 	ArchivedAt        *time.Time
 }
 
-func New(name string, category CropCategory) *Crop {
+func New(name string) *Crop {
 	now := time.Now()
 
 	root := &Crop{
 		ID:        vo.NewID(),
 		Name:      name,
-		Category:  category,
 		Metadata:  vo.NewMetadata(),
 		CreatedAt: now,
 		UpdatedAt: now,
