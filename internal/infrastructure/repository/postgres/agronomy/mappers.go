@@ -2,6 +2,7 @@ package agronomy
 
 import (
 	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop"
+	protocol "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop_protocol"
 	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/variety"
 )
 
@@ -27,6 +28,19 @@ func scanVariety(root *variety.Variety) []any {
 		&root.Growth,
 		&root.Spacing,
 		&root.Tolerance,
+		&root.Metadata,
+		&root.CreatedAt,
+		&root.UpdatedAt,
+	}
+}
+
+func scanCropProtocol(root *protocol.CropProtocol) []any {
+	return []any{
+		&root.ID,
+		&root.CropID,
+		&root.Name,
+		&root.GrowingMethod,
+		&root.Description,
 		&root.Metadata,
 		&root.CreatedAt,
 		&root.UpdatedAt,

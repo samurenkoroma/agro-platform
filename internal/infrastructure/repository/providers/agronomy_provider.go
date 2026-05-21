@@ -20,7 +20,7 @@ type agronomyProvider struct {
 	inMemory       bool
 	crops          domain.CropRepository
 	varieties      domain.VarietyRepository
-	protocols      domain.ProtocolRepository
+	protocols      domain.CropProtocolRepository
 	diseases       domain.DiseaseRepository
 	stressProfiles domain.StressRepository
 }
@@ -50,7 +50,7 @@ func (p *agronomyProvider) Varieties() domain.VarietyRepository {
 	return p.varieties
 }
 
-func (p *agronomyProvider) Protocols() domain.ProtocolRepository {
+func (p *agronomyProvider) Protocols() domain.CropProtocolRepository {
 	//TODO implement me
 	panic("implement me")
 }
