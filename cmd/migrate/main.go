@@ -330,6 +330,7 @@ func getModules(moduleFlag string) []module {
 	allModules := []module{
 		//{Name: "shared", Path: "shared"},
 		{Name: "spatial", Path: "migrations/spatial"},
+		{Name: "agronomy", Path: "migrations/agronomy"},
 		//{Name: "shared", Path: "shared/infrastructure/persistence/postgres/migrations"},
 	}
 

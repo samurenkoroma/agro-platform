@@ -18,7 +18,7 @@ type CreateProductionUnitHandler struct {
 	uow uow.UnitOfWork
 }
 
-func NewProductionUnitHandler(uow uow.UnitOfWork) command.Handler {
+func NewCreateProductionUnitHandler(uow uow.UnitOfWork) command.Handler {
 	return &CreateProductionUnitHandler{uow: uow}
 }
 
@@ -35,7 +35,7 @@ func (h *CreateProductionUnitHandler) Handle(ctx context.Context, payload any) (
 		return nil, command.ErrInvalidCommandType
 	}
 
-	return h.uow.Execute(ctx, provider.InMemoryDeps(providers.Spatial), func(provider repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, provider.Deps(providers.Spatial, false), func(provider repository.RepositoryProvider) (any, error) {
 		spatialProvider, ok := provider.(spatial.SpatialProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType

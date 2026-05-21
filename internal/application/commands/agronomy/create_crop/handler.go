@@ -15,14 +15,14 @@ import (
 type Command struct {
 	Name           string  `json:"name" validate:"required"`
 	ScientificName *string `json:"scientific_name"`
-	Category       *string `json:"category"`
+	Category       string  `json:"category"`
 }
 
 type Handler struct {
 	uow uow.UnitOfWork
 }
 
-func New(uow uow.UnitOfWork) *Handler {
+func NewCreateCropHandler(uow uow.UnitOfWork) *Handler {
 	return &Handler{uow: uow}
 }
 
@@ -30,16 +30,13 @@ func (h *Handler) Handle(ctx context.Context, payload any) (any, error) {
 
 	cmd := payload.(*Command)
 
-	return h.uow.Execute(ctx, provider.Deps(providers.Agronomy, false), func(provider agronomy.AgronomyProvider) (any, error) {
+	return h.uow.Execute(ctx, provider.Deps(providers.Agronomy, false), func(provider repository.RepositoryProvider) (any, error) {
 		agronomyProvider, ok := provider.(agronomy.AgronomyProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType
 		}
-		root := crop.New(cmd.Name)
+		root := crop.New(cmd.Name, crop.CropCategory(cmd.Category))
 
-		if cmd.Category != nil {
-			root.Category = crop.CropCategory(*cmd.Category)
-		}
 		root.ScientificName = cmd.ScientificName
 
 		err := agronomyProvider.Crops().Save(ctx, root)
@@ -51,6 +48,5 @@ func (h *Handler) Handle(ctx context.Context, payload any) (any, error) {
 		h.uow.RegisterAggregate(root)
 
 		return response.Id(root.ID), nil
-	},
-	)
+	})
 }

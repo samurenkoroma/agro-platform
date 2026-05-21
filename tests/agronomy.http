@@ -1,0 +1,22 @@
+POST http://localhost:8080/api/commands/
+Content-Type: application/json
+
+{
+  "command": "agronomy.create_crop",
+  "data": {
+    "name": "shalasawdadawdawdh",
+    "category": "awdawdawdaw"
+  }
+}
+
+###
+
+POST http://localhost:8080/api/queries/
+Content-Type: application/json
+
+{
+  "query": "GetCurrentFarm",
+  "data": {
+    "id": "tomato"
+  }
+}

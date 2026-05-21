@@ -7,6 +7,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands"
+	createcrop "github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/create_crop"
 	createproductionunit "github.com/samurenkoroma/agro-platform/internal/application/commands/spatial/create_production_unit"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries"
 	getproductionunit "github.com/samurenkoroma/agro-platform/internal/application/queries/spatial/get_production_unit"
@@ -32,7 +33,8 @@ func Build(ctx context.Context, pool *pgxpool.Pool, conf *configs.Config) (*App,
 	commandRouter := commands.NewRouter()
 	queryRouter := queries.NewRouter()
 
-	commandRouter.Register("spatial.create_production_unit", createproductionunit.NewProductionUnitHandler(uow), utils.DecodeJSON[createproductionunit.Command])
+	commandRouter.Register("spatial.create_production_unit", createproductionunit.NewCreateProductionUnitHandler(uow), utils.DecodeJSON[createproductionunit.Command])
+	commandRouter.Register("agronomy.create_crop", createcrop.NewCreateCropHandler(uow), utils.DecodeJSON[createcrop.Command])
 	queryRouter.Register("GetCurrentFarm", getproductionunit.NewProductionUnitHandler(), utils.DecodeJSON[getproductionunit.GetCurrentFarmQuery])
 	//bus.Register("farm.field.created", growingEventHandlers.OnFarmObjectCreated)
 	//bus.Register(physicalobject.FarmObjectSchemaUpdatedEvent, growingEventHandlers.OnFarmObjectSchemaUpdated)

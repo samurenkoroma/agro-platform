@@ -7,13 +7,6 @@ func Deps(name ProviderName, inMemory bool) ProviderDeps {
 	}
 }
 
-func InMemoryDeps(name ProviderName) ProviderDeps {
-	return ProviderDeps{
-		Name:     name,
-		InMemory: true,
-	}
-}
-
 type ProviderName string
 
 type ProviderDeps struct {
