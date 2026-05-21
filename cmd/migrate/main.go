@@ -62,7 +62,7 @@ func main() {
 			continue
 		}
 
-		migrationsPath := filepath.Join("internal", "modules", mod.Path)
+		migrationsPath := filepath.Join(mod.Path)
 		if err := runMigrations(conn, mod.Name, migrationsPath, *direction, *steps, *verbose); err != nil {
 			log.Fatalf("Failed to run migrations for %s: %v", mod.Name, err)
 		}
@@ -329,11 +329,8 @@ type module struct {
 func getModules(moduleFlag string) []module {
 	allModules := []module{
 		//{Name: "shared", Path: "shared"},
-		{Name: "auth", Path: "auth/infrastructure/persistence/postgres/migrations"},
-		{Name: "farm", Path: "farm/infrastructure/persistence/postgres/migrations"},
-		{Name: "crop", Path: "crop/infrastructure/persistence/postgres/migrations"},
-		{Name: "growing", Path: "growing/infrastructure/persistence/postgres/migrations"},
-		{Name: "shared", Path: "shared/infrastructure/persistence/postgres/migrations"},
+		{Name: "spatial", Path: "migrations/spatial"},
+		//{Name: "shared", Path: "shared/infrastructure/persistence/postgres/migrations"},
 	}
 
 	if moduleFlag == "all" {

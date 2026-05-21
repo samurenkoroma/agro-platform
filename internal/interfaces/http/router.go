@@ -6,14 +6,13 @@ import (
 	"github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries"
 	"github.com/samurenkoroma/agro-platform/internal/interfaces/http/response"
-	"github.com/samurenkoroma/agro-platform/internal/shared/tx"
 )
 
 // RouterConfig конфигурация роутера
 type RouterConfig struct {
 	CommandRouter commands.Router
 	QueryRouter   queries.Router
-	UowFactory    tx.Factory
+	//UowFactory    tx.Factory
 	//JWTService    *jwt.Service
 }
 

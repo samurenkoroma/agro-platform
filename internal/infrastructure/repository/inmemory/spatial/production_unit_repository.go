@@ -1,6 +1,7 @@
 package spatial
 
 import (
+	"context"
 	"sync"
 
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
@@ -14,16 +15,21 @@ type productionUnitRepository struct {
 	items map[vo.ID]*pu.ProductionUnit
 }
 
-func (r *productionUnitRepository) Save(aggregate *pu.ProductionUnit) error {
-	return nil
-}
-
-func (r *productionUnitRepository) GetByID(id vo.ID) (*pu.ProductionUnit, error) {
+func (r *productionUnitRepository) Exists(ctx context.Context, id vo.ID) (bool, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (r *productionUnitRepository) GetChildren(parentID vo.ID) ([]*pu.ProductionUnit, error) {
+func (r *productionUnitRepository) Save(ctx context.Context, aggregate *pu.ProductionUnit) error {
+	return nil
+}
+
+func (r *productionUnitRepository) GetByID(ctx context.Context, id vo.ID) (*pu.ProductionUnit, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *productionUnitRepository) GetChildren(ctx context.Context, parentID vo.ID) ([]*pu.ProductionUnit, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 

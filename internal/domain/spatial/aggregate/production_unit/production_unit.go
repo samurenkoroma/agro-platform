@@ -26,13 +26,12 @@ type ProductionUnit struct {
 
 func New(farmID vo.ID, unitType ProductionUnitType, name string) (*ProductionUnit, error) {
 	if name == "" {
-		return nil,
-			ErrInvalidName
+		return nil, ErrInvalidName
 	}
 
 	root := &ProductionUnit{
 		ID:        vo.NewID(),
-		FarmID:    farmID,
+		FarmID:    vo.NewID(),
 		Type:      unitType,
 		Name:      name,
 		Metadata:  vo.NewMetadata(),

@@ -2,25 +2,28 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/samurenkoroma/agro-platform/internal/bootstrap"
 	configs "github.com/samurenkoroma/agro-platform/internal/shared/config"
-	"github.com/samurenkoroma/agro-platform/pkg/db"
 )
 
 func main() {
 	conf := configs.LoadConfig()
 	ctx := context.Background()
-
-	conn, err := db.NewDB(ctx, conf.Db.Dsn)
+	pool, err := pgxpool.New(context.Background(), conf.Db.Dsn)
 	if err != nil {
-		return
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
 	}
-	defer conn.Close()
 
-	app, err := bootstrap.Build(ctx, conn, conf)
+	defer pool.Close()
+	//
+	app, err := bootstrap.Build(ctx, pool, conf)
 	if err != nil {
 		log.Fatal(err)
 	}

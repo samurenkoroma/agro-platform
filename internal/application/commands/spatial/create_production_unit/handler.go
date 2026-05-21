@@ -2,21 +2,29 @@ package createproductionunit
 
 import (
 	"context"
-	"fmt"
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
+	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
+	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 	pu "github.com/samurenkoroma/agro-platform/internal/domain/spatial/aggregate/production_unit"
-	"github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/inmemory/spatial"
+	spatial "github.com/samurenkoroma/agro-platform/internal/domain/spatial/repository"
 	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
-	"github.com/samurenkoroma/agro-platform/internal/shared/tx"
 )
 
 type CreateProductionUnitHandler struct {
-	uowFactory tx.Factory
+	uow uow.UnitOfWork
 }
 
-func NewProductionUnitHandler(uowFactory tx.Factory) command.Handler {
-	return &CreateProductionUnitHandler{uowFactory: uowFactory}
+func NewProductionUnitHandler(uow uow.UnitOfWork) command.Handler {
+	return &CreateProductionUnitHandler{uow: uow}
+}
+
+type Command struct {
+	FarmID   vo.ID                 `json:"farmId" validate:"required"`
+	Name     string                `json:"name" validate:"required"`
+	Type     pu.ProductionUnitType `json:"type" validate:"required"`
+	ParentID *vo.ID                `json:"parentId"`
 }
 
 func (h *CreateProductionUnitHandler) Handle(ctx context.Context, payload any) (any, error) {
@@ -25,15 +33,10 @@ func (h *CreateProductionUnitHandler) Handle(ctx context.Context, payload any) (
 		return nil, command.ErrInvalidCommandType
 	}
 
-	uow, err := h.uowFactory.Begin(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return uow.Execute(ctx, spatial.NewInMemorySpatialProvider, func(provider repository.RepositoryProvider) (any, error) {
-		spatialProvider, ok := provider.(*spatial.InMemorySpatialProvider)
+	return h.uow.Execute(ctx, uow.InMemoryDeps(uow.Spatial), func(provider repository.RepositoryProvider) (any, error) {
+		spatialProvider, ok := provider.(spatial.SpatialProvider)
 		if !ok {
-			return nil, fmt.Errorf("expected InMemorySpatialProvider, got %T", provider)
+			return nil, repository.ErrInvalidProviderType
 		}
 
 		unit, err := pu.New(
@@ -45,9 +48,11 @@ func (h *CreateProductionUnitHandler) Handle(ctx context.Context, payload any) (
 			return nil, err
 		}
 
-		spatialProvider.Units().Save(unit)
+		if err := spatialProvider.Units().Save(ctx, unit); err != nil {
+			return nil, err
+		}
 
-		uow.RegisterAggregate(unit)
-		return fmt.Sprintf("created %v", unit.CreatedAt), nil
+		h.uow.RegisterAggregate(unit)
+		return response.Id(unit.ID), nil
 	})
 }
