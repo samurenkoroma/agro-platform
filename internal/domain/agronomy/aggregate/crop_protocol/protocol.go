@@ -19,6 +19,7 @@ type CropProtocol struct {
 	Metadata      vo.Metadata
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+	ArchivedAt    *time.Time
 }
 
 func New(cropID vo.ID, name string, method gc.GrowingMethod) *CropProtocol {

@@ -24,13 +24,21 @@ func scanVariety(root *variety.Variety) []any {
 		&root.CropID,
 		&root.Name,
 		&root.Breeder,
+
 		&root.Maturity,
 		&root.Growth,
 		&root.Spacing,
+
+		&root.Harvest,
+		&root.Yield,
+
 		&root.Tolerance,
+
 		&root.Metadata,
+
 		&root.CreatedAt,
 		&root.UpdatedAt,
+		&root.ArchivedAt,
 	}
 }
 
@@ -44,5 +52,20 @@ func scanCropProtocol(root *protocol.CropProtocol) []any {
 		&root.Metadata,
 		&root.CreatedAt,
 		&root.UpdatedAt,
+		&root.ArchivedAt,
+	}
+}
+
+func scanStage(root *protocol.StageProfile) []any {
+	return []any{
+		&root.ID,
+		&root.CropStageID,
+
+		&root.Climate,
+		&root.Lighting,
+		&root.Irrigation,
+		&root.Nutrition,
+		&root.Water,
+		&root.VPD,
 	}
 }

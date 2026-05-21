@@ -6,7 +6,7 @@ type AgronomyProvider interface {
 	repository.RepositoryProvider
 	Crops() CropRepository
 	Varieties() VarietyRepository
-	Protocols() ProtocolRepository
+	Protocols() CropProtocolRepository
 	Diseases() DiseaseRepository
 	StressProfiles() StressRepository
 }
