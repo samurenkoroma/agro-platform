@@ -12,16 +12,16 @@ import (
 	createproductionunit "github.com/samurenkoroma/agro-platform/internal/application/commands/spatial/create_production_unit"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries"
 	getproductionunit "github.com/samurenkoroma/agro-platform/internal/application/queries/spatial/get_production_unit"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/messaging/inmemory"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/postgres"
 	http2 "github.com/samurenkoroma/agro-platform/internal/interfaces/http"
 	configs "github.com/samurenkoroma/agro-platform/internal/shared/config"
-	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 	"github.com/samurenkoroma/agro-platform/pkg/utils"
 )
 
 type App struct {
-	DB            repository.DB
+	DB            uow.DB
 	CommandRouter commands.Router
 	QueryRouter   queries.Router
 	HTTPHandler   http.Handler

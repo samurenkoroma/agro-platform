@@ -1,14 +1,14 @@
 package providers
 
 import (
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	domain "github.com/samurenkoroma/agro-platform/internal/domain/spatial/repository"
 	inmemory "github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/inmemory/spatial"
 	postgres "github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/postgres/spatial/production_unit"
-	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
 type spatialProvider struct {
-	db       repository.DB
+	db       uow.DB
 	inMemory bool
 	units    domain.ProductionUnitRepository
 }
@@ -17,7 +17,7 @@ func (p *spatialProvider) ProviderName() string {
 	return "spatial"
 }
 
-func NewSpatialProvider(db repository.DB, inMemory bool) domain.SpatialProvider {
+func NewSpatialProvider(db uow.DB, inMemory bool) domain.SpatialProvider {
 	return &spatialProvider{db: db, inMemory: inMemory}
 }
 

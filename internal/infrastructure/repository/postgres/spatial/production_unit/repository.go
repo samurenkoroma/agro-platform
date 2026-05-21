@@ -1,14 +1,14 @@
 package productionunit
 
 import (
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	spatial "github.com/samurenkoroma/agro-platform/internal/domain/spatial/repository"
-	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
 type productionUnitRepository struct {
-	db repository.DB
+	db uow.DB
 }
 
-func New(db repository.DB) spatial.ProductionUnitRepository {
+func New(db uow.DB) spatial.ProductionUnitRepository {
 	return &productionUnitRepository{db: db}
 }

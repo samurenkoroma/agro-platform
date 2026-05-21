@@ -2,6 +2,7 @@ package providers
 
 import (
 	"github.com/samurenkoroma/agro-platform/internal/application/provider"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
@@ -10,7 +11,7 @@ const (
 	Agronomy provider.ProviderName = "agronomy"
 )
 
-func BuildProvider(db repository.DB, deps provider.ProviderDeps) repository.RepositoryProvider {
+func BuildProvider(db uow.DB, deps provider.ProviderDeps) repository.RepositoryProvider {
 	switch deps.Name {
 	case Spatial:
 		return NewSpatialProvider(db, deps.InMemory)
