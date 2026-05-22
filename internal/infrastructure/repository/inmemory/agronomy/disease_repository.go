@@ -10,10 +10,6 @@ import (
 
 type diseaseRepository struct{}
 
-func NewDiseaseRepository() repository.DiseaseRepository {
-	return &diseaseRepository{}
-}
-
 func (d diseaseRepository) Save(ctx context.Context, root *disease.Disease) error {
 	//TODO implement me
 	panic("implement me")
@@ -24,7 +20,7 @@ func (d diseaseRepository) GetByID(ctx context.Context, id vo.ID) (*disease.Dise
 	panic("implement me")
 }
 
-func (d diseaseRepository) GetByCrop(ctx context.Context, cropID vo.ID) ([]*disease.Disease, error) {
+func (d diseaseRepository) GetAll(ctx context.Context) ([]*disease.Disease, error) {
 	//TODO implement me
 	panic("implement me")
 }
@@ -32,4 +28,8 @@ func (d diseaseRepository) GetByCrop(ctx context.Context, cropID vo.ID) ([]*dise
 func (d diseaseRepository) Exists(ctx context.Context, id vo.ID) (bool, error) {
 	//TODO implement me
 	panic("implement me")
+}
+
+func NewDiseaseRepository() repository.DiseaseRepository {
+	return &diseaseRepository{}
 }

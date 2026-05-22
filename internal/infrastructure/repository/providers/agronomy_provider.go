@@ -76,8 +76,15 @@ func (p *agronomyProvider) Protocols() domain.CropProtocolRepository {
 }
 
 func (p *agronomyProvider) Diseases() domain.DiseaseRepository {
-	//TODO implement me
-	panic("implement me")
+	if p.diseases != nil {
+		return p.diseases
+	}
+	if p.inMemory {
+		p.diseases = inmemory.NewDiseaseRepository()
+	} else {
+		p.diseases = postgres.NewDiseaseRepository(p.db)
+	}
+	return p.diseases
 }
 
 func (p *agronomyProvider) StressProfiles() domain.StressRepository {
