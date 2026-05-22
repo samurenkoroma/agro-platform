@@ -4,6 +4,7 @@ import (
 	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop"
 	protocol "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop_protocol"
 	stage "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop_stage"
+	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/disease"
 	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/variety"
 )
 
@@ -81,6 +82,28 @@ func scanCropStage(root *stage.CropStage) []any {
 		&root.Order,
 		&root.DurationDays,
 		&root.Metadata,
+		&root.CreatedAt,
+		&root.UpdatedAt,
+		&root.ArchivedAt,
+	}
+}
+
+func scanDisease(root *disease.Disease) []any {
+	return []any{
+		&root.ID,
+
+		&root.Name,
+		&root.ScientificName,
+
+		&root.PathogenType,
+
+		&root.Hosts,
+		&root.Symptoms,
+
+		&root.Description,
+
+		&root.Metadata,
+
 		&root.CreatedAt,
 		&root.UpdatedAt,
 		&root.ArchivedAt,

@@ -9,10 +9,7 @@ import (
 
 type DiseaseRepository interface {
 	Save(ctx context.Context, root *disease.Disease) error
-
 	GetByID(ctx context.Context, id vo.ID) (*disease.Disease, error)
-
-	GetByCrop(ctx context.Context, cropID vo.ID) ([]*disease.Disease, error)
-
+	GetAll(ctx context.Context) ([]*disease.Disease, error)
 	Exists(ctx context.Context, id vo.ID) (bool, error)
 }
