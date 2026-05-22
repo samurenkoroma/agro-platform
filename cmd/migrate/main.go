@@ -331,6 +331,7 @@ func getModules(moduleFlag string) []module {
 		//{Name: "shared", Path: "shared"},
 		{Name: "spatial", Path: "migrations/spatial"},
 		{Name: "agronomy", Path: "migrations/agronomy"},
+		{Name: "production", Path: "migrations/production"},
 		//{Name: "shared", Path: "shared/infrastructure/persistence/postgres/migrations"},
 	}
 

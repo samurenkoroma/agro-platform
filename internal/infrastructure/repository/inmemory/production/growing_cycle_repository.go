@@ -1,6 +1,7 @@
 package production
 
 import (
+	"context"
 	"sync"
 
 	gc "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/growing_cycle"
@@ -10,34 +11,22 @@ import (
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 
-type GrowingCycleRepository struct {
+type growingCycleRepository struct {
 	mu sync.RWMutex
 
 	items map[vo.ID]*gc.GrowingCycle
 }
 
-func (r *GrowingCycleRepository) GetActiveByUnit(unitID vo.ID) ([]*gc.GrowingCycle, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func NewGrowingCycleRepository() *GrowingCycleRepository {
-	return &GrowingCycleRepository{
-		items: make(map[vo.ID]*gc.GrowingCycle),
-	}
-}
-
-func (r *GrowingCycleRepository) Save(entity *gc.GrowingCycle) error {
-
+func (r *growingCycleRepository) Save(ctx context.Context, root *gc.GrowingCycle) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	r.items[entity.ID] = entity
+	r.items[root.ID] = root
 
 	return nil
 }
 
-func (r *GrowingCycleRepository) GetByID(id vo.ID) (*gc.GrowingCycle, error) {
+func (r *growingCycleRepository) GetByID(ctx context.Context, id vo.ID) (*gc.GrowingCycle, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
@@ -46,13 +35,30 @@ func (r *GrowingCycleRepository) GetByID(id vo.ID) (*gc.GrowingCycle, error) {
 	return item, nil
 }
 
-func (r *GrowingCycleRepository) Delete(id vo.ID) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	delete(r.items, id)
-
-	return nil
+func (r *growingCycleRepository) GetByFarm(ctx context.Context, farmID vo.ID) ([]*gc.GrowingCycle, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
-var _ repo.GrowingCycleRepository = (*GrowingCycleRepository)(nil)
+func (r *growingCycleRepository) GetByProductionUnit(ctx context.Context, unitID vo.ID) ([]*gc.GrowingCycle, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *growingCycleRepository) Exists(ctx context.Context, id vo.ID) (bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *growingCycleRepository) GetActiveByUnit(unitID vo.ID) ([]*gc.GrowingCycle, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func NewGrowingCycleRepository() repo.GrowingCycleRepository {
+	return &growingCycleRepository{
+		items: make(map[vo.ID]*gc.GrowingCycle),
+	}
+}
+
+var _ repo.GrowingCycleRepository = (*growingCycleRepository)(nil)

@@ -26,6 +26,7 @@ type GrowingCycle struct {
 	Metadata          vo.Metadata
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
+	ArchivedAt        *time.Time
 }
 
 func New(farmID vo.ID, cropID vo.ID, unitID vo.ID, method GrowingMethod) *GrowingCycle {
