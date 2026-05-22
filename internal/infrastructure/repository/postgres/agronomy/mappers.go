@@ -5,6 +5,7 @@ import (
 	protocol "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop_protocol"
 	stage "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop_stage"
 	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/disease"
+	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/stress"
 	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/variety"
 )
 
@@ -98,6 +99,27 @@ func scanDisease(root *disease.Disease) []any {
 		&root.PathogenType,
 
 		&root.Hosts,
+		&root.Symptoms,
+
+		&root.Description,
+
+		&root.Metadata,
+
+		&root.CreatedAt,
+		&root.UpdatedAt,
+		&root.ArchivedAt,
+	}
+}
+
+func scanStress(root *stress.Stress) []any {
+	return []any{
+		&root.ID,
+
+		&root.Name,
+
+		&root.Type,
+
+		&root.Triggers,
 		&root.Symptoms,
 
 		&root.Description,

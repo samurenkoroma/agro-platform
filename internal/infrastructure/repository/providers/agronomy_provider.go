@@ -88,6 +88,13 @@ func (p *agronomyProvider) Diseases() domain.DiseaseRepository {
 }
 
 func (p *agronomyProvider) StressProfiles() domain.StressRepository {
-	//TODO implement me
-	panic("implement me")
+	if p.stressProfiles != nil {
+		return p.stressProfiles
+	}
+	if p.inMemory {
+		p.stressProfiles = inmemory.NewStressRepository()
+	} else {
+		p.stressProfiles = postgres.NewStressRepository(p.db)
+	}
+	return p.stressProfiles
 }
