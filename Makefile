@@ -15,8 +15,6 @@ down:
 tidy:
 	go mod tidy
 
-swag:
-	swag init -g internal/interfaces/httpapi/router.go
 
 DB_DSN ?= postgres://tiun:tiun@lab.note:5432/tiun?sslmode=disable
 
