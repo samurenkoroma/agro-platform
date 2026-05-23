@@ -2,6 +2,7 @@ package production
 
 import (
 	gc "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/growing_cycle"
+	harvest "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/harvest_batch"
 	"github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/plant"
 )
 
@@ -54,5 +55,30 @@ func scanPlant(root *plant.Plant) []any {
 
 		&root.CreatedAt,
 		&root.UpdatedAt,
+	}
+}
+
+func scanHarvestBatch(root *harvest.HarvestBatch) []any {
+	return []any{
+		&root.ID,
+
+		&root.GrowingCycleID,
+		&root.ProductionUnitID,
+
+		&root.Quantity,
+
+		&root.HarvestedArea,
+
+		&root.Grade,
+
+		&root.Marketable,
+
+		&root.Notes,
+
+		&root.HarvestedAt,
+
+		&root.Metadata,
+
+		&root.CreatedAt,
 	}
 }
