@@ -19,6 +19,7 @@ type productionProvider struct {
 	db       uow.DB
 	inMemory bool
 	cycles   domain.GrowingCycleRepository
+	plants   domain.PlantRepository
 }
 
 func (p *productionProvider) GrowingCycles() domain.GrowingCycleRepository {
@@ -34,8 +35,15 @@ func (p *productionProvider) GrowingCycles() domain.GrowingCycleRepository {
 }
 
 func (p *productionProvider) Plants() domain.PlantRepository {
-	//TODO implement me
-	panic("implement me")
+	if p.plants != nil {
+		return p.plants
+	}
+	if p.inMemory {
+		p.plants = inmemory.NewPlantRepository()
+	} else {
+		p.plants = postgres.NewPlantRepository(p.db)
+	}
+	return p.plants
 }
 
 func (p *productionProvider) Slots() domain.SlotRepository {
