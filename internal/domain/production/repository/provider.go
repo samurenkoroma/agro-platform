@@ -5,6 +5,6 @@ type ProductionProvider interface {
 	Plants() PlantRepository
 	Slots() SlotRepository
 	Substrates() SubstrateRepository
-	Harvests() HarvestRepository
-	Yields() YieldRepository
+	Harvests() HarvestBatchRepository
+	Yields() YieldBatchRepository
 }
