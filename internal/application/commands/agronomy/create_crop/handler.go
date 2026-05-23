@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
-	"github.com/samurenkoroma/agro-platform/internal/application/provider"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop"
 	agronomy "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/repository"
@@ -30,7 +29,7 @@ func (h *Handler) Handle(ctx context.Context, payload any) (any, error) {
 
 	cmd := payload.(*Command)
 
-	return h.uow.Execute(ctx, provider.Deps(providers.Agronomy, false), func(provider repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewAgronomyProvider, func(provider repository.RepositoryProvider) (any, error) {
 		agronomyProvider, ok := provider.(agronomy.AgronomyProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType

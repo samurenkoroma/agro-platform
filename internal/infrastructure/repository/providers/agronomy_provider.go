@@ -5,14 +5,15 @@ import (
 	domain "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/repository"
 	inmemory "github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/inmemory/agronomy"
 	postgres "github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/postgres/agronomy"
+	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
 func (p *agronomyProvider) ProviderName() string {
 	return "agronomy"
 }
 
-func NewAgronomyProvider(db uow.DB, inMemory bool) domain.AgronomyProvider {
-	return &agronomyProvider{db: db, inMemory: inMemory}
+func NewAgronomyProvider(db uow.DB) repository.RepositoryProvider {
+	return &agronomyProvider{db: db, inMemory: false}
 }
 
 type agronomyProvider struct {

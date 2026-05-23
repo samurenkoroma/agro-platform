@@ -5,7 +5,6 @@ import (
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
-	"github.com/samurenkoroma/agro-platform/internal/application/provider"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 	pu "github.com/samurenkoroma/agro-platform/internal/domain/spatial/aggregate/production_unit"
@@ -35,7 +34,7 @@ func (h *CreateProductionUnitHandler) Handle(ctx context.Context, payload any) (
 		return nil, command.ErrInvalidCommandType
 	}
 
-	return h.uow.Execute(ctx, provider.Deps(providers.Spatial, false), func(provider repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewSpatialProvider, func(provider repository.RepositoryProvider) (any, error) {
 		spatialProvider, ok := provider.(spatial.SpatialProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType

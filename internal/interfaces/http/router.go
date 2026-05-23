@@ -1,10 +1,14 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/samurenkoroma/agro-platform/internal/application/commands"
+	"github.com/samurenkoroma/agro-platform/internal/application/commands/account/auth"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
+	"github.com/samurenkoroma/agro-platform/internal/infrastructure/jwt"
 	"github.com/samurenkoroma/agro-platform/internal/interfaces/http/response"
 )
 
@@ -12,8 +16,8 @@ import (
 type RouterConfig struct {
 	CommandRouter commands.Router
 	QueryRouter   queries.Router
-	//UowFactory    tx.Factory
-	//JWTService    *jwt.Service
+	Uow           uow.UnitOfWork
+	JWTService    *jwt.Service
 }
 
 // NewRouter создает новый HTTP роутер
@@ -21,17 +25,17 @@ func NewRouter(cfg RouterConfig) http.Handler {
 	mux := http.NewServeMux()
 
 	// ========== AUTH ЭНДПОИНТЫ (без CQRS) ==========
-	//authHandler := auth.NewAuthHandler(cfg.UowFactory, cfg.JWTService)
+	authHandler := auth.NewAuthHandler(cfg.Uow, cfg.JWTService)
 
-	//mux.HandleFunc("POST /auth/register", authHandler.Register)
-	//mux.HandleFunc("POST /auth/login", authHandler.Login)
+	mux.HandleFunc("POST /auth/register", authHandler.Register)
+	mux.HandleFunc("POST /auth/login", authHandler.Login)
 	//mux.HandleFunc("GET /auth/me", authHandler.Me)
 
-	//authMiddleware := NewAuthMiddleware(cfg.JWTService)
-	//// Защищенные эндпоинты (требуют аутентификации)
-	//mux.Handle("POST /auth/logout", authMiddleware.Authenticate(
-	//	http.HandlerFunc(authHandler.Logout),
-	//))
+	authMiddleware := NewAuthMiddleware(cfg.JWTService)
+	// Защищенные эндпоинты (требуют аутентификации)
+	mux.Handle("POST /auth/logout", authMiddleware.Authenticate(
+		http.HandlerFunc(authHandler.Logout),
+	))
 	//mux.Handle("GET /auth/me", authMiddleware.Authenticate(
 	//	http.HandlerFunc(authHandler.Me),
 	//))
@@ -44,10 +48,10 @@ func NewRouter(cfg RouterConfig) http.Handler {
 	protectedMux.Handle("/queries/", QueryEndpoint(cfg.QueryRouter))
 
 	// Применяем middleware для защиты
-	//protectedHandler := authMiddleware.Authenticate(protectedMux)
+	protectedHandler := authMiddleware.Authenticate(protectedMux)
 
 	// Монтируем защищенные эндпоинты
-	mux.Handle("/api/", http.StripPrefix("/api", protectedMux))
+	mux.Handle("/api/", http.StripPrefix("/api", protectedHandler))
 
 	// Опционально: эндпоинт для health check (без аутентификации)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +92,7 @@ func recoveryMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
-				response.WriteInternalError(w, "internal server error")
+				response.WriteInternalError(w, fmt.Sprintf("internal server error %s", err))
 			}
 		}()
 		next.ServeHTTP(w, r)

@@ -5,6 +5,7 @@ import (
 	domain "github.com/samurenkoroma/agro-platform/internal/domain/spatial/repository"
 	inmemory "github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/inmemory/spatial"
 	postgres "github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/postgres/spatial/production_unit"
+	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
 type spatialProvider struct {
@@ -17,8 +18,8 @@ func (p *spatialProvider) ProviderName() string {
 	return "spatial"
 }
 
-func NewSpatialProvider(db uow.DB, inMemory bool) domain.SpatialProvider {
-	return &spatialProvider{db: db, inMemory: inMemory}
+func NewSpatialProvider(db uow.DB) repository.RepositoryProvider {
+	return &spatialProvider{db: db, inMemory: false}
 }
 
 func (p *spatialProvider) Units() domain.ProductionUnitRepository {
