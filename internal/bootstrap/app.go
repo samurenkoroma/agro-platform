@@ -7,6 +7,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands"
+	account2 "github.com/samurenkoroma/agro-platform/internal/application/commands/account"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/account/organization"
 	createvariety "github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/create_variety"
 	createcrop "github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/crop"
@@ -40,6 +41,18 @@ func Build(ctx context.Context, pool *pgxpool.Pool, conf *configs.Config) (*App,
 	commandRouter := commands.NewRouter()
 	queryRouter := queries.NewRouter()
 
+	cmdRoutes := []*commands.CommandCNF{}
+	modules := []commands.CommandModule{
+		account2.Make(uow, jwtService)}
+
+	for _, module := range modules {
+		cmdRoutes = append(cmdRoutes, module.Routes...)
+	}
+
+	for _, m := range cmdRoutes {
+		commandRouter.Register(m.RouteName, m.Handler, m.Decoder)
+	}
+
 	commandRouter.Register("spatial.create_production_unit", createproductionunit.NewCreateProductionUnitHandler(uow).Create, utils.DecodeJSON[createproductionunit.CreateCommand])
 
 	commandRouter.Register("account.create_organization", organization.NewOrganizationHandler(uow, jwtService).Create, utils.DecodeJSON[organization.CreateOrganizationCmd])
@@ -47,7 +60,7 @@ func Build(ctx context.Context, pool *pgxpool.Pool, conf *configs.Config) (*App,
 	queryRouter.Register("Me", account.NewUserHandler(uow, jwtService), utils.DecodeJSON[account.MeQuery])
 
 	commandRouter.Register("agronomy.create_crop", createcrop.NewCropHandler(uow).Create, utils.DecodeJSON[createcrop.CreateCropCommand])
-	commandRouter.Register("agronomy.create_variety", createvariety.NewCreateVarietyHandler(uow).Handle, utils.DecodeJSON[createvariety.CreateVarietyCommand])
+	commandRouter.Register("agronomy.create_variety", createvariety.NewCreateVarietyHandler(uow).Create, utils.DecodeJSON[createvariety.CreateVarietyCommand])
 
 	cropProjection := crop2.New(pool)
 	queryRouter.Register("agronomy.get_crop", getcrop.New(cropProjection), utils.DecodeJSON[getcrop.Query])
