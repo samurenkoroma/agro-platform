@@ -8,13 +8,14 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/account/organization"
-	createcrop "github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/create_crop"
 	createvariety "github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/create_variety"
+	createcrop "github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/crop"
 	createproductionunit "github.com/samurenkoroma/agro-platform/internal/application/commands/spatial"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries/account"
 	getcrop "github.com/samurenkoroma/agro-platform/internal/application/queries/agronomy/crop/get_crop"
 	listcrops "github.com/samurenkoroma/agro-platform/internal/application/queries/agronomy/crop/list_crops"
+	catalog "github.com/samurenkoroma/agro-platform/internal/application/queries/agronomy/variety"
 	unitOfWork "github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/jwt"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/messaging/inmemory"
@@ -45,12 +46,13 @@ func Build(ctx context.Context, pool *pgxpool.Pool, conf *configs.Config) (*App,
 	commandRouter.Register("account.switch_organization", organization.NewOrganizationHandler(uow, jwtService).Switch, utils.DecodeJSON[organization.SwitchOrganizationCmd])
 	queryRouter.Register("Me", account.NewUserHandler(uow, jwtService), utils.DecodeJSON[account.MeQuery])
 
-	commandRouter.Register("agronomy.create_crop", createcrop.NewCreateCropHandler(uow).Handle, utils.DecodeJSON[createcrop.Command])
-	commandRouter.Register("agronomy.create_variety", createvariety.NewCreateVarietyHandler(uow).Handle, utils.DecodeJSON[createvariety.Command])
+	commandRouter.Register("agronomy.create_crop", createcrop.NewCropHandler(uow).Create, utils.DecodeJSON[createcrop.CreateCropCommand])
+	commandRouter.Register("agronomy.create_variety", createvariety.NewCreateVarietyHandler(uow).Handle, utils.DecodeJSON[createvariety.CreateVarietyCommand])
 
 	cropProjection := crop2.New(pool)
 	queryRouter.Register("agronomy.get_crop", getcrop.New(cropProjection), utils.DecodeJSON[getcrop.Query])
 	queryRouter.Register("agronomy.list_crops", listcrops.New(cropProjection), utils.DecodeJSON[listcrops.Query])
+	queryRouter.Register("agronomy.list_varieties", catalog.NewVarietyHandler(uow), utils.DecodeJSON[catalog.VarietiesQuery])
 
 	//bus.Register("farm.field.created", growingEventHandlers.OnFarmObjectCreated)
 	//bus.Register(physicalobject.FarmObjectSchemaUpdatedEvent, growingEventHandlers.OnFarmObjectSchemaUpdated)

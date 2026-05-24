@@ -27,7 +27,7 @@ func (v varietyRepository) GetByCrop(ctx context.Context, cropID vo.ID) ([]*vari
 	panic("implement me")
 }
 
-func (v varietyRepository) Exists(ctx context.Context, id vo.ID) (bool, error) {
+func (v varietyRepository) Exists(ctx context.Context, name string, cropId vo.ID) (bool, error) {
 	//TODO implement me
 	panic("implement me")
 }

@@ -19,12 +19,12 @@ func NewVarietyRepository(db uow.DB) repository.VarietyRepository {
 	return &varietyRepository{db: db}
 }
 
-func (r *varietyRepository) Exists(ctx context.Context, id vo.ID) (bool, error) {
-	query := `SELECT EXISTS(SELECT 1 FROM varieties WHERE id=$1)`
+func (r *varietyRepository) Exists(ctx context.Context, name string, cropId vo.ID) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM varieties WHERE name=$1 AND crop_id=$2)`
 
 	var exists bool
 
-	err := r.db.QueryRow(ctx, query, id).Scan(&exists)
+	err := r.db.QueryRow(ctx, query, name, cropId).Scan(&exists)
 	if err != nil {
 		return false, err
 	}
@@ -52,7 +52,7 @@ func (r *varietyRepository) GetByID(ctx context.Context, id vo.ID) (*entity.Vari
 }
 
 func (r *varietyRepository) GetByCrop(ctx context.Context, cropID vo.ID) ([]*entity.Variety, error) {
-	query := `SELECT id,crop_id,name,breeder,maturity,growth,spacing,tolerance,metadata,created_at,updated_at
+	query := `SELECT id,crop_id,name,breeder, maturity,growth,spacing, harvest, yield_profile, tolerance,metadata,created_at,updated_at, archived_at
 				FROM varieties
 				WHERE crop_id=$1
 				ORDER BY name`
@@ -79,8 +79,8 @@ func (r *varietyRepository) GetByCrop(ctx context.Context, cropID vo.ID) ([]*ent
 }
 
 func (r *varietyRepository) Save(ctx context.Context, root *entity.Variety) error {
-	query := `INSERT INTO varieties(id,crop_id,name,breeder,maturity,growth,spacing,tolerance,metadata,created_at,updated_at)
-				VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+	query := `INSERT INTO varieties(id,crop_id,name,breeder,maturity,growth,spacing,harvest,yield_profile,tolerance,metadata,created_at,updated_at)
+				VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, $12,$13)
 				ON CONFLICT(id)
 				DO UPDATE SET
 					name=excluded.name,
@@ -90,6 +90,8 @@ func (r *varietyRepository) Save(ctx context.Context, root *entity.Variety) erro
 					spacing=excluded.spacing,
 					tolerance=excluded.tolerance,
 					metadata=excluded.metadata,
+					harvest=excluded.harvest,
+					yield_profile=excluded.yield_profile,
 					updated_at=excluded.updated_at`
 
 	_, err := r.db.Exec(
@@ -102,6 +104,8 @@ func (r *varietyRepository) Save(ctx context.Context, root *entity.Variety) erro
 		root.Maturity,
 		root.Growth,
 		root.Spacing,
+		root.Harvest,
+		root.Yield,
 		root.Tolerance,
 		root.Metadata,
 		root.CreatedAt,

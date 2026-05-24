@@ -22,5 +22,6 @@ CREATE TABLE varieties
 
     archived_at   TIMESTAMPTZ NULL,
 
-    CONSTRAINT fk_variety_crop FOREIGN KEY (crop_id) REFERENCES crops (id)
+    CONSTRAINT fk_variety_crop FOREIGN KEY (crop_id) REFERENCES crops (id),
+    UNIQUE (name, crop_id)
 );

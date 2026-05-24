@@ -20,7 +20,7 @@ func (c cropRepository) GetByID(ctx context.Context, id vo.ID) (*crop.Crop, erro
 	//TODO implement me
 	panic("implement me")
 }
-func (c cropRepository) Exists(ctx context.Context, id vo.ID) (bool, error) {
+func (c cropRepository) Exists(ctx context.Context, key string) (bool, error) {
 	//TODO implement me
 	panic("implement me")
 }

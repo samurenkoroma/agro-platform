@@ -5,7 +5,6 @@ import (
 
 	"github.com/samurenkoroma/agro-platform/internal/application/queries/agronomy/crop"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
-	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 
 type projection struct {
@@ -18,13 +17,13 @@ func New(db uow.DB) crop.Projection {
 	}
 }
 
-func (p projection) Get(ctx context.Context, id vo.ID) (*crop.Detail, error) {
+func (p projection) Get(ctx context.Context, key string) (*crop.Detail, error) {
 
-	query := `SELECT id,name,category, family,scientific_name, imageurl FROM crops WHERE id=$1`
+	query := `SELECT id,name,category, family,scientific_name, imageurl FROM crops WHERE key=$1`
 
 	var result crop.Detail
 
-	err := p.db.QueryRow(ctx, query, id).Scan(
+	err := p.db.QueryRow(ctx, query, key).Scan(
 		&result.ID,
 		&result.Name,
 		&result.Category,
@@ -42,7 +41,7 @@ func (p projection) Get(ctx context.Context, id vo.ID) (*crop.Detail, error) {
 
 func (p projection) List(ctx context.Context, filter crop.ListFilter) ([]crop.ListItem, error) {
 
-	query := `SELECT id,name,category,family,imageurl FROM crops ORDER BY name`
+	query := `SELECT id,name,category,family,key, imageurl FROM crops ORDER BY name`
 	rows, err := p.db.Query(ctx, query)
 
 	if err != nil {
@@ -57,7 +56,7 @@ func (p projection) List(ctx context.Context, filter crop.ListFilter) ([]crop.Li
 
 		var item crop.ListItem
 
-		err = rows.Scan(&item.ID, &item.Name, &item.Category, &item.Family, &item.ImageUrl)
+		err = rows.Scan(&item.ID, &item.Name, &item.Category, &item.Family, &item.Key, &item.ImageUrl)
 
 		if err != nil {
 			return nil, err

@@ -24,7 +24,7 @@ func NewVarietyHandler(uow uow.UnitOfWork) queries.Handler {
 }
 
 type VarietiesQuery struct {
-	CropKey string `json:"cropKey,omitempty"` // tomato, eggplant, cucumber
+	CropKey string `json:"cropId,omitempty"` // tomato, eggplant, cucumber
 	Id      string `form:"id,omitempty"`
 }
 

@@ -67,12 +67,12 @@ func (r *cropRepository) GetAll(ctx context.Context) ([]*entity.Crop, error) {
 	return result, nil
 }
 
-func (r *cropRepository) Exists(ctx context.Context, id vo.ID) (bool, error) {
-	query := `SELECT EXISTS(SELECT 1 FROM crops WHERE id=$1)`
+func (r *cropRepository) Exists(ctx context.Context, key string) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM crops WHERE scientific_name=$1)`
 
 	var exists bool
 
-	err := r.db.QueryRow(ctx, query, id).Scan(&exists)
+	err := r.db.QueryRow(ctx, query, key).Scan(&exists)
 
 	if err != nil {
 		return false, err
@@ -82,8 +82,8 @@ func (r *cropRepository) Exists(ctx context.Context, id vo.ID) (bool, error) {
 }
 
 func (r *cropRepository) Save(ctx context.Context, root *entity.Crop) error {
-	query := `INSERT INTO crops(id,name,scientific_name,category,metadata,created_at,updated_at)
-				VALUES($1,$2,$3,$4,$5,$6,$7)
+	query := `INSERT INTO crops(id,name,scientific_name,category,family, key, metadata, created_at,updated_at)
+				VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)
 				ON CONFLICT(id)
 				DO UPDATE SET
 			name=excluded.name,
@@ -93,7 +93,7 @@ func (r *cropRepository) Save(ctx context.Context, root *entity.Crop) error {
 			updated_at=excluded.updated_at`
 
 	_, err := r.db.Exec(ctx, query,
-		root.ID, root.Name, root.ScientificName, root.Category, root.Metadata, root.CreatedAt, root.UpdatedAt)
+		root.ID, root.Name, root.ScientificName, root.Category, root.Family, root.Key, root.Metadata, root.CreatedAt, root.UpdatedAt)
 
 	return err
 }
