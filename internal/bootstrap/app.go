@@ -40,7 +40,9 @@ func Build(ctx context.Context, pool *pgxpool.Pool, conf *configs.Config) (*App,
 	commandRouter.Register("agronomy.create_crop", createcrop.NewCreateCropHandler(uow), utils.DecodeJSON[createcrop.Command])
 	commandRouter.Register("agronomy.create_variety", createvariety.NewCreateVarietyHandler(uow), utils.DecodeJSON[createvariety.Command])
 	queryRouter.Register("Me", account.NewUserHandler(uow, jwtService), utils.DecodeJSON[account.MeQuery])
+
 	queryRouter.Register("agronomy.get_crops", crop.NewCropHandler(uow), utils.DecodeJSON[crop.CropsQuery])
+
 	//bus.Register("farm.field.created", growingEventHandlers.OnFarmObjectCreated)
 	//bus.Register(physicalobject.FarmObjectSchemaUpdatedEvent, growingEventHandlers.OnFarmObjectSchemaUpdated)
 	//bus.Register("crop.plan.published", growingEventHandlers.OnCropPlanPublished)

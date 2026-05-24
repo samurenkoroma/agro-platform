@@ -21,7 +21,7 @@ type GetCurrentFarmQuery struct {
 func (h *QueryHandler) Ask(ctx context.Context, payload any) (any, error) {
 	q, ok := payload.(*GetCurrentFarmQuery)
 	if !ok {
-		return nil, queries.ErrInvalidPayloadType
+		return nil, queries.ErrInvalidQueryType
 	}
 
 	return fmt.Sprintf("hello %s", q.Id), nil

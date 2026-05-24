@@ -10,6 +10,16 @@ Content-Type: application/json
 }
 
 ###
+
+POST http://localhost:8080/api/queries/
+Content-Type: application/json
+
+{
+  "query": "agronomy.get_crop",
+  "data": {}
+}
+
+###
 POST http://localhost:8080/api/commands/
 Content-Type: application/json
 
