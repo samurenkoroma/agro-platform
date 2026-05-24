@@ -1,15 +1,15 @@
 package organization
 
 import (
-	"samurenkoroma/services/internal/core/domain/repository"
-	"samurenkoroma/services/internal/modules/auth/infrastructure/jwt"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
+	"github.com/samurenkoroma/agro-platform/internal/infrastructure/jwt"
 )
 
 type OrganizationHandler struct {
-	uowFactory repository.Factory
+	uow        uow.UnitOfWork
 	jwtService *jwt.Service
 }
 
-func NewOrganizationHandler(uowFactory repository.Factory, jwtService *jwt.Service) *OrganizationHandler {
-	return &OrganizationHandler{uowFactory: uowFactory, jwtService: jwtService}
+func NewOrganizationHandler(uow uow.UnitOfWork, jwtService *jwt.Service) *OrganizationHandler {
+	return &OrganizationHandler{uow: uow, jwtService: jwtService}
 }

@@ -3,11 +3,14 @@ package organization
 import (
 	"context"
 	"fmt"
-	"samurenkoroma/services/internal/application/command"
-	"samurenkoroma/services/internal/core/domain/repository"
-	"samurenkoroma/services/internal/modules/auth/application/dto"
-	"samurenkoroma/services/internal/modules/auth/domain"
-	"samurenkoroma/services/internal/modules/auth/infrastructure/persistence/postgres"
+
+	"github.com/samurenkoroma/agro-platform/internal/application/commands"
+	"github.com/samurenkoroma/agro-platform/internal/application/queries/account/dto"
+	"github.com/samurenkoroma/agro-platform/internal/domain/account/aggregate/organization"
+	"github.com/samurenkoroma/agro-platform/internal/domain/account/aggregate/user"
+	domain "github.com/samurenkoroma/agro-platform/internal/domain/account/repository"
+	"github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/providers"
+	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
 type CreateOrganizationCmd struct {
@@ -17,22 +20,18 @@ type CreateOrganizationCmd struct {
 func (h *OrganizationHandler) Create(ctx context.Context, cmd any) (any, error) {
 	c, ok := cmd.(*CreateOrganizationCmd)
 	if !ok {
-		return nil, command.ErrInvalidCommandType
-	}
-
-	uow, err := h.uowFactory.Begin(ctx)
-	if err != nil {
-		return nil, err
+		return nil, commands.ErrInvalidCommandType
 	}
 
 	// Получаем текущего пользователя из контекста
 	userID, ok := ctx.Value("user_id").(string)
 	if !ok {
-		return nil, domain.ErrUnauthorized
+		return nil, user.ErrUnauthorized
 	}
-	return uow.Execute(ctx, postgres.NewPostgresAuthProvider, func(provider repository.RepositoryProvider) (any, error) {
 
-		authProvider, ok := provider.(*postgres.PostgresAuthProvider)
+	return h.uow.Execute(ctx, providers.NewAccountProvider, func(provider repository.RepositoryProvider) (any, error) {
+
+		authProvider, ok := provider.(domain.AccountProvider)
 		if !ok {
 			return nil, fmt.Errorf("expected FarmProvider, got %T", provider)
 		}
@@ -47,7 +46,7 @@ func (h *OrganizationHandler) Create(ctx context.Context, cmd any) (any, error) 
 			return nil, err
 		}
 
-		newOrg, err := domain.NewSimpleOrganization(c.Name)
+		newOrg, err := organization.NewSimpleOrganization(c.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -56,7 +55,7 @@ func (h *OrganizationHandler) Create(ctx context.Context, cmd any) (any, error) 
 			return nil, err
 		}
 
-		membership, err := domain.NewMembership(userID, newOrg.ID, domain.OrgRoleOwner)
+		membership, err := organization.NewMembership(userID, newOrg.ID, organization.OrgRoleOwner)
 		if err != nil {
 			return nil, err
 		}
@@ -65,6 +64,7 @@ func (h *OrganizationHandler) Create(ctx context.Context, cmd any) (any, error) 
 			return nil, err
 		}
 
+		h.uow.RegisterAggregate(newOrg)
 		return dto.UserOrganizationInfo{
 			OrganizationID:   newOrg.ID,
 			OrganizationName: newOrg.Name,

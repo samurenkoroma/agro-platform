@@ -6,10 +6,12 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/samurenkoroma/agro-platform/internal/domain/account/aggregate/user"
+	"github.com/samurenkoroma/agro-platform/internal/domain/shared/aggregate"
 )
 
 // Organization организация (хозяйство, ферма, предприятие)
 type Organization struct {
+	aggregate.BaseAggregate
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	TaxID     string    `json:"tax_id"` // ИНН

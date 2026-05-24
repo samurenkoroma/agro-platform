@@ -4,12 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"samurenkoroma/services/internal/application/command"
-	"samurenkoroma/services/internal/core/domain/repository"
-	"samurenkoroma/services/internal/modules/auth/application/dto"
-	"samurenkoroma/services/internal/modules/auth/domain"
-	"samurenkoroma/services/internal/modules/auth/infrastructure/jwt"
-	"samurenkoroma/services/internal/modules/auth/infrastructure/persistence/postgres"
+
+	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
+	"github.com/samurenkoroma/agro-platform/internal/application/queries/account/dto"
+	"github.com/samurenkoroma/agro-platform/internal/domain/account/aggregate/user"
+	domain "github.com/samurenkoroma/agro-platform/internal/domain/account/repository"
+	"github.com/samurenkoroma/agro-platform/internal/infrastructure/jwt"
+	"github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/providers"
+	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
 type SwitchOrganizationCmd struct {
@@ -27,19 +29,15 @@ func (h *OrganizationHandler) Switch(ctx context.Context, cmd any) (any, error) 
 		return nil, command.ErrInvalidCommandType
 	}
 
-	uow, err := h.uowFactory.Begin(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	// Получаем текущего пользователя из контекста
 	userID, ok := ctx.Value("user_id").(string)
 	if !ok {
-		return nil, domain.ErrUnauthorized
+		return nil, user.ErrUnauthorized
 	}
-	return uow.Execute(ctx, postgres.NewPostgresAuthProvider, func(provider repository.RepositoryProvider) (any, error) {
 
-		authProvider, ok := provider.(*postgres.PostgresAuthProvider)
+	return h.uow.Execute(ctx, providers.NewAccountProvider, func(provider repository.RepositoryProvider) (any, error) {
+
+		authProvider, ok := provider.(domain.AccountProvider)
 		if !ok {
 			return nil, fmt.Errorf("expected FarmProvider, got %T", provider)
 		}
@@ -75,7 +73,7 @@ func (h *OrganizationHandler) Switch(ctx context.Context, cmd any) (any, error) 
 		if err := userRepo.Update(ctx, user); err != nil {
 			return nil, err
 		}
-		uow.RegisterAggregate(user)
+		h.uow.RegisterAggregate(user)
 		// Генерируем новые токены с новой организацией
 		tokenPair, err := h.jwtService.GenerateTokenPair(
 			user.ID,

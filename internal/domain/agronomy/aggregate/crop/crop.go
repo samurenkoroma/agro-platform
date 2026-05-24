@@ -12,6 +12,7 @@ type Crop struct {
 	ID                vo.ID
 	Name              string
 	ScientificName    *string
+	Family            string
 	Category          CropCategory
 	DefaultProtocolID *vo.ID
 	Metadata          vo.Metadata

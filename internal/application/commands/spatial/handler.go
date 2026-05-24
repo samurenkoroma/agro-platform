@@ -1,4 +1,4 @@
-package createproductionunit
+package spatial
 
 import (
 	"context"
@@ -17,19 +17,19 @@ type CreateProductionUnitHandler struct {
 	uow uow.UnitOfWork
 }
 
-func NewCreateProductionUnitHandler(uow uow.UnitOfWork) command.Handler {
+func NewCreateProductionUnitHandler(uow uow.UnitOfWork) *CreateProductionUnitHandler {
 	return &CreateProductionUnitHandler{uow: uow}
 }
 
-type Command struct {
+type CreateCommand struct {
 	FarmID   vo.ID                 `json:"farmId" validate:"required"`
 	Name     string                `json:"name" validate:"required"`
 	Type     pu.ProductionUnitType `json:"type" validate:"required"`
 	ParentID *vo.ID                `json:"parentId"`
 }
 
-func (h *CreateProductionUnitHandler) Handle(ctx context.Context, payload any) (any, error) {
-	cmd, ok := payload.(*Command)
+func (h *CreateProductionUnitHandler) Create(ctx context.Context, payload any) (any, error) {
+	cmd, ok := payload.(*CreateCommand)
 	if !ok {
 		return nil, command.ErrInvalidCommandType
 	}
