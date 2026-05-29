@@ -5,21 +5,22 @@ import (
 	"fmt"
 
 	"github.com/samurenkoroma/agro-platform/internal/application/queries"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 )
 
 type QueryHandler struct {
 }
 
-func NewProductionUnitHandler() queries.Handler {
+func New(uow.DB) queries.Handler {
 	return &QueryHandler{}
 }
 
-type GetCurrentFarmQuery struct {
+type Query struct {
 	Id string `json:"id,omitempty"`
 }
 
 func (h *QueryHandler) Ask(ctx context.Context, payload any) (any, error) {
-	q, ok := payload.(*GetCurrentFarmQuery)
+	q, ok := payload.(*Query)
 	if !ok {
 		return nil, queries.ErrInvalidQueryType
 	}

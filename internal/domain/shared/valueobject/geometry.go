@@ -1,6 +1,4 @@
-package geometry
-
-import vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
+package valueobject
 
 type GeometryType string
 
@@ -13,9 +11,9 @@ const (
 type Geometry struct {
 	Type GeometryType
 
-	Dimension *vo.Dimension
+	Dimension *Dimension
 
-	Position *vo.Coordinates
+	Position *Coordinates
 
 	Polygon [][]float64
 }

@@ -9,16 +9,32 @@ import (
 
 type Variety struct {
 	ev.BaseAggregate
-	ID         vo.ID
-	CropID     vo.ID
-	Name       string
-	Breeder    *string
-	Maturity   MaturityProfile
-	Growth     GrowthProfile
-	Spacing    PlantSpacing
-	Harvest    HarvestProfile
-	Yield      YieldPotential
-	Tolerance  EnvironmentTolerance
+	ID        vo.ID
+	CropID    vo.ID
+	Name      string
+	Breeder   *string
+	Maturity  MaturityProfile
+	Growth    GrowthProfile
+	Spacing   PlantSpacing
+	Harvest   HarvestProfile
+	Yield     YieldPotential
+	Tolerance EnvironmentTolerance
+
+	BaseTemperature float64 // Tbase (ниже которой рост останавливается)
+	MaxTemperature  float64 // Tmax (выше которой рост не ускоряется)
+
+	// Фенология (GDD требования)
+	PhenophaseGDD []PhenophaseGDD `json:"phenophaseGDD"`
+	// Водные требования
+	WaterRequirement WaterRequirement `json:"water_requirement"`
+	// Световые требования
+	LightRequirement LightRequirement `json:"light_requirement"`
+
+	// Характеристики
+	Characteristics map[string]string `json:"characteristics"`
+	Description     string            `json:"description"`
+	Image           string            `json:"image"`
+
 	Metadata   vo.Metadata
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
@@ -29,12 +45,19 @@ func New(cropID vo.ID, name string) *Variety {
 	now := time.Now()
 
 	root := &Variety{
-		ID:        vo.NewID(),
-		CropID:    cropID,
-		Name:      name,
-		Metadata:  vo.NewMetadata(),
-		CreatedAt: now,
-		UpdatedAt: now,
+		ID:               vo.NewID(),
+		CropID:           cropID,
+		Name:             name,
+		Metadata:         vo.NewMetadata(),
+		Characteristics:  make(map[string]string),
+		PhenophaseGDD:    make([]PhenophaseGDD, 0),
+		WaterRequirement: WaterRequirement{},
+		LightRequirement: LightRequirement{},
+
+		Description: "",
+		Image:       "",
+		CreatedAt:   now,
+		UpdatedAt:   now,
 	}
 
 	root.AddEvent(NewVarietyCreated(root.ID))

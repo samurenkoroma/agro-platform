@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-// Decoder преобразует сырой payload (json, grpc, etc)
+// DecoderFunc преобразует сырой payload (json, grpc, etc)
 
 type router struct {
 	mu       sync.RWMutex
@@ -13,7 +13,7 @@ type router struct {
 }
 
 type registeredQuery struct {
-	decoder Decoder
+	decoder DecoderFunc
 	handler Handler
 }
 
@@ -23,7 +23,7 @@ func NewRouter() Router {
 	}
 }
 
-func (r *router) Register(name string, handler Handler, decoder Decoder) {
+func (r *router) Register(name string, handler Handler, decoder DecoderFunc) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 

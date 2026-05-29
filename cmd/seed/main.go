@@ -98,9 +98,13 @@ func main() {
 		if err := seedVarieties(uow, parseData, *dryRun); err != nil {
 			log.Fatalf("Failed to seed varieties: %v", err)
 		}
+
 	case "crop":
 		if err := seedCropTypes(uow, parseData, *dryRun); err != nil {
 			log.Fatalf("Failed to seed crop types: %v", err)
+		}
+		if err := seedVarieties(uow, parseData, *dryRun); err != nil {
+			log.Fatalf("Failed to seed varieties: %v", err)
 		}
 	}
 
@@ -139,7 +143,7 @@ func seedVarieties(uow uow.UnitOfWork, data seedData, dryRun bool) error {
 		handler := createvariety.NewCreateVarietyHandler(uow)
 
 		// Выполняем команду
-		if _, err := handler.Handle(context.Background(), cmd); err != nil {
+		if _, err := handler.Create(context.Background(), cmd); err != nil {
 			if errors.Is(err, createvariety.ErrVarietyAlreadyExists) {
 				log.Printf("Skipping. Variety '%s' already exists", v.Name)
 				continue

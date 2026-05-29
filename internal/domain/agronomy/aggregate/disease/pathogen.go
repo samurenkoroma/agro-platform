@@ -1,13 +1,15 @@
 package disease
 
-type PathogenType string
+import (
+	"time"
 
-const (
-	Fungal        PathogenType = "FUNGAL"
-	Bacterial     PathogenType = "BACTERIAL"
-	Viral         PathogenType = "VIRAL"
-	Oomycete      PathogenType = "OOMYCETE"
-	Physiological PathogenType = "PHYSIOLOGICAL"
-	Nutritional   PathogenType = "NUTRITIONAL"
-	Unknown       PathogenType = "UNKNOWN"
+	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
+
+type Pathogen struct {
+	ID        vo.ID
+	Name      string
+	Type      string
+	Metadata  vo.Metadata
+	CreatedAt time.Time
+}

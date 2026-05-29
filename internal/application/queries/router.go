@@ -5,9 +5,9 @@ import (
 	"errors"
 )
 
-// Decoder преобразует сырой payload (json, grpc, etc)
+// DecoderFunc преобразует сырой payload (json, grpc, etc)
 // в конкретный query struct
-type Decoder func([]byte) (any, error)
+type DecoderFunc func([]byte) (any, error)
 type Handler interface {
 	Ask(ctx context.Context, payload any) (any, error)
 }
@@ -16,7 +16,7 @@ type Handler interface {
 
 type Router interface {
 	// Register регистрирует query
-	Register(string, Handler, Decoder)
+	Register(string, Handler, DecoderFunc)
 	// Dispatch выполняет query
 	Dispatch(ctx context.Context, name string, payload []byte) (any, error)
 }

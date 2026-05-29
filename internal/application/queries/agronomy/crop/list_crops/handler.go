@@ -5,6 +5,8 @@ import (
 
 	"github.com/samurenkoroma/agro-platform/internal/application/queries"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries/agronomy/crop"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
+	projection "github.com/samurenkoroma/agro-platform/internal/infrastructure/projection/postgres/agronomy/crop"
 )
 
 type handler struct {
@@ -17,10 +19,8 @@ type Query struct {
 	Archived *bool   `json:"archived"`
 }
 
-func New(crops crop.Projection) queries.Handler {
-	return &handler{
-		crops: crops,
-	}
+func New(db uow.DB) queries.Handler {
+	return &handler{crops: projection.New(db)}
 }
 
 func (h *handler) Ask(ctx context.Context, query any) (any, error) {

@@ -1,7 +1,8 @@
-package spatial
+package create_production_unit
 
 import (
 	"context"
+	"errors"
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
@@ -13,27 +14,29 @@ import (
 	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
-type CreateProductionUnitHandler struct {
+type Handler struct {
 	uow uow.UnitOfWork
 }
 
-func NewCreateProductionUnitHandler(uow uow.UnitOfWork) *CreateProductionUnitHandler {
-	return &CreateProductionUnitHandler{uow: uow}
+func New(uow uow.UnitOfWork) *Handler {
+	return &Handler{uow: uow}
 }
 
 type CreateCommand struct {
-	FarmID   vo.ID                 `json:"farmId" validate:"required"`
 	Name     string                `json:"name" validate:"required"`
 	Type     pu.ProductionUnitType `json:"type" validate:"required"`
 	ParentID *vo.ID                `json:"parentId"`
 }
 
-func (h *CreateProductionUnitHandler) Create(ctx context.Context, payload any) (any, error) {
+func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 	cmd, ok := payload.(*CreateCommand)
 	if !ok {
 		return nil, command.ErrInvalidCommandType
 	}
-
+	organization_id, ok := ctx.Value("organization_id").(string)
+	if !ok {
+		return nil, errors.New("organization_id is required")
+	}
 	return h.uow.Execute(ctx, providers.NewSpatialProvider, func(provider repository.RepositoryProvider) (any, error) {
 		spatialProvider, ok := provider.(spatial.SpatialProvider)
 		if !ok {
@@ -41,7 +44,7 @@ func (h *CreateProductionUnitHandler) Create(ctx context.Context, payload any) (
 		}
 
 		unit, err := pu.New(
-			cmd.FarmID,
+			vo.ID(organization_id),
 			cmd.Type,
 			cmd.Name,
 		)

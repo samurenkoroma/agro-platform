@@ -7,9 +7,8 @@ import (
 
 const (
 	EventDiseaseCreated  = "disease.created"
-	EventHostAdded       = "disease.host.added"
-	EventSymptomAdded    = "disease.symptom.added"
-	EventDiseaseArchived = "disease.archived"
+	EventDiseaseObserved = "disease.observed"
+	EventDiseaseResolved = "disease.resolved"
 )
 
 type DiseaseCreated struct {
@@ -22,34 +21,24 @@ func NewDiseaseCreated(id vo.ID) DiseaseCreated {
 	}
 }
 
-type HostAdded struct {
+type DiseaseObserved struct {
 	ev.BaseEvent
-	CropID vo.ID
+	Symptom Symptom
 }
 
-func NewHostAdded(id vo.ID, cropID vo.ID) HostAdded {
-	return HostAdded{
-		BaseEvent: ev.NewBaseEvent(id, EventHostAdded),
-		CropID:    cropID,
+func NewDiseaseObserved(id vo.ID, s Symptom) DiseaseObserved {
+	return DiseaseObserved{
+		BaseEvent: ev.NewBaseEvent(id, EventDiseaseObserved),
+		Symptom:   s,
 	}
 }
 
-type SymptomAdded struct {
+type DiseaseResolved struct {
 	ev.BaseEvent
 }
 
-func NewSymptomAdded(id vo.ID) SymptomAdded {
-	return SymptomAdded{
-		BaseEvent: ev.NewBaseEvent(id, EventSymptomAdded),
-	}
-}
-
-type DiseaseArchived struct {
-	ev.BaseEvent
-}
-
-func NewDiseaseArchived(id vo.ID) DiseaseArchived {
-	return DiseaseArchived{
-		BaseEvent: ev.NewBaseEvent(id, EventDiseaseArchived),
+func NewDiseaseResolved(id vo.ID) DiseaseResolved {
+	return DiseaseResolved{
+		BaseEvent: ev.NewBaseEvent(id, EventDiseaseResolved),
 	}
 }

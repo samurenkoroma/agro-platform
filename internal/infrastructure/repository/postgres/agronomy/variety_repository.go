@@ -79,8 +79,17 @@ func (r *varietyRepository) GetByCrop(ctx context.Context, cropID vo.ID) ([]*ent
 }
 
 func (r *varietyRepository) Save(ctx context.Context, root *entity.Variety) error {
-	query := `INSERT INTO varieties(id,crop_id,name,breeder,maturity,growth,spacing,harvest,yield_profile,tolerance,metadata,created_at,updated_at)
-				VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, $12,$13)
+	query := `INSERT INTO varieties(
+                      id,crop_id,name,breeder,
+                      maturity,growth,spacing,harvest,yield_profile,tolerance,
+                      characteristics,base_temperature,max_temperature,water_requirement,light_requirement,phenophase_gdd,
+                      metadata,created_at,updated_at
+                      )
+				VALUES(
+				       $1,$2,$3,$4,
+				       $5,$6,$7,$8,$9,$10,
+				       $11,$12,$13, $14, $15, $16,
+				       $17, $18, $19)
 				ON CONFLICT(id)
 				DO UPDATE SET
 					name=excluded.name,
@@ -94,22 +103,12 @@ func (r *varietyRepository) Save(ctx context.Context, root *entity.Variety) erro
 					yield_profile=excluded.yield_profile,
 					updated_at=excluded.updated_at`
 
-	_, err := r.db.Exec(
-		ctx,
-		query,
-		root.ID,
-		root.CropID,
-		root.Name,
-		root.Breeder,
-		root.Maturity,
-		root.Growth,
-		root.Spacing,
-		root.Harvest,
-		root.Yield,
-		root.Tolerance,
-		root.Metadata,
-		root.CreatedAt,
-		root.UpdatedAt,
+	_, err := r.db.Exec(ctx, query,
+		root.ID, root.CropID, root.Name, root.Breeder,
+
+		root.Maturity, root.Growth, root.Spacing, root.Harvest, root.Yield, root.Tolerance,
+		root.Characteristics, root.BaseTemperature, root.MaxTemperature, root.WaterRequirement, root.LightRequirement, root.PhenophaseGDD,
+		root.Metadata, root.CreatedAt, root.UpdatedAt,
 	)
 
 	return err

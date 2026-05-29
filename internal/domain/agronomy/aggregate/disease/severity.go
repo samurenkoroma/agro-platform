@@ -3,8 +3,8 @@ package disease
 type Severity string
 
 const (
-	Low      Severity = "LOW"
-	Medium   Severity = "MEDIUM"
-	High     Severity = "HIGH"
-	Critical Severity = "CRITICAL"
+	SeverityMild     Severity = "MILD"
+	SeverityModerate Severity = "MODERATE"
+	SeveritySevere   Severity = "SEVERE"
+	SeverityCritical Severity = "CRITICAL"
 )
