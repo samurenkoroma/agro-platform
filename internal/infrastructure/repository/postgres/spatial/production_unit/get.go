@@ -8,7 +8,7 @@ import (
 )
 
 func (r *productionUnitRepository) GetByID(ctx context.Context, id vo.ID) (*pu.ProductionUnit, error) {
-	query := `SELECT id,farm_id,parent_id,type,name,metadata,created_at,updated_at
+	query := `SELECT id,owner_id,parent_id,type,created_at,updated_at
 				FROM production_units
 				WHERE id=$1`
 
@@ -18,11 +18,9 @@ func (r *productionUnitRepository) GetByID(ctx context.Context, id vo.ID) (*pu.P
 
 	err := row.Scan(
 		&root.ID,
-		&root.FarmID,
+		&root.OwnerID,
 		&root.ParentID,
 		&root.Type,
-		&root.Name,
-		&root.Metadata,
 		&root.CreatedAt,
 		&root.UpdatedAt,
 	)

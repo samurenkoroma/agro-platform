@@ -9,7 +9,7 @@ import (
 )
 
 func (r *productionUnitRepository) GetChildren(ctx context.Context, parentID vo.ID) ([]*pu.ProductionUnit, error) {
-	query := `SELECT id, farm_id, parent_id, type, name, metadata, created_at, updated_at 
+	query := `SELECT id, owner_id, parent_id, type, created_at, updated_at 
 				FROM production_units
 				WHERE parent_id=$1
 				ORDER BY created_at`
@@ -28,11 +28,9 @@ func (r *productionUnitRepository) GetChildren(ctx context.Context, parentID vo.
 
 		err = rows.Scan(
 			&item.ID,
-			&item.FarmID,
+			&item.OwnerID,
 			&item.ParentID,
 			&item.Type,
-			&item.Name,
-			&item.Metadata,
 			&item.CreatedAt,
 			&item.UpdatedAt,
 		)

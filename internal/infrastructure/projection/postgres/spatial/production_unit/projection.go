@@ -6,7 +6,6 @@ import (
 
 	productionunit "github.com/samurenkoroma/agro-platform/internal/application/queries/spatial/production_unit"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
-
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 
@@ -27,11 +26,13 @@ FROM production_units WHERE id = $1 LIMIT 1`
 	return scanDTO(row)
 }
 
-func (p *projection) ListRoots(ctx context.Context) ([]productionunit.DTO, error) {
-	sql := `SELECT id,parent_id,type,status,name,code,description,geometry,position,capacity,climate,properties,metadata
-FROM production_units  WHERE parent_id IS NULL	AND archived_at IS NULL ORDER BY name`
+func (p *projection) ListRoots(ctx context.Context, ownerId vo.ID) ([]productionunit.DTO, error) {
+	sql := `SELECT id,parent_id,type,status,code,geometry,properties
+FROM production_units 
+WHERE owner_id = $1 AND parent_id IS NULL AND archived_at IS NULL 
+ORDER BY code`
 
-	rows, err := p.db.Query(ctx, sql)
+	rows, err := p.db.Query(ctx, sql, ownerId)
 
 	if err != nil {
 		return nil, err
@@ -209,106 +210,29 @@ func scanDTO(
 
 	var geometryRaw []byte
 
-	var positionRaw []byte
-
-	var capacityRaw []byte
-
-	var climateRaw []byte
+	var propertiesRaw []byte
 
 	err := row.Scan(
 		&result.ID,
-
 		&result.ParentID,
-
 		&result.Type,
-
 		&result.Status,
-
-		&result.Name,
-
 		&result.Code,
-
-		&result.Description,
-
 		&geometryRaw,
-
-		&positionRaw,
-
-		&capacityRaw,
-
-		&climateRaw,
-
-		&result.Properties,
-
-		&result.Metadata,
+		&propertiesRaw,
 	)
 
 	if err != nil {
 		return nil, err
 	}
 
-	if geometryRaw != nil {
+	if propertiesRaw != nil {
+		var props map[string]any
 
-		var geometry vo.Geometry
-
-		err = json.Unmarshal(
-			geometryRaw,
-			&geometry,
-		)
-
-		if err != nil {
+		if err := json.Unmarshal(propertiesRaw, &props); err != nil {
 			return nil, err
 		}
-
-		result.Geometry = &geometry
-	}
-
-	if positionRaw != nil {
-
-		var position vo.Position
-
-		err = json.Unmarshal(
-			positionRaw,
-			&position,
-		)
-
-		if err != nil {
-			return nil, err
-		}
-
-		result.Position = &position
-	}
-
-	if capacityRaw != nil {
-
-		var capacity productionunit.CapacityDTO
-
-		err = json.Unmarshal(
-			capacityRaw,
-			&capacity,
-		)
-
-		if err != nil {
-			return nil, err
-		}
-
-		result.Capacity = &capacity
-	}
-
-	if climateRaw != nil {
-
-		var climate productionunit.ClimateDTO
-
-		err = json.Unmarshal(
-			climateRaw,
-			&climate,
-		)
-
-		if err != nil {
-			return nil, err
-		}
-
-		result.Climate = &climate
+		result.Properties = props
 	}
 
 	return &result, nil

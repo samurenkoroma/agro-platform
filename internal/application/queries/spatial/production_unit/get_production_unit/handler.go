@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	"github.com/samurenkoroma/agro-platform/internal/application/queries"
+	productionunit "github.com/samurenkoroma/agro-platform/internal/application/queries/spatial/production_unit"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 )
 
 type QueryHandler struct {
+	units productionunit.Projection
 }
 
 func New(uow.DB) queries.Handler {

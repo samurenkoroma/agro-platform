@@ -86,11 +86,9 @@ ORDER BY created_at
 		err =
 			rows.Scan(
 				&item.ID,
-				&item.FarmID,
+				&item.OwnerID,
 				&item.ParentID,
 				&item.Type,
-				&item.Name,
-				&item.Metadata,
 				&item.CreatedAt,
 				&item.UpdatedAt,
 			)

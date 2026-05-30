@@ -5,5 +5,5 @@ import "errors"
 var (
 	ErrInvalidHierarchy = errors.New("invalid hierarchy")
 	ErrAlreadyHasParent = errors.New("unit already has parent")
-	ErrInvalidName      = errors.New("invalid name")
+	ErrInvalidCode      = errors.New("invalid code")
 )

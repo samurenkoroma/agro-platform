@@ -35,24 +35,18 @@ type TreeNode struct {
 }
 
 type DTO struct {
-	ID          vo.ID          `json:"id"`
-	ParentID    *vo.ID         `json:"parentId"`
-	Type        string         `json:"type"`
-	Status      string         `json:"status"`
-	Name        string         `json:"name"`
-	Code        *string        `json:"code"`
-	Description *string        `json:"description"`
-	Geometry    *vo.Geometry   `json:"geometry"`
-	Position    *vo.Position   `json:"position"`
-	Capacity    *CapacityDTO   `json:"capacity"`
-	Climate     *ClimateDTO    `json:"climate"`
-	Properties  map[string]any `json:"properties"`
-	Metadata    vo.Metadata    `json:"metadata"`
+	ID         vo.ID          `json:"id"`
+	ParentID   *vo.ID         `json:"parentId"`
+	Type       string         `json:"type"`
+	Status     string         `json:"status"`
+	Code       *string        `json:"code"`
+	Geometry   *vo.Geometry   `json:"geometry"`
+	Properties map[string]any `json:"properties"`
 }
 
 type Projection interface {
 	Get(ctx context.Context, id vo.ID) (*DTO, error)
-	ListRoots(ctx context.Context) ([]DTO, error)
+	ListRoots(ctx context.Context, ownerId vo.ID) ([]DTO, error)
 	ListChildren(ctx context.Context, parentID vo.ID) ([]DTO, error)
 	Tree(ctx context.Context, rootID *vo.ID) ([]TreeNode, error)
 }
