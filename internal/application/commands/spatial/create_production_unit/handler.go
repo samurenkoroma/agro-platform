@@ -28,6 +28,7 @@ type CreateCommand struct {
 	Status       pu.ProductionUnitStatus `json:"status" validate:"required"`
 	ParentID     *vo.ID                  `json:"parentId,omitempty"`
 	Capabilities []string                `json:"capabilities,omitempty"`
+	Dimensions   *pu.Dimensions          `json:"dimensions,omitempty"`
 }
 
 func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
@@ -55,7 +56,9 @@ func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 			cmd.Code,
 		)
 		unit.Properties.AddCapabilities(cmd.Capabilities)
-
+		if cmd.Dimensions != nil {
+			unit.AddDimensions(cmd.Dimensions)
+		}
 		if err := spatialProvider.Units().Save(ctx, unit); err != nil {
 			return nil, err
 		}

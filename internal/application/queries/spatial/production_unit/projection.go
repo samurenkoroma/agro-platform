@@ -25,28 +25,19 @@ type ClimateDTO struct {
 	LightPPFDMax   *float64 `json:"lightPpfdMax"`
 }
 
-type TreeNode struct {
-	ID       vo.ID      `json:"id"`
-	ParentID *vo.ID     `json:"parentId"`
-	Type     string     `json:"type"`
-	Name     string     `json:"name"`
-	Status   string     `json:"status"`
-	Children []TreeNode `json:"children"`
-}
-
 type DTO struct {
 	ID         vo.ID          `json:"id"`
 	ParentID   *vo.ID         `json:"parentId"`
 	Type       string         `json:"type"`
 	Status     string         `json:"status"`
-	Code       *string        `json:"code"`
+	Code       string         `json:"code"`
 	Geometry   *vo.Geometry   `json:"geometry"`
 	Properties map[string]any `json:"properties"`
+	Children   []*DTO         `json:"children"`
 }
 
 type Projection interface {
 	Get(ctx context.Context, id vo.ID) (*DTO, error)
-	ListRoots(ctx context.Context, ownerId vo.ID) ([]DTO, error)
-	ListChildren(ctx context.Context, parentID vo.ID) ([]DTO, error)
-	Tree(ctx context.Context, rootID *vo.ID) ([]TreeNode, error)
+	ListRoots(ctx context.Context, ownerId vo.ID) ([]*DTO, error)
+	Tree(ctx context.Context, rootID *vo.ID) (*DTO, error)
 }

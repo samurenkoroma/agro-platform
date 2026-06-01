@@ -3,37 +3,34 @@ package productionunit
 type ProductionUnitType string
 
 const (
-	// open field
+	// ========== ПОЛЕВЫЕ ТИПЫ (Open Field) ==========
 	Field ProductionUnitType = "FIELD"
+	Plot  ProductionUnitType = "PLOT"
 	Block ProductionUnitType = "BLOCK"
 	Bed   ProductionUnitType = "BED"
 	Row   ProductionUnitType = "ROW"
 
-	// greenhouse
+	// ========== ТЕПЛИЧНЫЕ ТИПЫ (Greenhouse) ==========
 	Greenhouse     ProductionUnitType = "GREENHOUSE"
 	GreenhouseZone ProductionUnitType = "GREENHOUSE_ZONE"
 
-	// containers
-	Container ProductionUnitType = "CONTAINER"
-	Pot       ProductionUnitType = "POT"
-	Tray      ProductionUnitType = "TRAY"
-
-	// hydro
-	NFTChannel  ProductionUnitType = "NFT_CHANNEL"
-	DWCTank     ProductionUnitType = "DWC_TANK"
-	AeroChamber ProductionUnitType = "AEROPONIC_CHAMBER"
-
-	// vertical
+	// ========== КОНТЕЙНЕРНЫЕ ТИПЫ (Container-based) ==========
+	Container     ProductionUnitType = "CONTAINER"
 	Rack          ProductionUnitType = "RACK"
 	Shelf         ProductionUnitType = "SHELF"
 	VerticalTower ProductionUnitType = "VERTICAL_TOWER"
 
+	// ========== ПОСАДОЧНЫЕ МЕСТА (Planting Slots) ==========
 	Slot ProductionUnitType = "SLOT"
+	Pot  ProductionUnitType = "POT"
+	Tray ProductionUnitType = "TRAY"
 
+	// ========== ГИДРОПОННЫЕ СИСТЕМЫ (Hydroponic) ==========
+	NFTChannel  ProductionUnitType = "NFT_CHANNEL"
+	DWCTank     ProductionUnitType = "DWC_TANK"
+	AeroChamber ProductionUnitType = "AEROPONIC_CHAMBER"
+
+	// ========== СЛУЖЕБНЫЕ ТИПЫ (Utility) ==========
 	Reservoir ProductionUnitType = "RESERVOIR"
-
-	Storage ProductionUnitType = "STORAGE"
-	Room    ProductionUnitType = "room"
-	Zone    ProductionUnitType = "zone"
-	Tank    ProductionUnitType = "tank"
+	Storage   ProductionUnitType = "STORAGE"
 )

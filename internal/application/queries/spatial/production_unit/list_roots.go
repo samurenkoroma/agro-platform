@@ -18,12 +18,12 @@ func NewListRoots(units Projection) queries.Handler {
 	}
 }
 
-type Query struct {
+type ListRootsQuery struct {
 	Id string `json:"id,omitempty"`
 }
 
 func (h *listRootsHandler) Ask(ctx context.Context, payload any) (any, error) {
-	_, ok := payload.(*Query)
+	_, ok := payload.(*ListRootsQuery)
 	if !ok {
 		return nil, queries.ErrInvalidQueryType
 	}

@@ -37,7 +37,7 @@ func New(
 	status ProductionUnitStatus,
 	code string,
 ) *ProductionUnit {
-
+	now := time.Now()
 	root := &ProductionUnit{
 		ID:         vo.NewID(),
 		ParentID:   ParentId,
@@ -46,11 +46,15 @@ func New(
 		Type:       unitType,
 		Status:     status,
 		Properties: NewProps(code, ""),
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
+		CreatedAt:  now,
+		UpdatedAt:  now,
 	}
 
 	root.AddEvent(NewProductionUnitCreated(root.ID))
 
 	return root
+}
+
+func (obj *ProductionUnit) AddDimensions(dim *Dimensions) {
+	obj.Properties.Dimensions = dim
 }

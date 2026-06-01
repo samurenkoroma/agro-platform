@@ -3,7 +3,6 @@ package modules
 import (
 	createproductionunit "github.com/samurenkoroma/agro-platform/internal/application/commands/spatial/create_production_unit"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries/spatial/production_unit"
-	"github.com/samurenkoroma/agro-platform/internal/application/queries/spatial/production_unit/get_production_unit"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	spatial "github.com/samurenkoroma/agro-platform/internal/infrastructure/projection/postgres/spatial/production_unit"
 	"github.com/samurenkoroma/agro-platform/pkg/utils"
@@ -41,13 +40,13 @@ func MakeSpatialModule(uow uow.UnitOfWork, db uow.DB) Module {
 		Queries: []*QueryCNF{
 			{
 				RouteName: "spatial.get_production_unit",
-				Handler:   getproductionunit.New(db),
-				Decoder:   utils.DecodeJSON[getproductionunit.Query],
+				Handler:   productionunit.NewGetOne(spatial.New(db)),
+				Decoder:   utils.DecodeJSON[productionunit.GetOneQuery],
 			},
 			{
 				RouteName: "spatial.list_production_units",
 				Handler:   productionunit.NewListRoots(spatial.New(db)),
-				Decoder:   utils.DecodeJSON[productionunit.Query],
+				Decoder:   utils.DecodeJSON[productionunit.ListRootsQuery],
 			},
 			{
 				RouteName: "spatial.get_production_unit_tree",

@@ -110,3 +110,7 @@ migrate-status:
 		exit 1; \
 	fi
 	@psql "$(DB_DSN)" -c "SELECT version, applied_at FROM schema_migrations WHERE module = '$(MODULE)' ORDER BY version;"
+
+
+desc:
+	cd ./myproject && wails dev

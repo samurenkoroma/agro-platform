@@ -8,6 +8,7 @@ type Properties struct {
 	Capabilities   []Capability   `json:"capabilities"`
 	Metadata       vo.Metadata    `json:"metadata"`
 	Position       *vo.Position   `json:"position"`
+	Dimensions     *Dimensions    `json:"dimensions"`
 }
 
 func (p *Properties) AddCapabilities(capabilities []string) {
@@ -33,6 +34,17 @@ func NewProps(name, desc string) *Properties {
 	}
 }
 
+type Dimensions struct {
+	Length    *float64 `json:"length,omitempty"`
+	Width     *float64 `json:"width,omitempty"`
+	Height    *float64 `json:"height,omitempty"`
+	Diameter  *float64 `json:"diameter,omitempty"`
+	Volume    *float64 `json:"volume,omitempty"`
+	Levels    *int     `json:"levels,omitempty"`
+	Slots     *int     `json:"slots,omitempty"`
+	CellCount *int     `json:"cellCount,omitempty"`
+	Capacity  *float64 `json:"capacity,omitempty"`
+}
 type ClimateProfile struct {
 	TemperatureMin *float64 `json:"temperatureMin"`
 	TemperatureMax *float64 `json:"temperatureMax"`
