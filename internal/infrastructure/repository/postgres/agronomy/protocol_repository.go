@@ -120,7 +120,6 @@ func (r *protocolRepository) Save(ctx context.Context, root *cropprotocol.CropPr
 		root.ID,
 		root.CropID,
 		root.Name,
-		root.GrowingMethod,
 		root.Description,
 		root.Metadata,
 		root.CreatedAt,

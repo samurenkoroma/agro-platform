@@ -49,7 +49,6 @@ func scanCropProtocol(root *protocol.CropProtocol) []any {
 		&root.ID,
 		&root.CropID,
 		&root.Name,
-		&root.GrowingMethod,
 		&root.Description,
 		&root.Metadata,
 		&root.CreatedAt,

@@ -3,7 +3,7 @@ package production
 import (
 	"context"
 
-	harvest "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/harvest_batch"
+	harvestbatch "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/harvest_batch"
 	"github.com/samurenkoroma/agro-platform/internal/domain/production/repository"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
@@ -11,27 +11,22 @@ import (
 type harvestBatchRepository struct {
 }
 
-func (h harvestBatchRepository) Save(ctx context.Context, root *harvest.HarvestBatch) error {
+func (h harvestBatchRepository) Save(ctx context.Context, batch *harvestbatch.HarvestBatch) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (h harvestBatchRepository) GetByID(ctx context.Context, id vo.ID) (*harvest.HarvestBatch, error) {
+func (h harvestBatchRepository) GetByID(ctx context.Context, id vo.ID) (*harvestbatch.HarvestBatch, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (h harvestBatchRepository) GetByCycle(ctx context.Context, cycleID vo.ID) ([]*harvest.HarvestBatch, error) {
+func (h harvestBatchRepository) ListByCycleID(ctx context.Context, cycleID vo.ID) ([]*harvestbatch.HarvestBatch, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (h harvestBatchRepository) GetByProductionUnit(ctx context.Context, unitID vo.ID) ([]*harvest.HarvestBatch, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (h harvestBatchRepository) Exists(ctx context.Context, id vo.ID) (bool, error) {
+func (h harvestBatchRepository) Delete(ctx context.Context, id vo.ID) error {
 	//TODO implement me
 	panic("implement me")
 }

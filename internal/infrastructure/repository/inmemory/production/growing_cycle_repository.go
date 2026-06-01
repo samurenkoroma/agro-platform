@@ -17,40 +17,27 @@ type growingCycleRepository struct {
 	items map[vo.ID]*gc.GrowingCycle
 }
 
-func (r *growingCycleRepository) Save(ctx context.Context, root *gc.GrowingCycle) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	r.items[root.ID] = root
-
-	return nil
-}
-
-func (r *growingCycleRepository) GetByID(ctx context.Context, id vo.ID) (*gc.GrowingCycle, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	item := r.items[id]
-
-	return item, nil
-}
-
-func (r *growingCycleRepository) GetByFarm(ctx context.Context, farmID vo.ID) ([]*gc.GrowingCycle, error) {
+func (g growingCycleRepository) Save(ctx context.Context, cycle *gc.GrowingCycle) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (r *growingCycleRepository) GetByProductionUnit(ctx context.Context, unitID vo.ID) ([]*gc.GrowingCycle, error) {
+func (g growingCycleRepository) GetByID(ctx context.Context, id vo.ID) (*gc.GrowingCycle, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (r *growingCycleRepository) Exists(ctx context.Context, id vo.ID) (bool, error) {
+func (g growingCycleRepository) GetByCode(ctx context.Context, code string) (*gc.GrowingCycle, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (r *growingCycleRepository) GetActiveByUnit(unitID vo.ID) ([]*gc.GrowingCycle, error) {
+func (g growingCycleRepository) List(ctx context.Context, filter repo.ListFilter) ([]*gc.GrowingCycle, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (g growingCycleRepository) Delete(ctx context.Context, id vo.ID) error {
 	//TODO implement me
 	panic("implement me")
 }

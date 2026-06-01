@@ -19,9 +19,22 @@ type productionProvider struct {
 	db       uow.DB
 	inMemory bool
 	cycles   domain.GrowingCycleRepository
-	plants   domain.PlantRepository
 	harvests domain.HarvestBatchRepository
-	yields   domain.YieldBatchRepository
+}
+
+func (p *productionProvider) Harvests() domain.HarvestBatchRepository {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *productionProvider) Planting() domain.PlantingRepository {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *productionProvider) Allocation() domain.AllocationRepository {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (p *productionProvider) GrowingCycles() domain.GrowingCycleRepository {
@@ -34,50 +47,4 @@ func (p *productionProvider) GrowingCycles() domain.GrowingCycleRepository {
 		p.cycles = postgres.NewGrowingCycleRepository(p.db)
 	}
 	return p.cycles
-}
-
-func (p *productionProvider) Plants() domain.PlantRepository {
-	if p.plants != nil {
-		return p.plants
-	}
-	if p.inMemory {
-		p.plants = inmemory.NewPlantRepository()
-	} else {
-		p.plants = postgres.NewPlantRepository(p.db)
-	}
-	return p.plants
-}
-
-func (p *productionProvider) Slots() domain.SlotRepository {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (p *productionProvider) Substrates() domain.SubstrateRepository {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (p *productionProvider) Harvests() domain.HarvestBatchRepository {
-	if p.harvests != nil {
-		return p.harvests
-	}
-	if p.inMemory {
-		p.harvests = inmemory.NewHarvestBatchRepository()
-	} else {
-		p.harvests = postgres.NewHarvestBatchRepository(p.db)
-	}
-	return p.harvests
-}
-
-func (p *productionProvider) Yields() domain.YieldBatchRepository {
-	if p.yields != nil {
-		return p.yields
-	}
-	if p.inMemory {
-		p.yields = inmemory.NewYieldBatchRepository()
-	} else {
-		p.yields = postgres.NewYieldBatchRepository(p.db)
-	}
-	return p.yields
 }

@@ -3,14 +3,23 @@ package repository
 import (
 	"context"
 
-	gc "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/growing_cycle"
+	growingcycle "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/growing_cycle"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 
 type GrowingCycleRepository interface {
-	Save(ctx context.Context, root *gc.GrowingCycle) error
-	GetByID(ctx context.Context, id vo.ID) (*gc.GrowingCycle, error)
-	GetByFarm(ctx context.Context, farmID vo.ID) ([]*gc.GrowingCycle, error)
-	GetByProductionUnit(ctx context.Context, unitID vo.ID) ([]*gc.GrowingCycle, error)
-	Exists(ctx context.Context, id vo.ID) (bool, error)
+	Save(ctx context.Context, cycle *growingcycle.GrowingCycle) error
+	GetByID(ctx context.Context, id vo.ID) (*growingcycle.GrowingCycle, error)
+	GetByCode(ctx context.Context, code string) (*growingcycle.GrowingCycle, error)
+	List(ctx context.Context, filter ListFilter) ([]*growingcycle.GrowingCycle, error)
+	Delete(ctx context.Context, id vo.ID) error
+}
+type ListFilter struct {
+	FarmID *vo.ID
+	CropID *vo.ID
+	Status *growingcycle.CycleStatus
+	Limit  int
+	Offset int
+	Code   *string
+	Search *string
 }

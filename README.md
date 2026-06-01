@@ -27,3 +27,15 @@ RegisterHarvest
 CompleteCycle
 FailCycle
 ArchiveCycle
+
+
+
+CreateGrowingCycle
+StartGrowingCycle
+PauseGrowingCycle
+ResumeGrowingCycle
+StartHarvesting
+CompleteGrowingCycle
+FailGrowingCycle
+ArchiveGrowingCycle
+AdvanceCycleStage

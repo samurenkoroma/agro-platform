@@ -1,19 +1,13 @@
 package growingcycle
 
-type GrowingStatus string
+type CycleStatus string
 
 const (
-	Planned GrowingStatus = "PLANNED"
-
-	Active GrowingStatus = "ACTIVE"
-
-	Harvesting GrowingStatus = "HARVESTING"
-
-	Paused GrowingStatus = "PAUSED"
-
-	Harvested GrowingStatus = "HARVESTED"
-
-	Failed GrowingStatus = "FAILED"
-
-	Archived GrowingStatus = "ARCHIVED"
+	StatusPlanned    CycleStatus = "planned"
+	StatusActive     CycleStatus = "active"
+	StatusPaused     CycleStatus = "paused"
+	StatusHarvesting CycleStatus = "harvesting"
+	StatusCompleted  CycleStatus = "completed"
+	StatusFailed     CycleStatus = "failed"
+	StatusArchived   CycleStatus = "archived"
 )
