@@ -10,4 +10,5 @@ type AgronomyProvider interface {
 	Protocols() CropProtocolRepository
 	Diseases() DiseaseRepository
 	StressProfiles() StressRepository
+	Seasons() SeasonRepository
 }

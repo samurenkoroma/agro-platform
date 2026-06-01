@@ -1,4 +1,4 @@
-package createvariety
+package variety
 
 import (
 	"context"

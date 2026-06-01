@@ -28,3 +28,14 @@ Automation
 Analytics
 ❌ Yield reports
 
+
+
+[account](internal/domain/account)
+[agronomy](internal/domain/agronomy)
+[analytics](internal/domain/analytics)
+[automation](internal/domain/automation)
+[environment](internal/domain/environment)
+[inventory](internal/domain/inventory)
+[operations](internal/domain/operations)
+[production](internal/domain/production)
+[spatial](internal/domain/spatial)

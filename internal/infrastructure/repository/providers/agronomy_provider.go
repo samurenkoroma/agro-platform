@@ -25,6 +25,20 @@ type agronomyProvider struct {
 	protocols      domain.CropProtocolRepository
 	diseases       domain.DiseaseRepository
 	stressProfiles domain.StressRepository
+	seasons        domain.SeasonRepository
+}
+
+func (p *agronomyProvider) Seasons() domain.SeasonRepository {
+	if p.seasons != nil {
+		return p.seasons
+	}
+	//if p.inMemory {
+	//	p.varieties = inmemory.NewVarietyRepository()
+	//} else {
+	p.seasons = postgres.NewSeasonRepository(p.db)
+	//}
+
+	return p.seasons
 }
 
 func (p *agronomyProvider) CropsStages() domain.CropStageRepository {

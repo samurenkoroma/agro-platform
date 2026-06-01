@@ -6,7 +6,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	cropprotocol "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop_protocol"
-	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/repository"
+	agronomy "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/repository"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 
@@ -14,7 +14,7 @@ type protocolRepository struct {
 	db uow.DB
 }
 
-func NewProtocolRepository(db uow.DB) repository.CropProtocolRepository {
+func NewProtocolRepository(db uow.DB) agronomy.CropProtocolRepository {
 	return &protocolRepository{db: db}
 }
 

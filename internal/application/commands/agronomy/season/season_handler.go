@@ -1,4 +1,4 @@
-package crop
+package season
 
 import (
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"

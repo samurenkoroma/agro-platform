@@ -1,10 +1,12 @@
 package modules
 
 import (
-	createvariety "github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/create_variety"
-	createcrop "github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/crop"
+	"github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/crop"
+	"github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/season"
+	"github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/variety"
 	getcrop "github.com/samurenkoroma/agro-platform/internal/application/queries/agronomy/crop/get_crop"
 	listcrops "github.com/samurenkoroma/agro-platform/internal/application/queries/agronomy/crop/list_crops"
+	"github.com/samurenkoroma/agro-platform/internal/application/queries/agronomy/season/list_seasons"
 	getvariety "github.com/samurenkoroma/agro-platform/internal/application/queries/agronomy/variety/get_variety"
 	listvarieties "github.com/samurenkoroma/agro-platform/internal/application/queries/agronomy/variety/list_varieties"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
@@ -16,13 +18,18 @@ func MakeAgronomyModule(uow uow.UnitOfWork, db uow.DB) Module {
 		Commands: []*CommandCNF{
 			{
 				RouteName: "agronomy.create_crop",
-				Handler:   createcrop.NewCropHandler(uow).Create,
-				Decoder:   utils.DecodeJSON[createcrop.CreateCropCommand],
+				Handler:   crop.NewHandler(uow).Create,
+				Decoder:   utils.DecodeJSON[crop.CreateCropCommand],
 			},
 			{
 				RouteName: "agronomy.create_variety",
-				Handler:   createvariety.NewCreateVarietyHandler(uow).Create,
-				Decoder:   utils.DecodeJSON[createvariety.CreateVarietyCommand],
+				Handler:   variety.NewHandler(uow).Create,
+				Decoder:   utils.DecodeJSON[variety.CreateVarietyCommand],
+			},
+			{
+				RouteName: "agronomy.create_season",
+				Handler:   season.NewHandler(uow).Create,
+				Decoder:   utils.DecodeJSON[season.CreateSeasonCmd],
 			},
 		},
 		Queries: []*QueryCNF{
@@ -45,6 +52,11 @@ func MakeAgronomyModule(uow uow.UnitOfWork, db uow.DB) Module {
 				RouteName: "agronomy.list_varieties",
 				Handler:   listvarieties.New(db),
 				Decoder:   utils.DecodeJSON[listvarieties.Query],
+			},
+			{
+				RouteName: "agronomy.list_seasons",
+				Handler:   listseasons.New(db),
+				Decoder:   utils.DecodeJSON[listseasons.Query],
 			},
 		},
 	}

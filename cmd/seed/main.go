@@ -13,8 +13,8 @@ import (
 	"strings"
 
 	_ "github.com/lib/pq"
-	createvariety "github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/create_variety"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/crop"
+	"github.com/samurenkoroma/agro-platform/internal/application/commands/agronomy/variety"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	crop2 "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/crop"
 	agronomy "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/repository"
@@ -134,17 +134,17 @@ func seedVarieties(uow uow.UnitOfWork, data seedData, dryRun bool) error {
 			continue
 		}
 
-		cmd := &createvariety.CreateVarietyCommand{
+		cmd := &variety.CreateVarietyCommand{
 			Name:   v.Name,
 			CropID: mapCrops[v.Croptype],
 		}
 
 		// Создаём обработчик
-		handler := createvariety.NewCreateVarietyHandler(uow)
+		handler := variety.NewHandler(uow)
 
 		// Выполняем команду
 		if _, err := handler.Create(context.Background(), cmd); err != nil {
-			if errors.Is(err, createvariety.ErrVarietyAlreadyExists) {
+			if errors.Is(err, variety.ErrVarietyAlreadyExists) {
 				log.Printf("Skipping. Variety '%s' already exists", v.Name)
 				continue
 			}
@@ -177,7 +177,7 @@ func seedCropTypes(uow uow.UnitOfWork, data seedData, dryRun bool) error {
 		}
 
 		// Создаём обработчик
-		handler := crop.NewCropHandler(uow)
+		handler := crop.NewHandler(uow)
 
 		// Выполняем команду
 		if _, err := handler.Create(context.Background(), cmd); err != nil {
