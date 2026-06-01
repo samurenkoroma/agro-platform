@@ -7,26 +7,63 @@ import (
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 
+type CycleStage string
+type Reason string
+
+const (
+	PlanningStage    CycleStage = "planning"
+	GerminationStage CycleStage = "germination"
+	SeedlingStage    CycleStage = "seedling"
+	VegetativeStage  CycleStage = "vegetative"
+	FloweringStage   CycleStage = "flowering"
+	FruitingStage    CycleStage = "fruiting"
+	HarvestingStage  CycleStage = "harvesting"
+	CompletedStage   CycleStage = "completed"
+
+	HarvestedCompletionReason Reason = "harvested"
+	FailedCompletionReason    Reason = "failed"
+	DestroyedCompletionReason Reason = "destroyed"
+	AbortedCompletionReason   Reason = "aborted"
+
+	DiseaseFailureReason Reason = "disease"
+	FrostFailureReason   Reason = "frost"
+	WaterFailureReason   Reason = "water"
+	UnknownFailureReason Reason = "unknown"
+)
+
 type GrowingCycle struct {
 	ev.BaseAggregate
-	ID                vo.ID
-	FarmID            vo.ID
-	CropID            vo.ID
-	VarietyID         *vo.ID
-	ProductionUnitID  vo.ID
-	Method            GrowingMethod
-	Granularity       ProductionGranularity
-	ProtocolID        *vo.ID
-	Status            GrowingStatus
-	CurrentStageID    *vo.ID
-	LayoutSnapshotID  *vo.ID
+	ID        vo.ID
+	Name      string
+	Code      string
+	FarmID    vo.ID
+	CropID    vo.ID
+	VarietyID *vo.ID
+
+	ProductionUnitID vo.ID
+
+	ProtocolID *vo.ID
+
+	Method      GrowingMethod
+	Granularity ProductionGranularity
+
+	Status       GrowingStatus
+	CurrentStage CycleStage
+
+	LayoutSnapshotID *vo.ID
+
 	ExpectedHarvestAt *time.Time
-	StartedAt         *time.Time
-	CompletedAt       *time.Time
-	Metadata          vo.Metadata
-	CreatedAt         time.Time
-	UpdatedAt         time.Time
-	ArchivedAt        *time.Time
+
+	StartedAt   *time.Time
+	CompletedAt *time.Time
+	ManagerId   *vo.ID
+
+	CompletionReason Reason
+
+	Metadata   vo.Metadata
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	ArchivedAt *time.Time
 }
 
 func New(farmID vo.ID, cropID vo.ID, unitID vo.ID, method GrowingMethod) *GrowingCycle {
