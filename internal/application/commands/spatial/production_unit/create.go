@@ -1,4 +1,4 @@
-package create_production_unit
+package productionunit
 
 import (
 	"context"
@@ -6,30 +6,12 @@ import (
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
-	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 	pu "github.com/samurenkoroma/agro-platform/internal/domain/spatial/aggregate/production_unit"
 	spatial "github.com/samurenkoroma/agro-platform/internal/domain/spatial/repository"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/providers"
 	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
-
-type Handler struct {
-	uow uow.UnitOfWork
-}
-
-func New(uow uow.UnitOfWork) *Handler {
-	return &Handler{uow: uow}
-}
-
-type CreateCommand struct {
-	Code         string                  `json:"code" validate:"required"`
-	Type         pu.ProductionUnitType   `json:"type" validate:"required"`
-	Status       pu.ProductionUnitStatus `json:"status" validate:"required"`
-	ParentID     *vo.ID                  `json:"parentId,omitempty"`
-	Capabilities []string                `json:"capabilities,omitempty"`
-	Dimensions   *pu.Dimensions          `json:"dimensions,omitempty"`
-}
 
 func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 	cmd, ok := payload.(*CreateCommand)

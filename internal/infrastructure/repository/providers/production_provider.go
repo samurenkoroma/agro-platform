@@ -5,21 +5,22 @@ import (
 	domain "github.com/samurenkoroma/agro-platform/internal/domain/production/repository"
 	inmemory "github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/inmemory/production"
 	postgres "github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/postgres/production"
+	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
 func (p *productionProvider) ProviderName() string {
 	return ""
 }
 
-func NewProductionProvider(db uow.DB, inMemory bool) domain.ProductionProvider {
-	return &productionProvider{db: db, inMemory: inMemory}
+func NewProductionProvider(db uow.DB) repository.RepositoryProvider {
+	return &productionProvider{db: db, inMemory: false}
 }
 
 type productionProvider struct {
-	db       uow.DB
-	inMemory bool
-	cycles   domain.GrowingCycleRepository
-	harvests domain.HarvestBatchRepository
+	db          uow.DB
+	inMemory    bool
+	cycles      domain.GrowingCycleRepository
+	allocations domain.AllocationRepository
 }
 
 func (p *productionProvider) Harvests() domain.HarvestBatchRepository {
@@ -33,8 +34,15 @@ func (p *productionProvider) Planting() domain.PlantingRepository {
 }
 
 func (p *productionProvider) Allocation() domain.AllocationRepository {
-	//TODO implement me
-	panic("implement me")
+	if p.allocations != nil {
+		return p.allocations
+	}
+	if p.inMemory {
+		p.allocations = inmemory.NewAllocationRepository()
+	} else {
+		p.allocations = postgres.NewAllocationRepository(p.db)
+	}
+	return p.allocations
 }
 
 func (p *productionProvider) GrowingCycles() domain.GrowingCycleRepository {

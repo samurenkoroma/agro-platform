@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS growing_cycles;
+DROP TABLE IF EXISTS production_growing_cycles;

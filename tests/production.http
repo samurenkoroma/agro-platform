@@ -1,0 +1,15 @@
+POST http://localhost:8080/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "command": "production.create_cycle",
+  "data": {
+    "cropId": "67a131ee-ec9d-4233-a401-7fa3d2de261a",
+    "name": "awd",
+    "code": "awd",
+    "method": "awdawd"
+  }
+}
+
+###

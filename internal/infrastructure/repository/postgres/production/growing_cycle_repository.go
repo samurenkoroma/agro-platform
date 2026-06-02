@@ -169,9 +169,7 @@ func (r *growingCycleRepository) List(ctx context.Context, filter repository.Lis
 			expected_harvest_at,
 			created_at,
 			updated_at
-		FROM production_growing_cycles
-		WHERE 1=1
-	`
+		FROM production_growing_cycles`
 
 	args := make([]any, 0)
 	argPos := 1
@@ -231,11 +229,7 @@ func (r *growingCycleRepository) List(ctx context.Context, filter repository.Lis
 }
 
 func (r *growingCycleRepository) Delete(ctx context.Context, id vo.ID) error {
-	_, err := r.db.Exec(ctx, `
-		DELETE
-		FROM production_growing_cycles
-		WHERE id = $1
-	`, id)
+	_, err := r.db.Exec(ctx, `DELETE FROM production_growing_cycles WHERE id = $1`, id)
 
 	return err
 }

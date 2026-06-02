@@ -1,21 +1,33 @@
-CREATE TABLE growing_cycles
+CREATE TABLE production_growing_cycles
 (
-    id                 UUID PRIMARY KEY,
-    farm_id            UUID        NOT NULL,
-    crop_id            UUID        NOT NULL,
-    production_unit_id UUID        NOT NULL,
-    method             VARCHAR(50) NOT NULL,
-    status             VARCHAR(50) NOT NULL,
-    metadata           JSONB       NOT NULL,
-    created_at         TIMESTAMPTZ NOT NULL,
-    updated_at         TIMESTAMPTZ NOT NULL,
-    archived_at        TIMESTAMPTZ NULL,
+    id                  UUID PRIMARY KEY,
 
-    CONSTRAINT fk_cycle_crop FOREIGN KEY (crop_id) REFERENCES crops (id),
-    CONSTRAINT fk_cycle_unit FOREIGN KEY (production_unit_id) REFERENCES production_units (id)
+    farm_id             UUID         NOT NULL,
+    crop_id             UUID         NOT NULL,
+
+    variety_id          UUID         NULL,
+    protocol_id         UUID         NULL,
+
+    name                VARCHAR(255) NOT NULL,
+    code                VARCHAR(100) NOT NULL UNIQUE,
+
+    method              VARCHAR(50)  NOT NULL,
+
+    status              VARCHAR(50)  NOT NULL,
+    stage               VARCHAR(50)  NOT NULL,
+
+    started_at          TIMESTAMPTZ  NULL,
+    completed_at        TIMESTAMPTZ  NULL,
+    expected_harvest_at TIMESTAMPTZ  NULL,
+
+    created_at          TIMESTAMPTZ  NOT NULL,
+    updated_at          TIMESTAMPTZ  NOT NULL
 );
 
-CREATE INDEX idx_cycle_farm ON growing_cycles (farm_id);
-CREATE INDEX idx_cycle_crop ON growing_cycles (crop_id);
-CREATE INDEX idx_cycle_unit ON growing_cycles (production_unit_id);
-CREATE INDEX idx_cycle_status ON growing_cycles (status);
+CREATE INDEX idx_production_growing_cycles_farm_id ON production_growing_cycles (farm_id);
+
+CREATE INDEX idx_production_growing_cycles_crop_id ON production_growing_cycles (crop_id);
+
+CREATE INDEX idx_production_growing_cycles_status ON production_growing_cycles (status);
+
+CREATE INDEX idx_production_growing_cycles_code ON production_growing_cycles (code);

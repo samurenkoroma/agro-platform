@@ -1,8 +1,8 @@
 package modules
 
 import (
-	createproductionunit "github.com/samurenkoroma/agro-platform/internal/application/commands/spatial/create_production_unit"
-	"github.com/samurenkoroma/agro-platform/internal/application/queries/spatial/production_unit"
+	productionunitCmd "github.com/samurenkoroma/agro-platform/internal/application/commands/spatial/production_unit"
+	productionunitQuery "github.com/samurenkoroma/agro-platform/internal/application/queries/spatial/production_unit"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	spatial "github.com/samurenkoroma/agro-platform/internal/infrastructure/projection/postgres/spatial/production_unit"
 	"github.com/samurenkoroma/agro-platform/pkg/utils"
@@ -13,8 +13,8 @@ func MakeSpatialModule(uow uow.UnitOfWork, db uow.DB) Module {
 		Commands: []*CommandCNF{
 			{
 				RouteName: "spatial.create_production_unit",
-				Handler:   createproductionunit.New(uow).Create,
-				Decoder:   utils.DecodeJSON[createproductionunit.CreateCommand],
+				Handler:   productionunitCmd.NewProductionUnitHandler(uow).Create,
+				Decoder:   utils.DecodeJSON[productionunitCmd.CreateCommand],
 			},
 			{
 				RouteName: "spatial.update_production_unit",
@@ -40,13 +40,13 @@ func MakeSpatialModule(uow uow.UnitOfWork, db uow.DB) Module {
 		Queries: []*QueryCNF{
 			{
 				RouteName: "spatial.get_production_unit",
-				Handler:   productionunit.NewGetOne(spatial.New(db)),
-				Decoder:   utils.DecodeJSON[productionunit.GetOneQuery],
+				Handler:   productionunitQuery.NewGetOne(spatial.New(db)),
+				Decoder:   utils.DecodeJSON[productionunitQuery.GetOneQuery],
 			},
 			{
 				RouteName: "spatial.list_production_units",
-				Handler:   productionunit.NewListRoots(spatial.New(db)),
-				Decoder:   utils.DecodeJSON[productionunit.ListRootsQuery],
+				Handler:   productionunitQuery.NewListRoots(spatial.New(db)),
+				Decoder:   utils.DecodeJSON[productionunitQuery.ListRootsQuery],
 			},
 			{
 				RouteName: "spatial.get_production_unit_tree",

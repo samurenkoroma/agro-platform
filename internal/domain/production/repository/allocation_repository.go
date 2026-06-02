@@ -12,5 +12,6 @@ type AllocationRepository interface {
 	GetByID(ctx context.Context, id vo.ID) (*allocation.Allocation, error)
 	ListByCycleID(ctx context.Context, cycleID vo.ID) ([]*allocation.Allocation, error)
 	ListByProductionUnitID(ctx context.Context, productionUnitID vo.ID) ([]*allocation.Allocation, error)
+	ListActiveByProductionUnitID(ctx context.Context, productionUnitID vo.ID) ([]*allocation.Allocation, error)
 	Delete(ctx context.Context, id vo.ID) error
 }

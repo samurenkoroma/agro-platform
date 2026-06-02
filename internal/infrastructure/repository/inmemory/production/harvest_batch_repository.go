@@ -3,7 +3,7 @@ package production
 import (
 	"context"
 
-	harvestbatch "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/harvest_batch"
+	"github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/harvest_batch"
 	"github.com/samurenkoroma/agro-platform/internal/domain/production/repository"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )

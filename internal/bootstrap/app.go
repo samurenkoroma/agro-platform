@@ -35,6 +35,7 @@ func Build(ctx context.Context, pool *pgxpool.Pool, conf *configs.Config) (*App,
 		modules.MakeAccountModule(uow, jwtService),
 		modules.MakeAgronomyModule(uow, pool),
 		modules.MakeSpatialModule(uow, pool),
+		modules.MakeProductionModule(uow, pool),
 	}
 
 	for _, module := range appModules {
