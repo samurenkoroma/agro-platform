@@ -3,6 +3,8 @@ package modules
 import (
 	allocationCmd "github.com/samurenkoroma/agro-platform/internal/application/commands/production/allocation"
 	growingcycleCmd "github.com/samurenkoroma/agro-platform/internal/application/commands/production/growing_cycle"
+	"github.com/samurenkoroma/agro-platform/internal/application/commands/production/harvest"
+	"github.com/samurenkoroma/agro-platform/internal/application/commands/production/planting"
 	allocationQuery "github.com/samurenkoroma/agro-platform/internal/application/queries/production/allocation"
 	growingcycleQuery "github.com/samurenkoroma/agro-platform/internal/application/queries/production/growing_cycle"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
@@ -33,6 +35,26 @@ func MakeProductionModule(uow uow.UnitOfWork, db uow.DB) Module {
 				RouteName: "production.release_allocation",
 				Handler:   allocationCmd.NewAllocationHandler(uow).Release,
 				Decoder:   utils.DecodeJSON[allocationCmd.ReleaseAllocationCommand],
+			},
+			{
+				RouteName: "production.planting_register",
+				Handler:   planting.NewPlantingHandler(uow).Register,
+				Decoder:   utils.DecodeJSON[planting.RegisterPlantingCommand],
+			},
+			{
+				RouteName: "production.planting_change",
+				Handler:   planting.NewPlantingHandler(uow).Change,
+				Decoder:   utils.DecodeJSON[planting.ChangePlantingCommand],
+			},
+			{
+				RouteName: "production.harvest_register",
+				Handler:   harvest.NewHarvestHandler(uow).Register,
+				Decoder:   utils.DecodeJSON[harvest.RegisterHarvestCommand],
+			},
+			{
+				RouteName: "production.harvest_change",
+				Handler:   harvest.NewHarvestHandler(uow).Change,
+				Decoder:   utils.DecodeJSON[harvest.ChangeHarvestCommand],
 			},
 		},
 		Queries: []*QueryCNF{
