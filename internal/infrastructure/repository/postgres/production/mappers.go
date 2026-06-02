@@ -3,6 +3,7 @@ package production
 import (
 	"github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/allocation"
 	growingcycle "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/growing_cycle"
+	"github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/planting"
 )
 
 func scanGrowingCycle(root *growingcycle.GrowingCycle) []any {
@@ -33,6 +34,17 @@ func scanAllocation(root *allocation.Allocation) []any {
 		&root.Area,
 		&root.StartedAt,
 		&root.EndedAt,
+		&root.CreatedAt,
+		&root.UpdatedAt,
+	}
+}
+
+func scanPlanting(root *planting.Planting) []any {
+	return []any{
+		&root.ID,
+		&root.CycleID,
+		&root.PlantedAt,
+		&root.Quantity,
 		&root.CreatedAt,
 		&root.UpdatedAt,
 	}

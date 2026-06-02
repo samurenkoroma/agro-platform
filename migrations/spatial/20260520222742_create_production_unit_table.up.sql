@@ -1,11 +1,12 @@
 CREATE TABLE production_units
 (
     id          UUID PRIMARY KEY,
-    owner_id    UUID REFERENCES auth_organizations (id) ON DELETE CASCADE ,
+    owner_id    UUID REFERENCES auth_organizations (id) ON DELETE CASCADE,
     parent_id   UUID                     NULL REFERENCES production_units (id),
     type        VARCHAR(50)              NOT NULL,
     status      VARCHAR(30)              NOT NULL,
     code        TEXT                     NOT NULL,
+    area        NUMERIC(12, 6)           NOT NULL DEFAULT 0,
     geometry    geometry(Geometry, 4326) NULL,
     properties  JSONB                    NOT NULL DEFAULT '{}'::jsonb,
     created_at  TIMESTAMPTZ              NOT NULL,

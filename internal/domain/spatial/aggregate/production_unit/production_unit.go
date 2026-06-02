@@ -22,6 +22,7 @@ type ProductionUnit struct {
 	ParentID   *vo.ID
 	Type       ProductionUnitType
 	Code       string
+	Area       float64
 	Geometry   vo.Geometry
 	Properties *Properties
 	Status     ProductionUnitStatus

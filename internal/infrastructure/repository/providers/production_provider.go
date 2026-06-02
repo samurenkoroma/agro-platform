@@ -21,6 +21,7 @@ type productionProvider struct {
 	inMemory    bool
 	cycles      domain.GrowingCycleRepository
 	allocations domain.AllocationRepository
+	planting    domain.PlantingRepository
 }
 
 func (p *productionProvider) Harvests() domain.HarvestBatchRepository {
@@ -29,8 +30,15 @@ func (p *productionProvider) Harvests() domain.HarvestBatchRepository {
 }
 
 func (p *productionProvider) Planting() domain.PlantingRepository {
-	//TODO implement me
-	panic("implement me")
+	if p.planting != nil {
+		return p.planting
+	}
+	if p.inMemory {
+		p.planting = inmemory.NewPlantingRepository()
+	} else {
+		p.planting = postgres.NewPlantingRepository(p.db)
+	}
+	return p.planting
 }
 
 func (p *productionProvider) Allocation() domain.AllocationRepository {
