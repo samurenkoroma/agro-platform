@@ -69,6 +69,11 @@ func MakeProductionModule(uow uow.UnitOfWork, db uow.DB) Module {
 				Decoder:   utils.DecodeJSON[growingcycleQuery.ListQuery],
 			},
 			{
+				RouteName: "production.summary_growing_cycles",
+				Handler:   growingcycleQuery.NewSummaryHandler(growingcycle.New(db)),
+				Decoder:   utils.DecodeJSON[growingcycleQuery.SummaryQuery],
+			},
+			{
 				RouteName: "production.get_allocation",
 				Handler:   allocationQuery.NewGetOne(allocation.New(db)),
 				Decoder:   utils.DecodeJSON[allocationQuery.GetOneQuery],

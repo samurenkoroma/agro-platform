@@ -20,7 +20,18 @@ type DTO struct {
 	CreatedAt         time.Time  `json:"createdAt"`
 }
 
+type SummaryDTO struct {
+	ID                vo.ID
+	Name              string
+	Status            string
+	AllocatedArea     float64
+	PlantedQuantity   float64
+	HarvestedQuantity float64
+	ExpectedHarvestAt *time.Time
+}
+
 type Projection interface {
 	Get(ctx context.Context, id vo.ID) (*DTO, error)
 	List(ctx context.Context, ownerId vo.ID) ([]*DTO, error)
+	Summary(ctx context.Context, ownerId vo.ID, cycleId vo.ID) (*SummaryDTO, error)
 }

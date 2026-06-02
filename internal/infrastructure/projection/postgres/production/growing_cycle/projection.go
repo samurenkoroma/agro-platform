@@ -70,6 +70,47 @@ FROM production_growing_cycles cycle
 	return result, nil
 }
 
+func (p *projection) Summary(ctx context.Context, ownerId vo.ID, cycleId vo.ID) (*growingcycle.SummaryDTO, error) {
+	sql := `SELECT
+    cycle.id,
+    cycle.name,
+    cycle.status,
+
+    COALESCE((
+        SELECT SUM(area)
+        FROM production_allocations
+        WHERE cycle_id = cycle.id
+          AND ended_at IS NULL
+    ),0) allocated_area,
+
+    COALESCE((
+        SELECT SUM(quantity)
+        FROM production_plantings
+        WHERE cycle_id = cycle.id
+    ),0) planted_quantity,
+
+    COALESCE((
+        SELECT SUM(quantity)
+        FROM public.production_harvest_batch
+        WHERE cycle_id = cycle.id
+    ),0) harvested_quantity
+FROM production_growing_cycles cycle WHERE  cycle.farm_id = $1 and cycle.id = $2`
+	rows, err := p.db.Query(ctx, sql, ownerId, cycleId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var sum growingcycle.SummaryDTO
+	if err := rows.Scan(&sum.ID, &sum.Name, &sum.Status, &sum.AllocatedArea, &sum.PlantedQuantity, &sum.HarvestedQuantity); err != nil {
+		return nil, err
+	}
+
+	return &sum, nil
+}
+
 type scanner interface {
 	Scan(dest ...any) error
 }
