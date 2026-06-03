@@ -26,6 +26,7 @@ const (
 
 type CycleCreated struct {
 	ev.BaseEvent
+	ProductionUnitID vo.ID
 }
 
 type CycleStarted struct {
@@ -82,20 +83,15 @@ func NewHarvestCompleted(id vo.ID) CycleHarvestCompleted {
 	}
 }
 
-func NewCycleCreated(id vo.ID) CycleCreated {
+func NewCycleCreated(id vo.ID, productionUnitId vo.ID) CycleCreated {
 	return CycleCreated{
-		BaseEvent: ev.NewBaseEvent(
-			id,
-			EventCreated,
-		),
+		BaseEvent:        ev.NewBaseEvent(id, EventCreated),
+		ProductionUnitID: productionUnitId,
 	}
 }
 func NewCycleStarted(id vo.ID) CycleStarted {
 	return CycleStarted{
-		BaseEvent: ev.NewBaseEvent(
-			id,
-			EventStarted,
-		),
+		BaseEvent: ev.NewBaseEvent(id, EventStarted),
 	}
 }
 

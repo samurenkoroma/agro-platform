@@ -13,3 +13,27 @@ Authorization: Bearer {{jwt_token}}
 }
 
 ###
+
+POST http://localhost:8080/api/queries/
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "query": "production.summary_growing_cycles",
+  "data": {
+    "id": "28d20a25-f048-4ec0-a2d9-4a7e6e7b1d65"
+  }
+}
+
+###
+POST http://localhost:8080/api/queries/
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "query": "production.list_growing_cycles",
+  "data": {
+  }
+}
+
+###

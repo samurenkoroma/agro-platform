@@ -7,7 +7,7 @@ CREATE TABLE production_allocations
 
     area               NUMERIC(12, 6) NOT NULL DEFAULT 0,
 
-    started_at         TIMESTAMPTZ    NOT NULL,
+    started_at         TIMESTAMPTZ    NULL,
     ended_at           TIMESTAMPTZ    NULL,
 
     created_at         TIMESTAMPTZ    NOT NULL,

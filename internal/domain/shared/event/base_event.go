@@ -13,11 +13,7 @@ type BaseEvent struct {
 	Occurred  time.Time
 }
 
-func NewBaseEvent(
-	aggregate vo.ID,
-	eventType string,
-) BaseEvent {
-
+func NewBaseEvent(aggregate vo.ID, eventType string) BaseEvent {
 	return BaseEvent{
 		ID:        vo.NewID(),
 		Aggregate: aggregate,

@@ -58,4 +58,9 @@ func New(
 
 func (obj *ProductionUnit) AddDimensions(dim *Dimensions) {
 	obj.Properties.Dimensions = dim
+	if dim.Width != nil && dim.Length != nil {
+		w := *dim.Width
+		l := *dim.Length
+		obj.Area = (w * l) / 10000
+	}
 }

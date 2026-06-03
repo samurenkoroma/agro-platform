@@ -8,20 +8,23 @@ import (
 )
 
 type CreateCommand struct {
-	CropID            vo.ID      `json:"cropId" validate:"required"`
-	VarietyID         *vo.ID     `json:"varietyId,omitempty"`
-	ProtocolID        *vo.ID     `json:"protocolId,omitempty"`
+	ProductionUnitID  vo.ID      `json:"productionUnitID" validate:"required"`
+	CropID            vo.ID      `json:"cropID" validate:"required"`
+	Area              float64    `json:"area" validate:"required"`
 	Name              string     `json:"name" validate:"required"`
 	Code              string     `json:"code" validate:"required"`
 	Method            string     `json:"method" validate:"required"`
-	ExpectedHarvestAt *time.Time `json:"expectedHarvestAt"`
+	VarietyID         *vo.ID     `json:"varietyID,omitempty"`
+	ProtocolID        *vo.ID     `json:"protocolID,omitempty"`
+	StartedAt         *time.Time `json:"startedAt,omitempty"`
+	ExpectedHarvestAt *time.Time `json:"expectedHarvestAt,omitempty"`
 }
 
 type UpdateCommand struct {
 	ID                vo.ID                    `json:"id" validate:"required"`
-	CropID            vo.ID                    `json:"cropId" validate:"required"`
-	VarietyID         *vo.ID                   `json:"varietyId,omitempty"`
-	ProtocolID        *vo.ID                   `json:"protocolId,omitempty"`
+	CropID            vo.ID                    `json:"cropID" validate:"required"`
+	VarietyID         *vo.ID                   `json:"varietyID,omitempty"`
+	ProtocolID        *vo.ID                   `json:"protocolID,omitempty"`
 	Name              string                   `json:"name" validate:"required"`
 	Code              string                   `json:"code" validate:"required"`
 	Method            string                   `json:"method" validate:"required"`

@@ -95,16 +95,10 @@ func (p *projection) Summary(ctx context.Context, ownerId vo.ID, cycleId vo.ID) 
         WHERE cycle_id = cycle.id
     ),0) harvested_quantity
 FROM production_growing_cycles cycle WHERE  cycle.farm_id = $1 and cycle.id = $2`
-	rows, err := p.db.Query(ctx, sql, ownerId, cycleId)
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer rows.Close()
+	row := p.db.QueryRow(ctx, sql, ownerId, cycleId)
 
 	var sum growingcycle.SummaryDTO
-	if err := rows.Scan(&sum.ID, &sum.Name, &sum.Status, &sum.AllocatedArea, &sum.PlantedQuantity, &sum.HarvestedQuantity); err != nil {
+	if err := row.Scan(&sum.ID, &sum.Name, &sum.Status, &sum.AllocatedArea, &sum.PlantedQuantity, &sum.HarvestedQuantity); err != nil {
 		return nil, err
 	}
 

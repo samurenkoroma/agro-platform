@@ -8,13 +8,13 @@ import (
 )
 
 type DTO struct {
-	ID          vo.ID  `json:"id"`
-	Name        string `json:"name"`
-	Code        string `json:"code"`
-	CropName    string `json:"cropName"`
-	VarietyName string `json:"varietyName"`
-	Status      string `json:"status"`
-	Stage       string `json:"stage"`
+	ID          vo.ID   `json:"id"`
+	Name        string  `json:"name"`
+	Code        string  `json:"code"`
+	CropName    string  `json:"cropName"`
+	VarietyName *string `json:"varietyName"`
+	Status      string  `json:"status"`
+	Stage       string  `json:"stage"`
 
 	ExpectedHarvestAt *time.Time `json:"expectedHarvestAt"`
 	CreatedAt         time.Time  `json:"createdAt"`
@@ -27,7 +27,7 @@ type SummaryDTO struct {
 	AllocatedArea     float64
 	PlantedQuantity   float64
 	HarvestedQuantity float64
-	ExpectedHarvestAt *time.Time
+	//ExpectedHarvestAt *time.Time
 }
 
 type Projection interface {

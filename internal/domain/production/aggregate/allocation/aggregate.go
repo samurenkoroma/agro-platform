@@ -13,13 +13,13 @@ type Allocation struct {
 	CycleID          vo.ID
 	ProductionUnitID vo.ID
 	Area             float64
-	StartedAt        time.Time
+	StartedAt        *time.Time
 	EndedAt          *time.Time
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }
 
-func New(cycleID, productionUnitID vo.ID, area float64, startedAt time.Time) *Allocation {
+func New(cycleID, productionUnitID vo.ID, area float64, startedAt *time.Time) *Allocation {
 	now := time.Now()
 	return &Allocation{
 		ID:               vo.NewID(),

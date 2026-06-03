@@ -46,10 +46,10 @@ type LightRequirement struct {
 }
 
 type ListItem struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	SpeciesKey  string `json:"speciesKey"`
-	SpeciesName string `json:"speciesName"`
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	CropId   string `json:"cropId"`
+	CropName string `json:"cropName"`
 }
 
 type Projection interface {

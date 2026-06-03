@@ -29,6 +29,7 @@ type DTO struct {
 	ID         vo.ID          `json:"id"`
 	ParentID   *vo.ID         `json:"parentId"`
 	Type       string         `json:"type"`
+	Area       float64        `json:"area"`
 	Status     string         `json:"status"`
 	Code       string         `json:"code"`
 	Geometry   *vo.Geometry   `json:"geometry"`

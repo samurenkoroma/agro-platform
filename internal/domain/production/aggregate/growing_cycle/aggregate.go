@@ -35,12 +35,12 @@ type GrowingCycle struct {
 	UpdatedAt time.Time
 }
 
-func New(orgId, cropId vo.ID, varietyId, protocolId *vo.ID, name, code, method string, expected *time.Time) *GrowingCycle {
+func New(orgId, cropID vo.ID, varietyId, protocolId *vo.ID, name, code, method string, expected *time.Time) *GrowingCycle {
 	now := time.Now()
-	return &GrowingCycle{
+	root := &GrowingCycle{
 		ID:                vo.NewID(),
 		FarmID:            orgId,
-		CropID:            cropId,
+		CropID:            cropID,
 		VarietyID:         varietyId,
 		ProtocolID:        protocolId,
 		Name:              name,
@@ -52,4 +52,6 @@ func New(orgId, cropId vo.ID, varietyId, protocolId *vo.ID, name, code, method s
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}
+
+	return root
 }

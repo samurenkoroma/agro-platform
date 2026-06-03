@@ -19,7 +19,7 @@ func New(db uow.DB) crop.Projection {
 
 func (p projection) Get(ctx context.Context, key string) (*crop.Detail, error) {
 
-	query := `SELECT id,name,category, family,scientific_name, imageurl FROM crops WHERE key=$1`
+	query := `SELECT id,name,category,key, family,scientific_name, imageurl FROM crops WHERE key=$1`
 
 	var result crop.Detail
 
@@ -27,6 +27,7 @@ func (p projection) Get(ctx context.Context, key string) (*crop.Detail, error) {
 		&result.ID,
 		&result.Name,
 		&result.Category,
+		&result.Key,
 		&result.Family,
 		&result.ScientificName,
 		&result.ImageUrl,

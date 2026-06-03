@@ -18,7 +18,7 @@ func New(db uow.DB) productionunit.Projection {
 }
 
 func (p *projection) Get(ctx context.Context, id vo.ID) (*productionunit.DTO, error) {
-	sql := `SELECT id,parent_id,type,status,code,geometry,properties FROM production_units WHERE id = $1`
+	sql := `SELECT id,parent_id,type,status,code,area,geometry,properties FROM production_units WHERE id = $1`
 
 	row := p.db.QueryRow(ctx, sql, id)
 
@@ -26,7 +26,7 @@ func (p *projection) Get(ctx context.Context, id vo.ID) (*productionunit.DTO, er
 }
 
 func (p *projection) ListRoots(ctx context.Context, ownerId vo.ID) ([]*productionunit.DTO, error) {
-	sql := `SELECT id,parent_id,type,status,code,geometry,properties
+	sql := `SELECT id,parent_id,type,status,code, area,geometry,properties
 FROM production_units 
 WHERE owner_id = $1 AND parent_id IS NULL AND archived_at IS NULL 
 ORDER BY code`
@@ -58,7 +58,7 @@ func (p *projection) Tree(ctx context.Context, rootID *vo.ID) (*productionunit.D
 
 	sql := `
 WITH RECURSIVE tree AS (
-	SELECT id, parent_id, type, status, code, geometry, properties
+	SELECT id, parent_id, type, status, code, area, geometry, properties
 	FROM production_units
 	WHERE (
 		($1::uuid IS NULL AND parent_id IS NULL)
@@ -68,12 +68,12 @@ WITH RECURSIVE tree AS (
 
 	UNION ALL
 
-	SELECT p.id, p.parent_id, p.type, p.status, p.code, p.geometry, p.properties
+	SELECT p.id, p.parent_id, p.type, p.status, p.code, p.area, p.geometry, p.properties
 	FROM production_units p
 	INNER JOIN tree t
 		ON p.parent_id = t.id
 )
-SELECT id, parent_id, type, status, code, geometry, properties
+SELECT id, parent_id, type, status, code, area, geometry, properties
 FROM tree
 ORDER BY code
 `
@@ -90,6 +90,7 @@ ORDER BY code
 		Type       string
 		Status     string
 		Code       string
+		Area       float64
 		Geometry   *vo.Geometry
 		Properties map[string]any
 	}
@@ -105,6 +106,7 @@ ORDER BY code
 			&item.Type,
 			&item.Status,
 			&item.Code,
+			&item.Area,
 			&item.Geometry,
 			&item.Properties,
 		); err != nil {
@@ -144,6 +146,7 @@ ORDER BY code
 			Type:       n.Type,
 			Status:     n.Status,
 			Code:       n.Code,
+			Area:       n.Area,
 			Geometry:   n.Geometry,
 			Properties: n.Properties,
 			Children:   make([]*productionunit.DTO, 0),
@@ -177,6 +180,7 @@ func scanDTO(row scanner) (*productionunit.DTO, error) {
 		&result.Type,
 		&result.Status,
 		&result.Code,
+		&result.Area,
 		&geometryRaw,
 		&propertiesRaw,
 	)

@@ -15,6 +15,7 @@ type ListFilter struct {
 type Detail struct {
 	ID             vo.ID       `json:"id"`
 	Name           string      `json:"name"`
+	Key            string      `json:"key"`
 	Category       string      `json:"category"`
 	Family         string      `json:"family"`
 	ScientificName *string     `json:"scientificName"`

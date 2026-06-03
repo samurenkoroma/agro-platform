@@ -7,17 +7,17 @@ import (
 )
 
 type AllocateProductionUnitCommand struct {
-	CycleID          vo.ID
-	ProductionUnitID vo.ID
-	Area             float64
-	StartedAt        time.Time
+	CycleID          vo.ID      `json:"cycleID" validate:"required"`
+	ProductionUnitID vo.ID      `json:"productionUnitID" validate:"required"`
+	Area             float64    `json:"area" validate:"required"`
+	StartedAt        *time.Time `json:"startedAt,omitempty"`
 }
 type ChangeAllocationCommand struct {
 	ID               vo.ID      `json:"id"`
-	ProductionUnitID vo.ID      `json:"production_unit_id"`
+	ProductionUnitID vo.ID      `json:"productionUnitID"`
 	Area             float64    `json:"area"`
-	StartedAt        time.Time  `json:"started_at"`
-	EndedAt          *time.Time `json:"ended_at"`
+	StartedAt        *time.Time `json:"startedAt"`
+	EndedAt          *time.Time `json:"endedAt"`
 }
 
 type ReleaseAllocationCommand struct {
