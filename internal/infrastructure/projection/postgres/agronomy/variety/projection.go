@@ -40,9 +40,9 @@ func (p projection) List(ctx context.Context, filter variety.ListFilter) ([]vari
 FROM varieties v 
     LEFT JOIN  
     public.crops c on v.crop_id = c.id
-WHERE c.key = $1
+WHERE v.crop_id = $1
 ORDER BY v.name`
-	rows, err := p.db.Query(ctx, query, filter.CropKey)
+	rows, err := p.db.Query(ctx, query, filter.CropID)
 
 	if err != nil {
 		return nil, err

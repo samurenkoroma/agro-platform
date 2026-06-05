@@ -11,5 +11,7 @@ type CreateCommand struct {
 	Status       pu.ProductionUnitStatus `json:"status" validate:"required"`
 	ParentID     *vo.ID                  `json:"parentId,omitempty"`
 	Capabilities []string                `json:"capabilities,omitempty"`
+	Name         *string                 `json:"name"`
 	Dimensions   *pu.Dimensions          `json:"dimensions,omitempty"`
+	CreateChild  bool                    `json:"createChild,omitempty"`
 }

@@ -13,9 +13,10 @@ import (
 type CreateCropCommand struct {
 	Name string `json:"name" validate:"required"`
 
-	ScientificName string `json:"scientific_name"`
-	Category       string `json:"category" required:"true"`
-	Family         string `json:"family" required:"true"`
+	ScientificName string  `json:"scientificName"`
+	Category       string  `json:"category" required:"true"`
+	Family         string  `json:"family" required:"true"`
+	Description    *string `json:"description,omitempty"`
 }
 
 func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
@@ -35,7 +36,9 @@ func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 		root := crop.New(cmd.Name, crop.CropCategory(cmd.Category), cmd.Family, cmd.ScientificName)
 
 		root.ScientificName = cmd.ScientificName
-
+		if cmd.Description != nil {
+			root.Metadata["description"] = cmd.Description
+		}
 		if err := agronomyProvider.Crops().Save(ctx, root); err != nil {
 			return nil, err
 		}

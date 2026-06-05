@@ -10,9 +10,9 @@ import (
 type ProductionUnitStatus string
 
 const (
-	Active      ProductionUnitStatus = "active"
-	Maintenance ProductionUnitStatus = "maintenance"
-	Disabled    ProductionUnitStatus = "disabled"
+	Growing     ProductionUnitStatus = "growing"
+	Preparation ProductionUnitStatus = "preparation"
+	Empty       ProductionUnitStatus = "empty"
 )
 
 type ProductionUnit struct {
@@ -35,8 +35,8 @@ func New(
 	ownerID vo.ID,
 	ParentId *vo.ID,
 	unitType ProductionUnitType,
-	status ProductionUnitStatus,
 	code string,
+	name *string,
 ) *ProductionUnit {
 	now := time.Now()
 	root := &ProductionUnit{
@@ -45,8 +45,8 @@ func New(
 		OwnerID:    ownerID,
 		Code:       code,
 		Type:       unitType,
-		Status:     status,
-		Properties: NewProps(code, ""),
+		Status:     Empty,
+		Properties: NewProps(*name, ""),
 		CreatedAt:  now,
 		UpdatedAt:  now,
 	}

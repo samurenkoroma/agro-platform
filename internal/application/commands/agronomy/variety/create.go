@@ -12,8 +12,11 @@ import (
 )
 
 type CreateVarietyCommand struct {
-	Name   string `json:"name" validate:"required"`
-	CropID vo.ID  `json:"cropId" validate:"required"`
+	Name           string   `json:"name" validate:"required"`
+	CropID         vo.ID    `json:"cropId" validate:"required"`
+	Description    *string  `json:"description,omitempty"`
+	DaysToMaturity *int     `json:"daysToMaturity,omitempty"`
+	PlantHeight    *float64 `json:"plantHeight,omitempty"`
 }
 
 func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
@@ -35,6 +38,16 @@ func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 		}
 
 		root := variety.New(crop.ID, cmd.Name)
+
+		if cmd.DaysToMaturity != nil {
+			root.Maturity = variety.MaturityProfile{DaysToHarvest: cmd.DaysToMaturity}
+		}
+		if cmd.PlantHeight != nil {
+			root.Growth = variety.GrowthProfile{MaxHeightCM: cmd.PlantHeight}
+		}
+		if cmd.Description != nil {
+			root.Metadata["description"] = cmd.Description
+		}
 
 		if err := agronomyProvider.Varieties().Save(ctx, root); err != nil {
 			return nil, err

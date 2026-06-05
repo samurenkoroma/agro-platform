@@ -2,7 +2,6 @@ CREATE TABLE crops
 (
     id              UUID PRIMARY KEY,
     name            TEXT        NOT NULL,
-    key             TEXT        NOT NULL,
     scientific_name TEXT        NOT NULL,
     category        TEXT        NOT NULL,
     family          TEXT        NOT NULL,

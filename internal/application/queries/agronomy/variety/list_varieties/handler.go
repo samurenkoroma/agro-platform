@@ -20,7 +20,7 @@ func New(db uow.DB) queries.Handler {
 }
 
 type Query struct {
-	CropKey string `json:"cropKey,omitempty"` // tomato, eggplant, cucumber
+	CropID string `json:"cropId,omitempty"` // tomato, eggplant, cucumber
 }
 
 func (h *varietyHandler) Ask(ctx context.Context, query any) (any, error) {
@@ -30,7 +30,7 @@ func (h *varietyHandler) Ask(ctx context.Context, query any) (any, error) {
 	}
 
 	return h.varieties.List(ctx, variety.ListFilter{
-		CropKey: q.CropKey,
+		CropID: q.CropID,
 	})
 
 }

@@ -7,15 +7,15 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/samurenkoroma/agro-platform/internal/bootstrap"
 	configs "github.com/samurenkoroma/agro-platform/internal/shared/config"
+	"github.com/samurenkoroma/agro-platform/pkg/db"
 )
 
 func main() {
 	conf := configs.LoadConfig()
 	ctx := context.Background()
-	pool, err := pgxpool.New(context.Background(), conf.Db.Dsn)
+	pool, err := db.NewPool(conf.Db)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)

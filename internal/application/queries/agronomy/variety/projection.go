@@ -5,7 +5,7 @@ import (
 )
 
 type ListFilter struct {
-	CropKey string
+	CropID string
 }
 
 type Detail struct {

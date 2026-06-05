@@ -11,7 +11,7 @@ import (
 
 type handler struct{ crops crop.Projection }
 type Query struct {
-	Key string `json:"key"`
+	ID string `json:"id" validate:"required"`
 }
 
 func New(db uow.DB) queries.Handler {
@@ -23,5 +23,5 @@ func (h *handler) Ask(ctx context.Context, query any) (any, error) {
 	if !ok {
 		return nil, queries.ErrInvalidQueryType
 	}
-	return h.crops.Get(ctx, q.Key)
+	return h.crops.Get(ctx, q.ID)
 }

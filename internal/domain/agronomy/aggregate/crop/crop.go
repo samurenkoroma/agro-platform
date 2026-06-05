@@ -1,7 +1,6 @@
 package crop
 
 import (
-	"strings"
 	"time"
 
 	ev "github.com/samurenkoroma/agro-platform/internal/domain/shared/aggregate"
@@ -11,7 +10,6 @@ import (
 type Crop struct {
 	ev.BaseAggregate
 	ID                vo.ID
-	Key               string
 	Name              string
 	ScientificName    string
 	Family            string
@@ -29,7 +27,6 @@ func New(name string, category CropCategory, family string, scientificName strin
 	root := &Crop{
 		ID:             vo.NewID(),
 		Family:         family,
-		Key:            strings.ToLower(strings.ReplaceAll(scientificName, " ", "_")),
 		ScientificName: scientificName,
 		Name:           name,
 		Category:       category,

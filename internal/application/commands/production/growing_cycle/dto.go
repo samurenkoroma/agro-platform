@@ -10,7 +10,7 @@ import (
 type CreateCommand struct {
 	ProductionUnitID  vo.ID      `json:"productionUnitID" validate:"required"`
 	CropID            vo.ID      `json:"cropID" validate:"required"`
-	Area              float64    `json:"area" validate:"required"`
+	Area              float64    `json:"area"`
 	Name              string     `json:"name" validate:"required"`
 	Code              string     `json:"code" validate:"required"`
 	Method            string     `json:"method" validate:"required"`

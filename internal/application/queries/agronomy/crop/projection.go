@@ -15,7 +15,6 @@ type ListFilter struct {
 type Detail struct {
 	ID             vo.ID       `json:"id"`
 	Name           string      `json:"name"`
-	Key            string      `json:"key"`
 	Category       string      `json:"category"`
 	Family         string      `json:"family"`
 	ScientificName *string     `json:"scientificName"`
@@ -26,13 +25,12 @@ type Detail struct {
 type ListItem struct {
 	ID       vo.ID   `json:"id"`
 	Name     string  `json:"name"`
-	Key      string  `json:"key"`
 	Category string  `json:"category"`
 	Family   string  `json:"family"`
 	ImageUrl *string `json:"imageUrl"`
 }
 
 type Projection interface {
-	Get(ctx context.Context, key string) (*Detail, error)
+	Get(ctx context.Context, Id string) (*Detail, error)
 	List(ctx context.Context, filter ListFilter) ([]ListItem, error)
 }

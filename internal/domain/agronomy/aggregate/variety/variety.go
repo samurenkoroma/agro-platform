@@ -32,7 +32,6 @@ type Variety struct {
 
 	// Характеристики
 	Characteristics map[string]string `json:"characteristics"`
-	Description     string            `json:"description"`
 	Image           string            `json:"image"`
 
 	Metadata   vo.Metadata
@@ -54,10 +53,9 @@ func New(cropID vo.ID, name string) *Variety {
 		WaterRequirement: WaterRequirement{},
 		LightRequirement: LightRequirement{},
 
-		Description: "",
-		Image:       "",
-		CreatedAt:   now,
-		UpdatedAt:   now,
+		Image:     "",
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 
 	root.AddEvent(NewVarietyCreated(root.ID))
