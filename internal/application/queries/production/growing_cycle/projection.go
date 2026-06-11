@@ -9,15 +9,32 @@ import (
 
 type DTO struct {
 	ID          vo.ID   `json:"id"`
-	Name        string  `json:"name"`
-	Code        string  `json:"code"`
 	CropName    string  `json:"cropName"`
 	VarietyName *string `json:"varietyName"`
-	Status      string  `json:"status"`
-	Stage       string  `json:"stage"`
 
-	ExpectedHarvestAt *time.Time `json:"expectedHarvestAt"`
-	CreatedAt         time.Time  `json:"createdAt"`
+	AllocatedArea float64 `json:"allocatedArea"`
+
+	Status string `json:"status"`
+	Stage  string `json:"stage"`
+
+	TasksCount *int `json:"tasksCount"`
+	Progress   int  `json:"progress"`
+
+	StartDate *time.Time `json:"startDate"`
+	EndDate   *time.Time `json:"endDate"`
+
+	Allocations []AllocationDTO `json:"allocations"`
+}
+
+type AllocationDTO struct {
+	ProductionUnitId   string `json:"productionUnitId"`
+	ProductionUnitName string `json:"productionUnitName"`
+
+	Area     float64 `json:"area"`
+	Progress int     `json:"progress"`
+
+	StartDate *time.Time `json:"startDate"`
+	EndDate   *time.Time `json:"endDate"`
 }
 
 type SummaryDTO struct {

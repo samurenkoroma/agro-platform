@@ -31,11 +31,25 @@ ArchiveCycle
 
 
 CreateGrowingCycle
-StartGrowingCycle
-PauseGrowingCycle
-ResumeGrowingCycle
-StartHarvesting
+↓
+GrowingCycleCreated
+
+AllocateProductionUnit
+↓
+AllocationAllocated
+
+RegisterPlanting
+↓
+PlantingRegistered
+
+RegisterHarvestBatch
+↓
+HarvestBatchRegistered
+
+ReleaseAllocation
+↓
+AllocationReleased
+
 CompleteGrowingCycle
-FailGrowingCycle
-ArchiveGrowingCycle
-AdvanceCycleStage
+↓
+GrowingCycleCompleted

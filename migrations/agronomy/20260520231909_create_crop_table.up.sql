@@ -9,7 +9,7 @@ CREATE TABLE crops
     metadata        JSONB       NOT NULL,
     created_at      TIMESTAMPTZ NOT NULL,
     updated_at      TIMESTAMPTZ NOT NULL,
-    UNIQUE (key, category)
+    UNIQUE (scientific_name, category)
 );
 
 CREATE INDEX idx_crops_name ON crops (name);

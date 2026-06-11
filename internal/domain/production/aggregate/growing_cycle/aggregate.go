@@ -21,13 +21,10 @@ type GrowingCycle struct {
 	Name string
 	Code string
 
-	Method string
+	Method ProductionMethod
 
 	Status CycleStatus
 	Stage  CycleStage
-
-	StartedAt   *time.Time
-	CompletedAt *time.Time
 
 	ExpectedHarvestAt *time.Time
 
@@ -35,22 +32,21 @@ type GrowingCycle struct {
 	UpdatedAt time.Time
 }
 
-func New(orgId, cropID vo.ID, varietyId, protocolId *vo.ID, name, code, method string, expected *time.Time) *GrowingCycle {
+func New(orgId, cropID vo.ID, varietyId, protocolId *vo.ID, name, code string, method ProductionMethod) *GrowingCycle {
 	now := time.Now()
 	root := &GrowingCycle{
-		ID:                vo.NewID(),
-		FarmID:            orgId,
-		CropID:            cropID,
-		VarietyID:         varietyId,
-		ProtocolID:        protocolId,
-		Name:              name,
-		Code:              code,
-		Method:            method,
-		Status:            StatusPlanned,
-		Stage:             StagePlanning,
-		ExpectedHarvestAt: expected,
-		CreatedAt:         now,
-		UpdatedAt:         now,
+		ID:         vo.NewID(),
+		FarmID:     orgId,
+		CropID:     cropID,
+		VarietyID:  varietyId,
+		ProtocolID: protocolId,
+		Name:       name,
+		Code:       code,
+		Method:     method,
+		Status:     StatusPlanned,
+		Stage:      StagePlanning,
+		CreatedAt:  now,
+		UpdatedAt:  now,
 	}
 
 	return root

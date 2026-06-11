@@ -16,10 +16,6 @@ CREATE TABLE production_growing_cycles
     status              VARCHAR(50)  NOT NULL,
     stage               VARCHAR(50)  NOT NULL,
 
-    started_at          TIMESTAMPTZ  NULL,
-    completed_at        TIMESTAMPTZ  NULL,
-    expected_harvest_at TIMESTAMPTZ  NULL,
-
     created_at          TIMESTAMPTZ  NOT NULL,
     updated_at          TIMESTAMPTZ  NOT NULL
 );

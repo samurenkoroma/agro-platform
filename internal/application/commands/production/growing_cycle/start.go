@@ -3,17 +3,19 @@ package growingcycle
 import (
 	"context"
 	"errors"
-	"time"
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
+	"github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/allocation"
+	growingcycle "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/growing_cycle"
 	production "github.com/samurenkoroma/agro-platform/internal/domain/production/repository"
+	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/providers"
 	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
-func (h *Handler) Update(ctx context.Context, payload any) (any, error) {
-	cmd, ok := payload.(*UpdateCommand)
+func (h *Handler) Start(ctx context.Context, payload any) (any, error) {
+	cmd, ok := payload.(*StartGrowingCycleCMD)
 	if !ok {
 		return nil, command.ErrInvalidCommandType
 	}
@@ -29,35 +31,29 @@ func (h *Handler) Update(ctx context.Context, payload any) (any, error) {
 			return nil, repository.ErrInvalidProviderType
 		}
 
-		cycle, err := productionProvider.GrowingCycles().GetByID(ctx, cmd.ID)
-		if err != nil || cycle.FarmID.String() != orgId {
-			return nil, ErrGrowingCycleNotFound
-		}
+		cycle := growingcycle.New(
+			vo.ID(orgId), cmd.CropID,
+			cmd.VarietyID, cmd.ProtocolID,
+			cmd.Name, cmd.Code, cmd.Method)
 
-		cycle.CropID = cmd.CropID
-		if cmd.VarietyID != nil {
-			cycle.VarietyID = cmd.VarietyID
-		}
-		if cmd.ProtocolID != nil {
-			cycle.ProtocolID = cmd.ProtocolID
-		}
-
-		cycle.Name = cmd.Name
-		cycle.Code = cmd.Code
-
-		cycle.Method = cmd.Method
-
-		cycle.Status = cmd.Status
 		cycle.Stage = cmd.Stage
-
-		cycle.ExpectedHarvestAt = cmd.ExpectedHarvestAt
-		cycle.UpdatedAt = time.Now()
+		cycle.Status = cmd.Status
+		cycle.Method = cmd.Method
 
 		if err := productionProvider.GrowingCycles().Save(ctx, cycle); err != nil {
 			return nil, err
 		}
 
 		h.uow.RegisterAggregate(cycle)
+
+		for _, a := range cmd.Allocations {
+			alloc := allocation.New(cycle.ID, a.ProductionUnitID, a.Area, &a.StartedAt)
+			if err := productionProvider.Allocation().Save(ctx, alloc); err != nil {
+				return nil, err
+			}
+			h.uow.RegisterAggregate(alloc)
+		}
+
 		return response.Id(cycle.ID), nil
 	})
 }

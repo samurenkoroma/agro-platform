@@ -21,7 +21,7 @@ type Allocation struct {
 
 func New(cycleID, productionUnitID vo.ID, area float64, startedAt *time.Time) *Allocation {
 	now := time.Now()
-	return &Allocation{
+	a := &Allocation{
 		ID:               vo.NewID(),
 		CycleID:          cycleID,
 		ProductionUnitID: productionUnitID,
@@ -30,4 +30,5 @@ func New(cycleID, productionUnitID vo.ID, area float64, startedAt *time.Time) *A
 		CreatedAt:        now,
 		UpdatedAt:        now,
 	}
+	return a
 }
