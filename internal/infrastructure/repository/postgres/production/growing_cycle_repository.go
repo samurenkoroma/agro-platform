@@ -34,8 +34,6 @@ func (r *growingCycleRepository) Save(ctx context.Context, cycle *growingcycle.G
 			method,
 			status,
 			stage,
-			started_at,
-			completed_at,
 			expected_harvest_at,
 			created_at,
 			updated_at
@@ -43,7 +41,7 @@ func (r *growingCycleRepository) Save(ctx context.Context, cycle *growingcycle.G
 		VALUES (
 			$1,$2,$3,$4,$5,
 			$6,$7,$8,$9,$10,
-			$11,$12,$13,$14,$15
+			$11,$12,$13
 		)
 		ON CONFLICT (id)
 		DO UPDATE SET
@@ -56,8 +54,6 @@ func (r *growingCycleRepository) Save(ctx context.Context, cycle *growingcycle.G
 			method = EXCLUDED.method,
 			status = EXCLUDED.status,
 			stage = EXCLUDED.stage,
-			started_at = EXCLUDED.started_at,
-			completed_at = EXCLUDED.completed_at,
 			expected_harvest_at = EXCLUDED.expected_harvest_at,
 			updated_at = EXCLUDED.updated_at
 	`,
@@ -71,8 +67,6 @@ func (r *growingCycleRepository) Save(ctx context.Context, cycle *growingcycle.G
 		cycle.Method,
 		cycle.Status,
 		cycle.Stage,
-		cycle.StartedAt,
-		cycle.CompletedAt,
 		cycle.ExpectedHarvestAt,
 		cycle.CreatedAt,
 		cycle.UpdatedAt,
@@ -96,8 +90,6 @@ func (r *growingCycleRepository) GetByID(ctx context.Context, id vo.ID) (*growin
 			method,
 			status,
 			stage,
-			started_at,
-			completed_at,
 			expected_harvest_at,
 			created_at,
 			updated_at
@@ -131,8 +123,6 @@ func (r *growingCycleRepository) GetByCode(ctx context.Context, code string) (*g
 			method,
 			status,
 			stage,
-			started_at,
-			completed_at,
 			expected_harvest_at,
 			created_at,
 			updated_at
@@ -164,8 +154,6 @@ func (r *growingCycleRepository) List(ctx context.Context, filter repository.Lis
 			method,
 			status,
 			stage,
-			started_at,
-			completed_at,
 			expected_harvest_at,
 			created_at,
 			updated_at

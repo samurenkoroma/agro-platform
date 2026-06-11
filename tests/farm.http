@@ -1,5 +1,7 @@
 POST http://localhost:8080/api/commands/
 Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
 
 {
   "command": "spatial.create_production_unit",

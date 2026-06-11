@@ -14,6 +14,43 @@ Authorization: Bearer {{jwt_token}}
 
 ###
 
+POST http://localhost:8080/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "command": "production.create_cycle",
+  "data": {
+    "name": "Tomato Spring 2027",
+    "code": "TOM-2027-001",
+    "crop_id": "crop-id",
+    "variety_id": "variety-id",
+    "protocol_id": "protocol-id",
+    "method": "greenhouse",
+    "expected_harvest_at": "2027-07-15T00:00:00Z",
+    "allocations": [
+      {
+        "production_unit_id": "unit-1",
+        "area": 1.2,
+        "started_at": "2027-02-01T00:00:00Z"
+      },
+      {
+        "production_unit_id": "unit-2",
+        "area": 0.8,
+        "started_at": "2027-02-01T00:00:00Z"
+      }
+    ],
+    "plantings": [
+      {
+        "planted_at": "2027-02-05T00:00:00Z",
+        "quantity": 15000
+      }
+    ]
+  }
+}
+
+###
+
 POST http://localhost:8080/api/queries/
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
@@ -32,6 +69,17 @@ Authorization: Bearer {{jwt_token}}
 
 {
   "query": "production.list_growing_cycles",
+  "data": {
+  }
+}
+
+###
+POST http://localhost:8080/api/queries/
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "query": "production.helpers",
   "data": {
   }
 }

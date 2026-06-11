@@ -6,7 +6,6 @@ import (
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
-	"github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/allocation"
 	growingcycle "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/growing_cycle"
 	production "github.com/samurenkoroma/agro-platform/internal/domain/production/repository"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
@@ -34,18 +33,11 @@ func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 		cycle := growingcycle.New(
 			vo.ID(orgId), cmd.CropID,
 			cmd.VarietyID, cmd.ProtocolID,
-			cmd.Name, cmd.Code, cmd.Method,
-			cmd.ExpectedHarvestAt)
+			cmd.Name, cmd.Code, cmd.Method)
 		if err := productionProvider.GrowingCycles().Save(ctx, cycle); err != nil {
 			return nil, err
 		}
 		h.uow.RegisterAggregate(cycle)
-
-		alloc := allocation.New(cycle.ID, cmd.ProductionUnitID, cmd.Area, cmd.StartedAt)
-		if err := productionProvider.Allocation().Save(ctx, alloc); err != nil {
-			return nil, err
-		}
-		h.uow.RegisterAggregate(alloc)
 
 		return response.Id(cycle.ID), nil
 	})

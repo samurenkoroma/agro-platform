@@ -7,6 +7,7 @@ import (
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/production/planting"
 	allocationQuery "github.com/samurenkoroma/agro-platform/internal/application/queries/production/allocation"
 	growingcycleQuery "github.com/samurenkoroma/agro-platform/internal/application/queries/production/growing_cycle"
+	"github.com/samurenkoroma/agro-platform/internal/application/queries/production/helpers"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/projection/postgres/production/allocation"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/projection/postgres/production/growing_cycle"
@@ -20,6 +21,11 @@ func MakeProductionModule(uow uow.UnitOfWork, db uow.DB) Module {
 				RouteName: "production.create_cycle",
 				Handler:   growingcycleCmd.NewGrowingCycleHandler(uow).Create,
 				Decoder:   utils.DecodeJSON[growingcycleCmd.CreateCommand],
+			},
+			{
+				RouteName: "production.start_cycle",
+				Handler:   growingcycleCmd.NewGrowingCycleHandler(uow).Start,
+				Decoder:   utils.DecodeJSON[growingcycleCmd.StartGrowingCycleCMD],
 			},
 			{
 				RouteName: "production.allocate_production_unit",
@@ -82,6 +88,11 @@ func MakeProductionModule(uow uow.UnitOfWork, db uow.DB) Module {
 				RouteName: "production.list_allocations",
 				Handler:   allocationQuery.NewList(allocation.New(db)),
 				Decoder:   utils.DecodeJSON[allocationQuery.ListQuery],
+			},
+			{
+				RouteName: "production.helpers",
+				Handler:   helpers.New(),
+				Decoder:   utils.DecodeJSON[helpers.HelperQuery],
 			},
 		},
 	}
