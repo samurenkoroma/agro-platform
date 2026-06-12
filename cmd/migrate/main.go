@@ -18,12 +18,11 @@ import (
 )
 
 var (
-	moduleFlag = flag.String("module", "all", "Module to migrate (shared, farm, crop, growing, all)")
-	direction  = flag.String("direction", "up", "Migration direction (up, down)")
-	steps      = flag.Int("steps", 0, "Number of steps for up/down (0 = all)")
-	dsn        = flag.String("dsn", "", "PostgreSQL DSN (or use DATABASE_URL env)")
-	force      = flag.Int64("force", 0, "Force set version")
-	verbose    = flag.Bool("verbose", false, "Verbose output")
+	moduleFlag = flag.String("module", "all", "Модуль для миграции (spatial, agronomy, production, account, operations, all)")
+	direction  = flag.String("direction", "up", "Направление: up - накат, down - откат)")
+	steps      = flag.Int("steps", 0, "Количество ступеней накат/откат (0 = all)")
+	force      = flag.Int64("force", 0, "Принудительно установить версию")
+	verbose    = flag.Bool("verbose", false, "Подробный вывод")
 )
 
 type module struct {
@@ -52,7 +51,7 @@ func getModules(moduleFlag string) []module {
 		}
 	}
 
-	log.Fatalf("Unknown module: %s. Available: shared, farm, crop, growing, all", moduleFlag)
+	log.Fatalf("Неизвестный модуль: %s. Доступные: spatial, agronomy, production, account, operations, all", moduleFlag)
 	return nil
 }
 
@@ -79,7 +78,7 @@ func main() {
 		UNIQUE(module, version)
 	)`
 	if _, err := conn.Exec(createTableSQL); err != nil {
-		log.Fatalf("Failed to create migrations table: %v", err)
+		log.Fatalf("Не удалось создать таблицу миграций: %v", err)
 	}
 
 	modules := getModules(*moduleFlag)
@@ -87,25 +86,25 @@ func main() {
 	for _, mod := range modules {
 		if *force > 0 {
 			if err := forceVersion(conn, mod.Name, *force); err != nil {
-				log.Fatalf("Failed to force version for %s: %v", mod.Name, err)
+				log.Fatalf("Не удалось принудительно установить версию для %s: %v", mod.Name, err)
 			}
 			continue
 		}
 
 		migrationsPath := filepath.Join(mod.Path)
 		if err := runMigrations(conn, mod.Name, migrationsPath, *direction, *steps, *verbose); err != nil {
-			log.Fatalf("Failed to run migrations for %s: %v", mod.Name, err)
+			log.Fatalf("Не удалось выполнить миграцию для %s: %v", mod.Name, err)
 		}
 	}
 
-	log.Println("All operations completed successfully!")
+	log.Println("Все операции завершены успешно!")
 }
 
 func runMigrations(db *sql.DB, moduleName, migrationsPath, direction string, steps int, verbose bool) error {
 	// Проверяем существование папки
 	if _, err := os.Stat(migrationsPath); os.IsNotExist(err) {
 		if verbose {
-			log.Printf("Directory %s does not exist, skipping", migrationsPath)
+			log.Printf("Каталог %s не существует, пропускаем", migrationsPath)
 		}
 		return nil
 	}
@@ -113,12 +112,12 @@ func runMigrations(db *sql.DB, moduleName, migrationsPath, direction string, ste
 	// Сканируем файлы миграций
 	files, err := filepath.Glob(filepath.Join(migrationsPath, "*.up.sql"))
 	if err != nil {
-		return fmt.Errorf("failed to list migration files: %w", err)
+		return fmt.Errorf("не удалось вывести список файлов миграции: %w", err)
 	}
 
 	if len(files) == 0 {
 		if verbose {
-			log.Printf("No migration files found for %s", moduleName)
+			log.Printf("Не найдено файлов миграции для %s", moduleName)
 		}
 		return nil
 	}
@@ -152,11 +151,11 @@ func runMigrations(db *sql.DB, moduleName, migrationsPath, direction string, ste
 	// Получаем все применённые версии для этого модуля
 	appliedVersions, err := getAppliedVersions(db, moduleName)
 	if err != nil {
-		return fmt.Errorf("failed to get applied versions: %w", err)
+		return fmt.Errorf("не удалось загрузить версии: %w", err)
 	}
 
 	if verbose {
-		log.Printf("Applied versions for %s: %v", moduleName, appliedVersions)
+		log.Printf("Версии для %s: %v", moduleName, appliedVersions)
 	}
 
 	switch direction {
@@ -165,7 +164,7 @@ func runMigrations(db *sql.DB, moduleName, migrationsPath, direction string, ste
 	case "down":
 		return downMigrations(db, moduleName, migrations, appliedVersions, steps, verbose)
 	default:
-		return fmt.Errorf("unknown direction: %s", direction)
+		return fmt.Errorf("неизвестное направление: %s", direction)
 	}
 }
 
@@ -184,44 +183,44 @@ func upMigrations(db *sql.DB, moduleName string, migrations []Migration, applied
 
 	if len(toApply) == 0 {
 		if verbose {
-			log.Printf("No pending migrations for %s", moduleName)
+			log.Printf("Нет ожидающих миграций для %s", moduleName)
 		}
 		return nil
 	}
 
 	for _, m := range toApply {
 		if verbose {
-			log.Printf("Applying migration %d for %s", m.Version, moduleName)
+			log.Printf("Применение миграции %d для %s", m.Version, moduleName)
 		}
 
 		// Читаем SQL
 		content, err := os.ReadFile(m.UpPath)
 		if err != nil {
-			return fmt.Errorf("failed to read migration file %s: %w", m.UpPath, err)
+			return fmt.Errorf("не удалось прочитать файл миграции %s: %w", m.UpPath, err)
 		}
 
 		// Выполняем в транзакции
 		tx, err := db.Begin()
 		if err != nil {
-			return fmt.Errorf("failed to begin transaction: %w", err)
+			return fmt.Errorf("не удалось начать транзакцию: %w", err)
 		}
 
 		if _, err := tx.Exec(string(content)); err != nil {
 			tx.Rollback()
-			return fmt.Errorf("failed to execute migration %d: %w", m.Version, err)
+			return fmt.Errorf("не удалось выполнить миграцию %d: %w", m.Version, err)
 		}
 
 		// Записываем в таблицу миграций
 		if err := insertMigration(tx, moduleName, m.Version); err != nil {
 			tx.Rollback()
-			return fmt.Errorf("failed to record migration: %w", err)
+			return fmt.Errorf("не удалось зарегистрировать миграцию: %w", err)
 		}
 
 		if err := tx.Commit(); err != nil {
-			return fmt.Errorf("failed to commit transaction: %w", err)
+			return fmt.Errorf("не удалось зафиксировать транзакцию: %w", err)
 		}
 
-		log.Printf("✓ Applied migration %d for %s", m.Version, moduleName)
+		log.Printf("✓ Применена миграция %d для %s", m.Version, moduleName)
 	}
 
 	return nil
@@ -242,44 +241,44 @@ func downMigrations(db *sql.DB, moduleName string, migrations []Migration, appli
 
 	if len(toRollback) == 0 {
 		if verbose {
-			log.Printf("No migrations to rollback for %s", moduleName)
+			log.Printf("Нет миграций, которые необходимо отменить %s", moduleName)
 		}
 		return nil
 	}
 
 	for _, m := range toRollback {
 		if verbose {
-			log.Printf("Rolling back migration %d for %s", m.Version, moduleName)
+			log.Printf("Отмена миграции %d для %s", m.Version, moduleName)
 		}
 
 		// Проверяем наличие down-файла
 		if _, err := os.Stat(m.DownPath); os.IsNotExist(err) {
-			return fmt.Errorf("down migration file missing for version %d: %s", m.Version, m.DownPath)
+			return fmt.Errorf("отсутствует файл миграции для версии %d: %s", m.Version, m.DownPath)
 		}
 
 		content, err := os.ReadFile(m.DownPath)
 		if err != nil {
-			return fmt.Errorf("failed to read down migration file: %w", err)
+			return fmt.Errorf("не удалось прочитать файл миграции: %w", err)
 		}
 
 		tx, err := db.Begin()
 		if err != nil {
-			return fmt.Errorf("failed to begin transaction: %w", err)
+			return fmt.Errorf("не удалось начать транзакцию: %w", err)
 		}
 
 		if _, err := tx.Exec(string(content)); err != nil {
 			tx.Rollback()
-			return fmt.Errorf("failed to execute down migration %d: %w", m.Version, err)
+			return fmt.Errorf("не удалось выполнить понижающую миграцию %d: %w", m.Version, err)
 		}
 
 		// Удаляем запись из таблицы миграций
 		if err := deleteMigration(tx, moduleName, m.Version); err != nil {
 			tx.Rollback()
-			return fmt.Errorf("failed to delete migration record: %w", err)
+			return fmt.Errorf("не удалось удалить запись о миграции: %w", err)
 		}
 
 		if err := tx.Commit(); err != nil {
-			return fmt.Errorf("failed to commit transaction: %w", err)
+			return fmt.Errorf("не удалось зафиксировать транзакцию: %w", err)
 		}
 
 		log.Printf("✓ Rolled back migration %d for %s", m.Version, moduleName)
@@ -338,9 +337,9 @@ func forceVersion(db *sql.DB, moduleName string, version int64) error {
 		`, moduleName, version); err != nil {
 			return err
 		}
-		log.Printf("Forced version %d for %s", version, moduleName)
+		log.Printf("Принудительная версия %d для %s", version, moduleName)
 	} else {
-		log.Printf("Cleared all migrations for %s", moduleName)
+		log.Printf("Выполнены все миграции для %s", moduleName)
 	}
 	return nil
 }

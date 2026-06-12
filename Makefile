@@ -16,7 +16,7 @@ tidy:
 	go mod tidy
 
 
-DB_DSN ?= postgres://tiun:tiun@lab.note:5432/tiun?sslmode=disable
+DB_DSN ?= postgres://tiun:tiun@lab.raspi:5432/tiun?sslmode=disable
 
 
 # Запуск всех seed-данных
@@ -59,7 +59,7 @@ migrate-up:
 		echo "Usage: make migrate-up MODULE=farm"; \
 		exit 1; \
 	fi
-	 go run cmd/migrate/main.go -module=$(MODULE) -direction=up -dsn="$(DB_DSN)" -verbose=true
+	 go run cmd/migrate/main.go -module=$(MODULE) -direction=up -verbose=true
 
 migrate-down:
 	@if [ -z "$(MODULE)" ]; then \
@@ -70,7 +70,6 @@ migrate-down:
 		-module=$(MODULE) \
 		-direction=down \
 		-steps=$(STEPS) \
-		-dsn="$(DB_DSN)" \
 		-verbose=true
 
 migrate-create:
@@ -101,8 +100,7 @@ migrate-force:
 	fi
 	cd migrations && go run cmd/migrate/main.go \
 		-module=$(MODULE) \
-		-force=$(VERSION) \
-		-dsn="$(DB_DSN)"
+		-force=$(VERSION)
 
 migrate-status:
 	@if [ -z "$(MODULE)" ]; then \
