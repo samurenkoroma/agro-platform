@@ -26,6 +26,36 @@ var (
 	verbose    = flag.Bool("verbose", false, "Verbose output")
 )
 
+type module struct {
+	Name string
+	Path string
+}
+
+func getModules(moduleFlag string) []module {
+	allModules := []module{
+		//{Name: "shared", Path: "shared"},
+		{Name: "spatial", Path: "migrations/spatial"},
+		{Name: "agronomy", Path: "migrations/agronomy"},
+		{Name: "production", Path: "migrations/production"},
+		{Name: "account", Path: "migrations/account"},
+		{Name: "operations", Path: "migrations/operations"},
+		//{Name: "shared", Path: "shared/infrastructure/persistence/postgres/migrations"},
+	}
+
+	if moduleFlag == "all" {
+		return allModules
+	}
+
+	for _, m := range allModules {
+		if m.Name == moduleFlag {
+			return []module{m}
+		}
+	}
+
+	log.Fatalf("Unknown module: %s. Available: shared, farm, crop, growing, all", moduleFlag)
+	return nil
+}
+
 func main() {
 	flag.Parse()
 
@@ -319,33 +349,4 @@ type Migration struct {
 	Version  int64
 	UpPath   string
 	DownPath string
-}
-
-type module struct {
-	Name string
-	Path string
-}
-
-func getModules(moduleFlag string) []module {
-	allModules := []module{
-		//{Name: "shared", Path: "shared"},
-		{Name: "spatial", Path: "migrations/spatial"},
-		{Name: "agronomy", Path: "migrations/agronomy"},
-		{Name: "production", Path: "migrations/production"},
-		{Name: "account", Path: "migrations/account"},
-		//{Name: "shared", Path: "shared/infrastructure/persistence/postgres/migrations"},
-	}
-
-	if moduleFlag == "all" {
-		return allModules
-	}
-
-	for _, m := range allModules {
-		if m.Name == moduleFlag {
-			return []module{m}
-		}
-	}
-
-	log.Fatalf("Unknown module: %s. Available: shared, farm, crop, growing, all", moduleFlag)
-	return nil
 }

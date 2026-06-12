@@ -1,0 +1,241 @@
+### === OPERATIONS MODULE ===
+### POST /api/commands  { "command": "...", "data": {} }
+### POST /api/queries   { "query": "...",   "data": {} }
+
+@base = http://localhost:8080
+
+### --- TASKS ---
+
+### Создать задачу
+POST {{base}}/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "operations.create_task",
+  "data": {
+    "title": "Проверить полив секции A",
+    "description": "Убедиться что капельницы работают корректно",
+    "operationType": "IRRIGATED",
+    "priority": "HIGH",
+    "dueDate": "2026-06-20T10:00:00Z"
+  }
+}
+
+###
+
+### Создать задачу с привязкой к циклу
+POST {{base}}/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "operations.create_task",
+  "data": {
+    "title": "Внести удобрение NPK",
+    "operationType": "FERTILIZED",
+    "growingCycleId": "{{cycle_id}}",
+    "productionUnitId": "{{unit_id}}",
+    "priority": "MEDIUM"
+  }
+}
+
+###
+
+### Назначить задачу пользователю
+POST {{base}}/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "operations.assign_task",
+  "data": {
+    "taskId": "{{task_id}}",
+    "userId": "{{user_id}}"
+  }
+}
+
+###
+
+### Взять задачу в работу
+POST {{base}}/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "operations.start_task",
+  "data": { "taskId": "{{task_id}}" }
+}
+
+###
+
+### Завершить задачу
+POST {{base}}/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "operations.complete_task",
+  "data": { "taskId": "{{task_id}}" }
+}
+
+###
+
+### Отменить задачу
+POST {{base}}/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "operations.cancel_task",
+  "data": { "taskId": "{{task_id}}" }
+}
+
+###
+
+### Получить задачу по ID
+POST {{base}}/api/queries/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "operations.get_task",
+  "data": { "id": "{{task_id}}" }
+}
+
+###
+
+### Список всех задач фермы
+POST {{base}}/api/queries/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "operations.list_tasks",
+  "data": {}
+}
+
+###
+
+### Список задач по циклу
+POST {{base}}/api/queries/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "operations.list_tasks",
+  "data": { "growingCycleId": "{{cycle_id}}" }
+}
+
+###
+
+### --- OPERATION EVENTS ---
+
+### Зафиксировать полив
+POST {{base}}/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "operations.record_operation",
+  "data": {
+    "type": "IRRIGATED",
+    "growingCycleId": "{{cycle_id}}",
+    "productionUnitId": "{{unit_id}}",
+    "payload": {
+      "volumeLiters": 120,
+      "durationMinutes": 45,
+      "method": "drip"
+    }
+  }
+}
+
+###
+
+### Зафиксировать внесение удобрений
+POST {{base}}/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "operations.record_operation",
+  "data": {
+    "type": "FERTILIZED",
+    "growingCycleId": "{{cycle_id}}",
+    "payload": {
+      "productName": "NPK 20-20-20",
+      "amountGrams": 500,
+      "targetEC": 2.8
+    }
+  }
+}
+
+###
+
+### Зафиксировать регулировку pH
+POST {{base}}/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "operations.record_operation",
+  "data": {
+    "type": "PH_ADJUSTED",
+    "growingCycleId": "{{cycle_id}}",
+    "payload": {
+      "before": 7.2,
+      "after": 6.1,
+      "agent": "pH Down"
+    }
+  }
+}
+
+###
+
+### Список операций по циклу
+POST {{base}}/api/queries/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "operations.list_operations",
+  "data": { "growingCycleId": "{{cycle_id}}" }
+}
+
+###
+
+### Все операции фермы
+POST {{base}}/api/queries/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "operations.list_operations",
+  "data": {}
+}
+
+###
+
+### --- TIMELINE ---
+
+### Таймлайн цикла выращивания
+POST {{base}}/api/queries/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "operations.get_timeline",
+  "data": { "growingCycleId": "{{cycle_id}}" }
+}
+
+###
+
+### Общий таймлайн фермы
+POST {{base}}/api/queries/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "operations.get_timeline",
+  "data": {}
+}

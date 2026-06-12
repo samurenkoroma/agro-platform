@@ -1,0 +1,34 @@
+package task
+
+import (
+	"context"
+	"errors"
+
+	"github.com/samurenkoroma/agro-platform/internal/application/queries"
+	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
+)
+
+type listHandler struct{ proj Projection }
+
+func NewList(proj Projection) queries.Handler { return &listHandler{proj: proj} }
+
+type ListQuery struct {
+	GrowingCycleID *string `json:"growingCycleId,omitempty"`
+}
+
+func (h *listHandler) Ask(ctx context.Context, payload any) (any, error) {
+	q, ok := payload.(*ListQuery)
+	if !ok {
+		return nil, queries.ErrInvalidQueryType
+	}
+	orgID, ok := ctx.Value("organization_id").(string)
+	if !ok {
+		return nil, errors.New("organization_id is required")
+	}
+	var cycleID *vo.ID
+	if q.GrowingCycleID != nil {
+		id := vo.ID(*q.GrowingCycleID)
+		cycleID = &id
+	}
+	return h.proj.List(ctx, vo.ID(orgID), cycleID)
+}
