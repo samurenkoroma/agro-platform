@@ -1,5 +1,7 @@
 package repository
 
 type InventoryProvider interface {
-	//inventoryrepo.
+	Items() InventoryRepository
+	Movements() MovementRepository
+	Warehouses() WarehouseRepository
 }

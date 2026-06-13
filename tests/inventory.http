@@ -1,0 +1,266 @@
+### === INVENTORY MODULE ===
+### POST /api/commands  { "command": "...", "data": {} }
+### POST /api/queries   { "query": "...",   "data": {} }
+
+@base = http://localhost:8080
+
+### --- WAREHOUSES ---
+
+### Создать склад
+POST {{base}}/api/commands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "inventory.create_warehouse",
+  "data": {
+    "name": "Главный склад",
+    "code": "WH-MAIN"
+  }
+}
+
+###
+
+### Архивировать склад
+POST {{base}}/api/commands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "inventory.archive_warehouse",
+  "data": {
+    "warehouseId": "{{warehouse_id}}"
+  }
+}
+
+###
+
+### Список складов
+POST {{base}}/api/queries
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "inventory.list_warehouses",
+  "data": {}
+}
+
+###
+
+### --- ITEMS ---
+
+### Добавить позицию: семена
+POST {{base}}/api/commands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "inventory.create_item",
+  "data": {
+    "name": "Семена базилика Генуэзский",
+    "type": "SEED",
+    "unit": "g",
+    "sku": "SEED-BAS-001",
+    "warehouseId": "{{warehouse_id}}"
+  }
+}
+
+###
+
+### Добавить позицию: удобрение
+POST {{base}}/api/commands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "inventory.create_item",
+  "data": {
+    "name": "Удобрение NPK 20-20-20",
+    "type": "FERTILIZER",
+    "unit": "kg",
+    "sku": "FERT-NPK-001"
+  }
+}
+
+###
+
+### Добавить позицию: субстрат
+POST {{base}}/api/commands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "inventory.create_item",
+  "data": {
+    "name": "Кокосовый субстрат",
+    "type": "SUBSTRATE",
+    "unit": "L"
+  }
+}
+
+###
+
+### Получить позицию
+POST {{base}}/api/queries
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "inventory.get_item",
+  "data": { "id": "{{item_id}}" }
+}
+
+###
+
+### Список всех позиций
+POST {{base}}/api/queries
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "inventory.list_items",
+  "data": {}
+}
+
+###
+
+### Список позиций по складу
+POST {{base}}/api/queries
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "inventory.list_items",
+  "data": { "warehouseId": "{{warehouse_id}}" }
+}
+
+###
+
+### --- STOCK OPERATIONS ---
+
+### Приход: оприходовать 500г семян
+POST {{base}}/api/commands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "inventory.receive",
+  "data": {
+    "itemId": "{{item_id}}",
+    "amount": 500,
+    "note": "Поставка от 12.06.2026"
+  }
+}
+
+###
+
+### Резервирование: зарезервировать под цикл выращивания
+POST {{base}}/api/commands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "inventory.reserve",
+  "data": {
+    "itemId": "{{item_id}}",
+    "amount": 50,
+    "referenceType": "GROWING_CYCLE",
+    "referenceId": "{{cycle_id}}"
+  }
+}
+
+###
+
+### Списание: потратить зарезервированное
+POST {{base}}/api/commands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "inventory.consume",
+  "data": {
+    "itemId": "{{item_id}}",
+    "amount": 30,
+    "referenceType": "GROWING_CYCLE",
+    "referenceId": "{{cycle_id}}",
+    "note": "Посев блока A"
+  }
+}
+
+###
+
+### Списание: задача как источник
+POST {{base}}/api/commands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "inventory.consume",
+  "data": {
+    "itemId": "{{fertilizer_id}}",
+    "amount": 2.5,
+    "referenceType": "TASK",
+    "referenceId": "{{task_id}}",
+    "note": "Внесение по задаче"
+  }
+}
+
+###
+
+### Потеря: списать как утраченное
+POST {{base}}/api/commands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "inventory.mark_lost",
+  "data": {
+    "itemId": "{{item_id}}",
+    "amount": 10,
+    "note": "Просыпано при пересыпке"
+  }
+}
+
+###
+
+### Перемещение между складами
+POST {{base}}/api/commands
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "command": "inventory.transfer",
+  "data": {
+    "itemId": "{{item_id}}",
+    "amount": 100,
+    "fromWarehouseId": "{{warehouse_id}}",
+    "toWarehouseId": "{{warehouse_id_2}}",
+    "note": "Перемещение на производство"
+  }
+}
+
+###
+
+### --- MOVEMENTS ---
+
+### История движений по позиции
+POST {{base}}/api/queries
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "inventory.list_movements",
+  "data": { "itemId": "{{item_id}}" }
+}
+
+###
+
+### Все движения фермы
+POST {{base}}/api/queries
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "inventory.list_movements",
+  "data": {}
+}

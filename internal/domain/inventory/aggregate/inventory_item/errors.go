@@ -3,7 +3,8 @@ package inventoryitem
 import "errors"
 
 var (
-	ErrNegativeAmount       = errors.New("negative amount")
-	ErrInsufficientStock    = errors.New("insufficient stock")
+	ErrItemNotFound         = errors.New("inventory item not found")
+	ErrNegativeAmount       = errors.New("amount must be positive")
+	ErrInsufficientStock    = errors.New("insufficient available stock")
 	ErrInsufficientReserved = errors.New("insufficient reserved stock")
 )

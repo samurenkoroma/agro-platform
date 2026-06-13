@@ -3,5 +3,6 @@ package movement
 import "errors"
 
 var (
-	ErrInvalidQuantity = errors.New("invalid quantity")
+	ErrMovementNotFound = errors.New("movement not found")
+	ErrInvalidQuantity  = errors.New("quantity must be positive")
 )
