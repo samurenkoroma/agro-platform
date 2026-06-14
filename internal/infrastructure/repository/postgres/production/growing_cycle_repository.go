@@ -34,14 +34,13 @@ func (r *growingCycleRepository) Save(ctx context.Context, cycle *growingcycle.G
 			method,
 			status,
 			stage,
-			expected_harvest_at,
 			created_at,
 			updated_at
 		)
 		VALUES (
 			$1,$2,$3,$4,$5,
 			$6,$7,$8,$9,$10,
-			$11,$12,$13
+			$11,$12
 		)
 		ON CONFLICT (id)
 		DO UPDATE SET
@@ -54,7 +53,6 @@ func (r *growingCycleRepository) Save(ctx context.Context, cycle *growingcycle.G
 			method = EXCLUDED.method,
 			status = EXCLUDED.status,
 			stage = EXCLUDED.stage,
-			expected_harvest_at = EXCLUDED.expected_harvest_at,
 			updated_at = EXCLUDED.updated_at
 	`,
 		cycle.ID,
@@ -67,7 +65,6 @@ func (r *growingCycleRepository) Save(ctx context.Context, cycle *growingcycle.G
 		cycle.Method,
 		cycle.Status,
 		cycle.Stage,
-		cycle.ExpectedHarvestAt,
 		cycle.CreatedAt,
 		cycle.UpdatedAt,
 	)

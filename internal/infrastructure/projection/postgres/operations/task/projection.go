@@ -52,7 +52,7 @@ func (p *projection) List(ctx context.Context, farmID vo.ID, cycleID *vo.ID) ([]
 		return nil, err
 	}
 	defer rows.Close()
-	var result []*taskquery.TaskDTO
+	result := make([]*taskquery.TaskDTO, 0)
 	for rows.Next() {
 		dto, err := scanTaskDTO(rows)
 		if err != nil {

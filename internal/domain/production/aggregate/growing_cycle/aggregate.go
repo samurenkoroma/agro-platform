@@ -26,8 +26,6 @@ type GrowingCycle struct {
 	Status CycleStatus
 	Stage  CycleStage
 
-	ExpectedHarvestAt *time.Time
-
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -50,4 +48,20 @@ func New(orgId, cropID vo.ID, varietyId, protocolId *vo.ID, name, code string, m
 	}
 
 	return root
+}
+
+func (gc GrowingCycle) ChangeState(state CycleStage) {
+	if state == "" {
+		gc.Stage = StagePlanning
+		return
+	}
+	gc.Stage = state
+}
+
+func (gc GrowingCycle) ChangeStatus(status CycleStatus) {
+	if status == "" {
+		gc.Status = StatusPlanned
+		return
+	}
+	gc.Status = status
 }

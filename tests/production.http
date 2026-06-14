@@ -16,38 +16,9 @@ Authorization: Bearer {{jwt_token}}
 
 POST http://localhost:8080/api/commands/
 Content-Type: application/json
-Authorization: Bearer {{jwt_token}}
+Authorization: Bearer {{token}}
 
-{
-  "command": "production.create_cycle",
-  "data": {
-    "name": "Tomato Spring 2027",
-    "code": "TOM-2027-001",
-    "crop_id": "crop-id",
-    "variety_id": "variety-id",
-    "protocol_id": "protocol-id",
-    "method": "greenhouse",
-    "expected_harvest_at": "2027-07-15T00:00:00Z",
-    "allocations": [
-      {
-        "production_unit_id": "unit-1",
-        "area": 1.2,
-        "started_at": "2027-02-01T00:00:00Z"
-      },
-      {
-        "production_unit_id": "unit-2",
-        "area": 0.8,
-        "started_at": "2027-02-01T00:00:00Z"
-      }
-    ],
-    "plantings": [
-      {
-        "planted_at": "2027-02-05T00:00:00Z",
-        "quantity": 15000
-      }
-    ]
-  }
-}
+{"command":"production.start_cycle","data":{"name":"Морковь  - прямой посев(6/2026)","code":"morkov:direct_sow:6/2026","cropID":"764903ba-57e0-4a5d-8f72-a4d6c610df89","varietyID":"923f31bf-9128-44c1-a8ab-11bd915c28c8","status":"paused","stage":"seedling","method":"direct_sow","allocations":[{"productionUnitID":"7be1fe37-af40-41f2-818b-dd563fe683cd","area":0.0144,"startedAt":"2026-06-14T00:00:00.000Z"}],"plantings":[]}}
 
 ###
 

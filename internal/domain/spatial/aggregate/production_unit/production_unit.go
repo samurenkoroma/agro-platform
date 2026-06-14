@@ -64,3 +64,21 @@ func (obj *ProductionUnit) AddDimensions(dim *Dimensions) {
 		obj.Area = (w * l) / 10000
 	}
 }
+
+func (obj *ProductionUnit) Occupy() {
+	obj.Status = Growing
+	obj.UpdatedAt = time.Now()
+	//obj.AddEvent(NewProductionUnitOccupied(obj.ID))
+}
+
+func (obj *ProductionUnit) Release() {
+	obj.Status = Empty
+	obj.UpdatedAt = time.Now()
+	obj.AddEvent(NewProductionUnitReleased(obj.ID))
+}
+
+func (obj *ProductionUnit) SetPreparation() {
+	obj.Status = Preparation
+	obj.UpdatedAt = time.Now()
+	obj.AddEvent(NewProductionUnitInPreparation(obj.ID))
+}

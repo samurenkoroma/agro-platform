@@ -42,7 +42,7 @@ func (p *projection) List(ctx context.Context, farmID vo.ID, itemID *vo.ID) ([]*
 		return nil, err
 	}
 	defer rows.Close()
-	var result []*movquery.MovementDTO
+	result := make([]*movquery.MovementDTO, 0)
 	for rows.Next() {
 		var dto movquery.MovementDTO
 		if err := rows.Scan(

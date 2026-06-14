@@ -24,7 +24,6 @@ func (p *projection) Get(ctx context.Context, id vo.ID) (*growingcycle.DTO, erro
        v.name variety_name,
        status,
        stage,
-       expected_harvest_at,
        cycle.created_at
 FROM production_growing_cycles cycle
          left join crops c on crop_id = c.id

@@ -40,13 +40,19 @@ func NewUnitOfWork(ctx context.Context, pool *pgxpool.Pool, bus bus.EventBus) uo
 }
 
 func (u *unitOfWork) Execute(ctx context.Context, build func(db uow.DB) repository.RepositoryProvider, fn func(provider repository.RepositoryProvider) (any, error)) (any, error) {
+	u.mu.Lock()
+	u.committed = false
+	u.rolledBack = false
+	u.aggregates = nil
+	u.ctx = ctx
+	u.mu.Unlock()
 	// Создаем провайдер для этой транзакции
-	provider := build(u.pool)
-
 	tx, err := u.pool.Begin(ctx)
 	if err != nil {
 		return nil, err
 	}
+
+	provider := build(tx)
 
 	// Выполняем бизнес-логику
 	data, err := fn(provider)
@@ -74,15 +80,22 @@ func (u *unitOfWork) RegisterAggregate(agg aggregate.Aggregate) {
 }
 
 func (u *unitOfWork) Commit(tx pgx.Tx) error {
+
 	u.mu.Lock()
-	defer u.mu.Unlock()
 
 	if u.committed {
+		u.mu.Unlock()
 		return ErrAlreadyCommitted
 	}
+
 	if u.rolledBack {
+		u.mu.Unlock()
 		return ErrAlreadyRolledBack
 	}
+
+	u.committed = true
+
+	u.mu.Unlock()
 
 	if err := tx.Commit(u.ctx); err != nil {
 		return err
@@ -106,9 +119,17 @@ func (u *unitOfWork) Rollback(tx pgx.Tx) error {
 }
 
 func (u *unitOfWork) dispatchEvents() error {
+
+	u.mu.Lock()
+
+	aggregates := u.aggregates
+	u.aggregates = nil
+
+	u.mu.Unlock()
+
 	var allEvents []event.DomainEvent
 
-	for _, agg := range u.aggregates {
+	for _, agg := range aggregates {
 		allEvents = append(allEvents, agg.PullEvents()...)
 	}
 

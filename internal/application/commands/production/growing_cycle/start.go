@@ -36,8 +36,8 @@ func (h *Handler) Start(ctx context.Context, payload any) (any, error) {
 			cmd.VarietyID, cmd.ProtocolID,
 			cmd.Name, cmd.Code, cmd.Method)
 
-		cycle.Stage = cmd.Stage
-		cycle.Status = cmd.Status
+		cycle.ChangeState(cmd.Stage)
+		cycle.ChangeStatus(cmd.Status)
 		cycle.Method = cmd.Method
 
 		if err := productionProvider.GrowingCycles().Save(ctx, cycle); err != nil {

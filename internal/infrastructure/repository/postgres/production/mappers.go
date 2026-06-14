@@ -19,7 +19,6 @@ func scanGrowingCycle(root *growingcycle.GrowingCycle) []any {
 		&root.Method,
 		&root.Status,
 		&root.Stage,
-		&root.ExpectedHarvestAt,
 		&root.CreatedAt,
 		&root.UpdatedAt,
 	}

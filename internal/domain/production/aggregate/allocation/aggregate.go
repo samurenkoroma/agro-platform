@@ -30,5 +30,7 @@ func New(cycleID, productionUnitID vo.ID, area float64, startedAt *time.Time) *A
 		CreatedAt:        now,
 		UpdatedAt:        now,
 	}
+
+	a.AddEvent(NewAllocationAllocated(a.ID, productionUnitID))
 	return a
 }

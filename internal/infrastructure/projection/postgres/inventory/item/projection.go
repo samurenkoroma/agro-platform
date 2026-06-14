@@ -48,7 +48,7 @@ func (p *projection) List(ctx context.Context, farmID vo.ID, warehouseID *vo.ID)
 		return nil, err
 	}
 	defer rows.Close()
-	var result []*itemquery.ItemDTO
+	result := make([]*itemquery.ItemDTO, 0)
 	for rows.Next() {
 		dto, err := scanItemDTO(rows)
 		if err != nil {

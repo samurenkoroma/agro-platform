@@ -7,6 +7,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands"
+	eventhandlers "github.com/samurenkoroma/agro-platform/internal/application/event_handlers"
 	"github.com/samurenkoroma/agro-platform/internal/application/modules"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries"
 	unitOfWork "github.com/samurenkoroma/agro-platform/internal/application/uow"
@@ -44,6 +45,7 @@ func Build(ctx context.Context, pool *pgxpool.Pool, conf *configs.Config) (*App,
 		module.RegisterQueries(queryRouter)
 		module.RegisterCommands(commandRouter)
 	}
+	eventhandlers.RegisterAllocationHandlers(bus, uow)
 
 	httpHandler := http2.NewRouter(http2.RouterConfig{
 		CommandRouter: commandRouter,

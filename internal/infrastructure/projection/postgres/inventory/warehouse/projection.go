@@ -22,7 +22,7 @@ func (p *projection) List(ctx context.Context, farmID vo.ID) ([]*whquery.Warehou
 		return nil, err
 	}
 	defer rows.Close()
-	var result []*whquery.WarehouseDTO
+	result := make([]*whquery.WarehouseDTO, 0)
 	for rows.Next() {
 		var dto whquery.WarehouseDTO
 		if err := rows.Scan(&dto.ID, &dto.Name, &dto.Code, &dto.CreatedAt); err != nil {

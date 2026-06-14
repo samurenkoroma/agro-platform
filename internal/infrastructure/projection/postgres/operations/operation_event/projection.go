@@ -37,7 +37,7 @@ func (p *projection) List(ctx context.Context, farmID vo.ID, cycleID *vo.ID) ([]
 		return nil, err
 	}
 	defer rows.Close()
-	var result []*opquery.OperationDTO
+	result := make([]*opquery.OperationDTO, 0)
 	for rows.Next() {
 		var dto opquery.OperationDTO
 		var payloadJSON []byte

@@ -9,7 +9,29 @@ const (
 	EventCreated = "production_unit.created"
 
 	EventAttached = "production_unit.attached"
+
+	EventOccupied      = "production_unit.occupied"
+	EventReleased      = "production_unit.released"
+	EventInPreparation = "production_unit.in_preparation"
 )
+
+type ProductionUnitOccupied struct{ ev.BaseEvent }
+
+func NewProductionUnitOccupied(id vo.ID) ProductionUnitOccupied {
+	return ProductionUnitOccupied{ev.NewBaseEvent(id, EventOccupied)}
+}
+
+type ProductionUnitReleased struct{ ev.BaseEvent }
+
+func NewProductionUnitReleased(id vo.ID) ProductionUnitReleased {
+	return ProductionUnitReleased{ev.NewBaseEvent(id, EventReleased)}
+}
+
+type ProductionUnitInPreparation struct{ ev.BaseEvent }
+
+func NewProductionUnitInPreparation(id vo.ID) ProductionUnitInPreparation {
+	return ProductionUnitInPreparation{ev.NewBaseEvent(id, EventInPreparation)}
+}
 
 type ProductionUnitCreated struct {
 	ev.BaseEvent

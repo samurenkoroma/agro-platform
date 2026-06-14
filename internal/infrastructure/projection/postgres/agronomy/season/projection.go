@@ -22,7 +22,7 @@ WHERE owner_id = $1 ORDER BY start_date DESC`
 		return nil, fmt.Errorf("failed to query seasons: %w", err)
 	}
 	defer rows.Close()
-	var items = []season.SeasonItem{}
+	items := make([]season.SeasonItem, 0)
 	for rows.Next() {
 		var item season.SeasonItem = season.SeasonItem{
 			Id:        "",
