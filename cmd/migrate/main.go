@@ -33,10 +33,10 @@ type module struct {
 func getModules(moduleFlag string) []module {
 	allModules := []module{
 		//{Name: "shared", Path: "shared"},
+		{Name: "account", Path: "migrations/account"},
 		{Name: "spatial", Path: "migrations/spatial"},
 		{Name: "agronomy", Path: "migrations/agronomy"},
 		{Name: "production", Path: "migrations/production"},
-		{Name: "account", Path: "migrations/account"},
 		{Name: "operations", Path: "migrations/operations"},
 		{Name: "inventory", Path: "migrations/inventory"},
 		//{Name: "shared", Path: "shared/infrastructure/persistence/postgres/migrations"},

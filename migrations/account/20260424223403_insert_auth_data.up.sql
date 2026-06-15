@@ -2,7 +2,7 @@ INSERT INTO auth_users (id, email, username, password, first_name, last_name, ro
 VALUES ('00000000-0000-0000-0000-000000000001',
         'admin@example.com',
         'admin',
-        '$2a$10$N9qo8uLOickgx2ZMRZoMy.MrJkq6dVg8qKjG7QwYqZ5YtYtYtYtY', -- admin123
+        '$2a$10$bwLn.9DsX7qYv3eaQevBVOdOJDozrrRhjUAkUKgZD1XlaPCfiUdnm', 
         'Admin',
         'User',
         'super_admin',
