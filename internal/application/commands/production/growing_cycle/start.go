@@ -6,6 +6,7 @@ import (
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/allocation"
 	growingcycle "github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/growing_cycle"
 	production "github.com/samurenkoroma/agro-platform/internal/domain/production/repository"
@@ -25,7 +26,7 @@ func (h *Handler) Start(ctx context.Context, payload any) (any, error) {
 		return nil, errors.New("organization_id is required")
 	}
 
-	return h.uow.Execute(ctx, providers.NewProductionProvider, func(provider repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewProductionProvider, func(provider repository.RepositoryProvider, exec uow.Execution) (any, error) {
 		productionProvider, ok := provider.(production.ProductionProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType
@@ -44,14 +45,14 @@ func (h *Handler) Start(ctx context.Context, payload any) (any, error) {
 			return nil, err
 		}
 
-		h.uow.RegisterAggregate(cycle)
+		exec.RegisterAggregate(cycle)
 
 		for _, a := range cmd.Allocations {
 			alloc := allocation.New(cycle.ID, a.ProductionUnitID, a.Area, &a.StartedAt)
 			if err := productionProvider.Allocation().Save(ctx, alloc); err != nil {
 				return nil, err
 			}
-			h.uow.RegisterAggregate(alloc)
+			exec.RegisterAggregate(alloc)
 		}
 
 		return response.Id(cycle.ID), nil

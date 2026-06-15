@@ -6,6 +6,7 @@ import (
 	"time"
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/season"
 	agronomy "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/repository"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
@@ -44,7 +45,7 @@ func (h *Handler) Create(ctx context.Context, cmd any) (any, error) {
 		return nil, errors.New("user_id is required")
 	}
 
-	return h.uow.Execute(ctx, providers.NewAgronomyProvider, func(provider repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewAgronomyProvider, func(provider repository.RepositoryProvider, exec uow.Execution) (any, error) {
 		agronomyProvider, ok := provider.(agronomy.AgronomyProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType
@@ -59,7 +60,7 @@ func (h *Handler) Create(ctx context.Context, cmd any) (any, error) {
 			return nil, err
 		}
 
-		h.uow.RegisterAggregate(newSeason)
+		exec.RegisterAggregate(newSeason)
 
 		return nil, nil
 	})

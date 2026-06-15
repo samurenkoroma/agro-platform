@@ -5,6 +5,7 @@ import (
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/domain/production/aggregate/allocation"
 	production "github.com/samurenkoroma/agro-platform/internal/domain/production/repository"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/providers"
@@ -17,7 +18,7 @@ func (h *Handler) AllocateProductionUnit(ctx context.Context, payload any) (any,
 		return nil, command.ErrInvalidCommandType
 	}
 
-	return h.uow.Execute(ctx, providers.NewProductionProvider, func(provider repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewProductionProvider, func(provider repository.RepositoryProvider, exec uow.Execution) (any, error) {
 		productionProvider, ok := provider.(production.ProductionProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType
@@ -34,7 +35,7 @@ func (h *Handler) AllocateProductionUnit(ctx context.Context, payload any) (any,
 			return nil, err
 		}
 
-		h.uow.RegisterAggregate(item)
+		exec.RegisterAggregate(item)
 		return response.Id(item.ID), nil
 	})
 }

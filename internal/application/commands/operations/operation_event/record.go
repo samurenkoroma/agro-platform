@@ -6,6 +6,7 @@ import (
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	operationevent "github.com/samurenkoroma/agro-platform/internal/domain/operations/aggregate/operation_event"
 	tl "github.com/samurenkoroma/agro-platform/internal/domain/operations/aggregate/timeline"
 	opsrepo "github.com/samurenkoroma/agro-platform/internal/domain/operations/repository"
@@ -32,7 +33,7 @@ func (h *Handler) Record(ctx context.Context, payload any) (any, error) {
 	}
 	userID, _ := ctx.Value("user_id").(string)
 
-	return h.uow.Execute(ctx, providers.NewOperationsProvider, func(p repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewOperationsProvider, func(p repository.RepositoryProvider, exec uow.Execution) (any, error) {
 		ops, ok := p.(opsrepo.OperationsProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType
@@ -85,7 +86,7 @@ func (h *Handler) Record(ctx context.Context, payload any) (any, error) {
 		if err := ops.Timelines().Save(ctx, timeline); err != nil {
 			return nil, err
 		}
-		h.uow.RegisterAggregate(timeline)
+		exec.RegisterAggregate(timeline)
 
 		return response.Id(e.ID), nil
 	})

@@ -4,9 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sync"
 
-	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/domain/shared/aggregate"
@@ -21,121 +19,70 @@ var (
 )
 
 type unitOfWork struct {
-	committed  bool
-	rolledBack bool
-
-	mu         sync.Mutex
-	aggregates []aggregate.Aggregate
-	pool       *pgxpool.Pool
-	ctx        context.Context
-	bus        bus.EventBus
+	pool *pgxpool.Pool
+	bus  bus.EventBus
 }
 
-func NewUnitOfWork(ctx context.Context, pool *pgxpool.Pool, bus bus.EventBus) uow.UnitOfWork {
+func NewUnitOfWork(pool *pgxpool.Pool, bus bus.EventBus) uow.UnitOfWork {
 	return &unitOfWork{
 		pool: pool,
-		ctx:  ctx,
 		bus:  bus,
 	}
 }
 
-func (u *unitOfWork) Execute(ctx context.Context, build func(db uow.DB) repository.RepositoryProvider, fn func(provider repository.RepositoryProvider) (any, error)) (any, error) {
-	u.mu.Lock()
-	u.committed = false
-	u.rolledBack = false
-	u.aggregates = nil
-	u.ctx = ctx
-	u.mu.Unlock()
-	// Создаем провайдер для этой транзакции
+func (u *unitOfWork) Execute(ctx context.Context, build func(db uow.DB) repository.RepositoryProvider, fn func(provider repository.RepositoryProvider, exec uow.Execution) (any, error)) (any, error) {
+
 	tx, err := u.pool.Begin(ctx)
 	if err != nil {
 		return nil, err
 	}
 
+	exec := &execution{
+		ctx:        ctx,
+		aggregates: make([]aggregate.Aggregate, 0),
+	}
+
 	provider := build(tx)
 
-	// Выполняем бизнес-логику
-	data, err := fn(provider)
+	data, err := fn(provider, exec)
 	if err != nil {
-		// В случае ошибки — откат
+
 		if rbErr := tx.Rollback(ctx); rbErr != nil {
 			return nil, fmt.Errorf("rollback error: %v, original error: %w", rbErr, err)
 		}
+
 		return nil, err
 	}
 
-	// Пробуем закоммитить
-	if err := u.Commit(tx); err != nil {
-		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	if err := tx.Commit(ctx); err != nil {
+		return nil, err
+	}
+
+	if err := u.dispatchEvents(ctx, exec); err != nil {
+		return nil, err
 	}
 
 	return data, nil
 }
 
-func (u *unitOfWork) RegisterAggregate(agg aggregate.Aggregate) {
-	u.mu.Lock()
-	defer u.mu.Unlock()
+func (u *unitOfWork) dispatchEvents(ctx context.Context, exec *execution) error {
 
-	u.aggregates = append(u.aggregates, agg)
-}
+	for {
 
-func (u *unitOfWork) Commit(tx pgx.Tx) error {
+		var events []event.DomainEvent
 
-	u.mu.Lock()
+		for _, agg := range exec.aggregates {
+			events = append(events, agg.PullEvents()...)
+		}
 
-	if u.committed {
-		u.mu.Unlock()
-		return ErrAlreadyCommitted
+		exec.aggregates = nil
+
+		if len(events) == 0 {
+			return nil
+		}
+
+		if err := u.bus.Publish(ctx, events); err != nil {
+			return err
+		}
 	}
-
-	if u.rolledBack {
-		u.mu.Unlock()
-		return ErrAlreadyRolledBack
-	}
-
-	u.committed = true
-
-	u.mu.Unlock()
-
-	if err := tx.Commit(u.ctx); err != nil {
-		return err
-	}
-
-	return u.dispatchEvents()
-}
-
-func (u *unitOfWork) Rollback(tx pgx.Tx) error {
-	u.mu.Lock()
-	defer u.mu.Unlock()
-
-	if u.committed {
-		return ErrAlreadyCommitted
-	}
-	if u.rolledBack {
-		return ErrAlreadyRolledBack
-	}
-	u.rolledBack = true
-	return tx.Rollback(u.ctx)
-}
-
-func (u *unitOfWork) dispatchEvents() error {
-
-	u.mu.Lock()
-
-	aggregates := u.aggregates
-	u.aggregates = nil
-
-	u.mu.Unlock()
-
-	var allEvents []event.DomainEvent
-
-	for _, agg := range aggregates {
-		allEvents = append(allEvents, agg.PullEvents()...)
-	}
-
-	if len(allEvents) == 0 {
-		return nil
-	}
-
-	return u.bus.Publish(u.ctx, allEvents)
 }

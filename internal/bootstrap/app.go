@@ -27,7 +27,7 @@ type App struct {
 
 func Build(ctx context.Context, pool *pgxpool.Pool, conf *configs.Config) (*App, error) {
 	bus := inmemory.NewInMemoryEventBus()
-	uow := postgres.NewUnitOfWork(ctx, pool, bus)
+	uow := postgres.NewUnitOfWork(pool, bus)
 	jwtService := jwt.NewService(conf.Auth)
 	commandRouter := commands.NewRouter()
 	queryRouter := queries.NewRouter()

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	variety "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/aggregate/variety"
 	agronomy "github.com/samurenkoroma/agro-platform/internal/domain/agronomy/repository"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
@@ -22,7 +23,7 @@ type CreateVarietyCommand struct {
 func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 	cmd := payload.(*CreateVarietyCommand)
 
-	return h.uow.Execute(ctx, providers.NewAgronomyProvider, func(provider repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewAgronomyProvider, func(provider repository.RepositoryProvider, exec uow.Execution) (any, error) {
 		agronomyProvider, ok := provider.(agronomy.AgronomyProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType
@@ -53,7 +54,7 @@ func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 			return nil, err
 		}
 
-		h.uow.RegisterAggregate(root)
+		exec.RegisterAggregate(root)
 
 		return response.Id(root.ID), nil
 	})

@@ -7,6 +7,7 @@ import (
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	taskdomain "github.com/samurenkoroma/agro-platform/internal/domain/operations/aggregate/task"
 	opsrepo "github.com/samurenkoroma/agro-platform/internal/domain/operations/repository"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
@@ -34,7 +35,7 @@ func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 		return nil, errors.New("organization_id is required")
 	}
 
-	return h.uow.Execute(ctx, providers.NewOperationsProvider, func(p repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewOperationsProvider, func(p repository.RepositoryProvider, exec uow.Execution) (any, error) {
 		ops, ok := p.(opsrepo.OperationsProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType
@@ -59,7 +60,7 @@ func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 		if err := ops.Tasks().Save(ctx, t); err != nil {
 			return nil, err
 		}
-		h.uow.RegisterAggregate(t)
+		exec.RegisterAggregate(t)
 		return response.Id(t.ID), nil
 	})
 }

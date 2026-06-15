@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	account "github.com/samurenkoroma/agro-platform/internal/domain/account/aggregate/user"
 	domain "github.com/samurenkoroma/agro-platform/internal/domain/account/repository"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/providers"
@@ -54,7 +55,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	h.uow.Execute(ctx, providers.NewAccountProvider, func(provider repository.RepositoryProvider) (any, error) {
+	h.uow.Execute(ctx, providers.NewAccountProvider, func(provider repository.RepositoryProvider, exec uow.Execution) (any, error) {
 		// Приводим провайдер к нужному типу
 		authProvider, ok := provider.(domain.AccountProvider)
 		if !ok {
@@ -97,7 +98,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 			return nil, err
 		}
 
-		h.uow.RegisterAggregate(user)
+		exec.RegisterAggregate(user)
 		response.Success(RegisterResponse{
 			UserID:   user.ID,
 			Email:    user.Email,

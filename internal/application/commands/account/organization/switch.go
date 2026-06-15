@@ -7,6 +7,7 @@ import (
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries/account/dto"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/domain/account/aggregate/user"
 	domain "github.com/samurenkoroma/agro-platform/internal/domain/account/repository"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/jwt"
@@ -35,7 +36,7 @@ func (h *OrganizationHandler) Switch(ctx context.Context, cmd any) (any, error) 
 		return nil, user.ErrUnauthorized
 	}
 
-	return h.uow.Execute(ctx, providers.NewAccountProvider, func(provider repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewAccountProvider, func(provider repository.RepositoryProvider, exec uow.Execution) (any, error) {
 
 		authProvider, ok := provider.(domain.AccountProvider)
 		if !ok {
@@ -73,7 +74,7 @@ func (h *OrganizationHandler) Switch(ctx context.Context, cmd any) (any, error) 
 		if err := userRepo.Update(ctx, user); err != nil {
 			return nil, err
 		}
-		h.uow.RegisterAggregate(user)
+		exec.RegisterAggregate(user)
 		// Генерируем новые токены с новой организацией
 		tokenPair, err := h.jwtService.GenerateTokenPair(
 			user.ID,

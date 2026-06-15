@@ -50,7 +50,7 @@ func New(orgId, cropID vo.ID, varietyId, protocolId *vo.ID, name, code string, m
 	return root
 }
 
-func (gc GrowingCycle) ChangeState(state CycleStage) {
+func (gc *GrowingCycle) ChangeState(state CycleStage) {
 	if state == "" {
 		gc.Stage = StagePlanning
 		return
@@ -58,7 +58,7 @@ func (gc GrowingCycle) ChangeState(state CycleStage) {
 	gc.Stage = state
 }
 
-func (gc GrowingCycle) ChangeStatus(status CycleStatus) {
+func (gc *GrowingCycle) ChangeStatus(status CycleStatus) {
 	if status == "" {
 		gc.Status = StatusPlanned
 		return

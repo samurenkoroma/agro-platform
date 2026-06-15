@@ -6,6 +6,7 @@ import (
 
 	"github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries/account/dto"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/domain/account/aggregate/organization"
 	"github.com/samurenkoroma/agro-platform/internal/domain/account/aggregate/user"
 	domain "github.com/samurenkoroma/agro-platform/internal/domain/account/repository"
@@ -29,7 +30,7 @@ func (h *OrganizationHandler) Create(ctx context.Context, cmd any) (any, error) 
 		return nil, user.ErrUnauthorized
 	}
 
-	return h.uow.Execute(ctx, providers.NewAccountProvider, func(provider repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewAccountProvider, func(provider repository.RepositoryProvider, exec uow.Execution) (any, error) {
 
 		authProvider, ok := provider.(domain.AccountProvider)
 		if !ok {
@@ -64,7 +65,7 @@ func (h *OrganizationHandler) Create(ctx context.Context, cmd any) (any, error) 
 			return nil, err
 		}
 
-		h.uow.RegisterAggregate(newOrg)
+		exec.RegisterAggregate(newOrg)
 		return dto.UserOrganizationInfo{
 			OrganizationID:   newOrg.ID,
 			OrganizationName: newOrg.Name,

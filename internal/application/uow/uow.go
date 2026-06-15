@@ -8,6 +8,13 @@ import (
 )
 
 type UnitOfWork interface {
-	Execute(context.Context, func(db DB) repository.RepositoryProvider, func(provider repository.RepositoryProvider) (any, error)) (any, error)
-	RegisterAggregate(agg aggregate.Aggregate)
+	Execute(
+		ctx context.Context,
+		build func(DB) repository.RepositoryProvider,
+		fn func(provider repository.RepositoryProvider, exec Execution) (any, error),
+	) (any, error)
+}
+
+type Execution interface {
+	RegisterAggregate(aggregate.Aggregate)
 }

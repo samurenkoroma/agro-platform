@@ -6,6 +6,7 @@ import (
 
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/account/auth"
 	"github.com/samurenkoroma/agro-platform/internal/application/queries/account/dto"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	"github.com/samurenkoroma/agro-platform/internal/domain/account/aggregate/user"
 	domain "github.com/samurenkoroma/agro-platform/internal/domain/account/repository"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/providers"
@@ -28,7 +29,7 @@ func (h *UserHandler) Ask(ctx context.Context, cmd any) (any, error) {
 		return nil, user.ErrUnauthorized
 	}
 
-	return h.uow.Execute(ctx, providers.NewAccountProvider, func(provider repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewAccountProvider, func(provider repository.RepositoryProvider, exec uow.Execution) (any, error) {
 		authProvider, ok := provider.(domain.AccountProvider)
 		if !ok {
 			return nil, fmt.Errorf("expected FarmProvider, got %T", provider)

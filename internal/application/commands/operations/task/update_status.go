@@ -6,6 +6,7 @@ import (
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	opsrepo "github.com/samurenkoroma/agro-platform/internal/domain/operations/repository"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/repository/providers"
@@ -44,7 +45,7 @@ func (h *Handler) changeStatus(ctx context.Context, payload any, a action) (any,
 	if _, ok := ctx.Value("organization_id").(string); !ok {
 		return nil, errors.New("organization_id is required")
 	}
-	return h.uow.Execute(ctx, providers.NewOperationsProvider, func(p repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewOperationsProvider, func(p repository.RepositoryProvider, exec uow.Execution) (any, error) {
 		ops, ok := p.(opsrepo.OperationsProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType
@@ -64,7 +65,7 @@ func (h *Handler) changeStatus(ctx context.Context, payload any, a action) (any,
 		if err := ops.Tasks().Save(ctx, t); err != nil {
 			return nil, err
 		}
-		h.uow.RegisterAggregate(t)
+		exec.RegisterAggregate(t)
 		return response.Id(t.ID), nil
 	})
 }

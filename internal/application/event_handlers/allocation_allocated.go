@@ -25,7 +25,7 @@ func onAllocationAllocated(unitOfWork uow.UnitOfWork) bus.EventHandler {
 			return fmt.Errorf("unexpected event type: %T", e)
 		}
 
-		_, err := unitOfWork.Execute(ctx, spatialProviders.NewSpatialProvider, func(p repository.RepositoryProvider) (any, error) {
+		_, err := unitOfWork.Execute(ctx, spatialProviders.NewSpatialProvider, func(p repository.RepositoryProvider, exec uow.Execution) (any, error) {
 			spatial, ok := p.(spatialrepo.SpatialProvider)
 			if !ok {
 				return nil, repository.ErrInvalidProviderType
@@ -42,7 +42,7 @@ func onAllocationAllocated(unitOfWork uow.UnitOfWork) bus.EventHandler {
 				return nil, err
 			}
 
-			unitOfWork.RegisterAggregate(unit)
+			exec.RegisterAggregate(unit)
 
 			return nil, nil
 		})
@@ -57,7 +57,7 @@ func onAllocationReleased(unitOfWork uow.UnitOfWork) bus.EventHandler {
 			return fmt.Errorf("unexpected event type: %T", e)
 		}
 
-		_, err := unitOfWork.Execute(ctx, spatialProviders.NewSpatialProvider, func(p repository.RepositoryProvider) (any, error) {
+		_, err := unitOfWork.Execute(ctx, spatialProviders.NewSpatialProvider, func(p repository.RepositoryProvider, exec uow.Execution) (any, error) {
 			spatial, ok := p.(spatialrepo.SpatialProvider)
 			if !ok {
 				return nil, repository.ErrInvalidProviderType
@@ -74,7 +74,7 @@ func onAllocationReleased(unitOfWork uow.UnitOfWork) bus.EventHandler {
 				return nil, err
 			}
 
-			unitOfWork.RegisterAggregate(unit)
+			exec.RegisterAggregate(unit)
 			return nil, nil
 		})
 		return err

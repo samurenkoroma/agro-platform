@@ -25,31 +25,31 @@ type HelperResponse struct {
 
 func (h *helperHandler) Ask(ctx context.Context, payload any) (any, error) {
 	statuses := map[growingcycle.CycleStatus]string{
-		growingcycle.StatusPlanned:    "запланирован",
-		growingcycle.StatusActive:     "активен",
-		growingcycle.StatusPaused:     "приостановлен",
-		growingcycle.StatusHarvesting: "сбор урожая",
-		growingcycle.StatusCompleted:  "завершен",
-		growingcycle.StatusFailed:     "неудача",
-		growingcycle.StatusArchived:   "архивирован",
+		growingcycle.StatusPlanned:    "Запланирован",
+		growingcycle.StatusActive:     "Активен",
+		growingcycle.StatusPaused:     "Приостановлен",
+		growingcycle.StatusHarvesting: "Сбор урожая",
+		growingcycle.StatusCompleted:  "Завершен",
+		growingcycle.StatusFailed:     "Неудача",
+		growingcycle.StatusArchived:   "Архивирован",
 	}
 	stages := map[growingcycle.CycleStage]string{
-		growingcycle.StagePlanning:    "планирование",
-		growingcycle.StageGermination: "прорастание",
-		growingcycle.StageSeedling:    "рассада",
-		growingcycle.StageVegetative:  "вегетация",
-		growingcycle.StageFlowering:   "цветение",
-		growingcycle.StageFruiting:    "плодоношение",
-		growingcycle.StageHarvesting:  "сбор урожая",
-		growingcycle.StageCompleted:   "завершено",
+		growingcycle.StagePlanning:    "Планирование",
+		growingcycle.StageGermination: "Прорастание",
+		growingcycle.StageSeedling:    "Рассада",
+		growingcycle.StageVegetative:  "Вегетация",
+		growingcycle.StageFlowering:   "Цветение",
+		growingcycle.StageFruiting:    "Плодоношение",
+		growingcycle.StageHarvesting:  "Сбор урожая",
+		growingcycle.StageCompleted:   "Завершено",
 	}
 
 	return HelperResponse{
 		Statuses: statuses,
 		Stages:   stages,
 		Methods: map[growingcycle.ProductionMethod]string{
-			growingcycle.ProductionMethodSeedling:  "рассадный",
-			growingcycle.ProductionMethodDirectSow: "прямой посев",
+			growingcycle.ProductionMethodSeedling:  "Рассадный",
+			growingcycle.ProductionMethodDirectSow: "Прямой посев",
 		},
 	}, nil
 }

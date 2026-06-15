@@ -7,6 +7,7 @@ import (
 
 	command "github.com/samurenkoroma/agro-platform/internal/application/commands"
 	"github.com/samurenkoroma/agro-platform/internal/application/commands/response"
+	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 	pu "github.com/samurenkoroma/agro-platform/internal/domain/spatial/aggregate/production_unit"
 	spatial "github.com/samurenkoroma/agro-platform/internal/domain/spatial/repository"
@@ -25,7 +26,7 @@ func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 		return nil, errors.New("organization_id is required")
 	}
 
-	return h.uow.Execute(ctx, providers.NewSpatialProvider, func(provider repository.RepositoryProvider) (any, error) {
+	return h.uow.Execute(ctx, providers.NewSpatialProvider, func(provider repository.RepositoryProvider, exec uow.Execution) (any, error) {
 		spatialProvider, ok := provider.(spatial.SpatialProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType
@@ -60,11 +61,11 @@ func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 				if err := spatialProvider.Units().Save(ctx, u); err != nil {
 					return nil, err
 				}
-				h.uow.RegisterAggregate(u)
+				exec.RegisterAggregate(u)
 			}
 		}
 
-		h.uow.RegisterAggregate(unit)
+		exec.RegisterAggregate(unit)
 		return response.Id(unit.ID), nil
 	})
 }
