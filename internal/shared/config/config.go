@@ -16,18 +16,21 @@ type Config struct {
 	Logger LoggerConfig
 	Redis  RedisConfig
 }
+
 type RedisConfig struct {
 	Host     string
 	Port     int
 	Password string
 	DB       int
 }
+
 type AuthConfig struct {
 	SecretKey     string
 	AccessExpiry  time.Duration
 	RefreshExpiry time.Duration
 	Issuer        string
 }
+
 type ServerConfig struct {
 	ApiPort    string
 	ApiHost    string
@@ -35,8 +38,8 @@ type ServerConfig struct {
 }
 
 type LoggerConfig struct {
-	Level  int
-	Format string
+	// Level: debug | info | warn | error
+	Level string
 }
 
 type DbConfig struct {
@@ -70,8 +73,7 @@ func LoadConfig() *Config {
 			StorageDir: getString("STORAGE_DIR", "/mnt"),
 		},
 		Logger: LoggerConfig{
-			Level:  getInt("LOG_LEVEL", 0),
-			Format: getString("LOG_FORMAT", "json"),
+			Level: getString("LOG_LEVEL", "info"),
 		},
 		Redis: RedisConfig{
 			Host:     getString("REDIS_HOST", "localhost"),
@@ -93,21 +95,17 @@ func getString(key, defaultValue string) string {
 func getInt(key string, defaultValue int) int {
 	value := os.Getenv(key)
 	result, err := strconv.Atoi(value)
-
 	if err != nil {
 		return defaultValue
 	}
-
 	return result
 }
 
 func getBool(key string, defaultValue bool) bool {
 	value := os.Getenv(key)
 	result, err := strconv.ParseBool(value)
-
 	if err != nil {
 		return defaultValue
 	}
-
 	return result
 }

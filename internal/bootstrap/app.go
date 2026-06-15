@@ -16,6 +16,7 @@ import (
 	"github.com/samurenkoroma/agro-platform/internal/infrastructure/postgres"
 	http2 "github.com/samurenkoroma/agro-platform/internal/interfaces/http"
 	configs "github.com/samurenkoroma/agro-platform/internal/shared/config"
+	"github.com/samurenkoroma/agro-platform/pkg/logger"
 )
 
 type App struct {
@@ -26,6 +27,11 @@ type App struct {
 }
 
 func Build(ctx context.Context, pool *pgxpool.Pool, conf *configs.Config) (*App, error) {
+	log := logger.New(conf.Logger.Level, nil)
+	ctx = logger.WithContext(ctx, log)
+
+	log.Info("bootstrap: initializing application")
+
 	bus := inmemory.NewInMemoryEventBus()
 	uow := postgres.NewUnitOfWork(pool, bus)
 	jwtService := jwt.NewService(conf.Auth)
@@ -47,11 +53,14 @@ func Build(ctx context.Context, pool *pgxpool.Pool, conf *configs.Config) (*App,
 	}
 	eventhandlers.RegisterAllocationHandlers(bus, uow)
 
+	log.Info("bootstrap: modules registered", "count", len(appModules))
+
 	httpHandler := http2.NewRouter(http2.RouterConfig{
 		CommandRouter: commandRouter,
 		QueryRouter:   queryRouter,
 		Uow:           uow,
 		JWTService:    jwtService,
+		Logger:        log,
 	})
 	return &App{
 		DB:            pool,

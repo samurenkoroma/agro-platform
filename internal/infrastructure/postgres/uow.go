@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -11,11 +10,7 @@ import (
 	"github.com/samurenkoroma/agro-platform/internal/domain/shared/event"
 	"github.com/samurenkoroma/agro-platform/internal/shared/bus"
 	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
-)
-
-var (
-	ErrAlreadyCommitted  = errors.New("unit of work already committed")
-	ErrAlreadyRolledBack = errors.New("unit of work already rolled back")
+	"github.com/samurenkoroma/agro-platform/pkg/logger"
 )
 
 type unitOfWork struct {
@@ -31,7 +26,7 @@ func NewUnitOfWork(pool *pgxpool.Pool, bus bus.EventBus) uow.UnitOfWork {
 }
 
 func (u *unitOfWork) Execute(ctx context.Context, build func(db uow.DB) repository.RepositoryProvider, fn func(provider repository.RepositoryProvider, exec uow.Execution) (any, error)) (any, error) {
-
+	log := logger.FromContext(ctx)
 	tx, err := u.pool.Begin(ctx)
 	if err != nil {
 		return nil, err
@@ -44,29 +39,37 @@ func (u *unitOfWork) Execute(ctx context.Context, build func(db uow.DB) reposito
 
 	provider := build(tx)
 
+	log.Debug("uow: transaction started", "provider", provider.ProviderName())
+
 	data, err := fn(provider, exec)
 	if err != nil {
 
 		if rbErr := tx.Rollback(ctx); rbErr != nil {
+			log.Error("uow: rollback failed",
+				"rollback_error", rbErr,
+				"original_error", err,
+			)
+
 			return nil, fmt.Errorf("rollback error: %v, original error: %w", rbErr, err)
 		}
-
+		log.Warn("uow: transaction rolled back", "error", err)
 		return nil, err
 	}
 
 	if err := tx.Commit(ctx); err != nil {
+		log.Error("uow: commit failed", "error", err)
 		return nil, err
 	}
-
+	log.Debug("uow: transaction committed")
 	if err := u.dispatchEvents(ctx, exec); err != nil {
 		return nil, err
 	}
-
+	log.Debug("uow: events dispatched")
 	return data, nil
 }
 
 func (u *unitOfWork) dispatchEvents(ctx context.Context, exec *execution) error {
-
+	log := logger.FromContext(ctx)
 	for {
 
 		var events []event.DomainEvent
@@ -79,6 +82,14 @@ func (u *unitOfWork) dispatchEvents(ctx context.Context, exec *execution) error 
 
 		if len(events) == 0 {
 			return nil
+		}
+		log.Debug("uow: dispatching events", "count", len(events))
+
+		for _, e := range events {
+			log.Debug("uow: event dispatched",
+				"event_type", e.EventType(),
+				"aggregate_id", e.AggregateID(),
+			)
 		}
 
 		if err := u.bus.Publish(ctx, events); err != nil {

@@ -1,10 +1,10 @@
-POST http://localhost:8080/auth/register
+POST http://{{host}}/auth/register
 Content-Type: application/json
 
 {"email":"dev@agro.com", "username": "awdawd","password":"admin123"}
 
 ###
-POST http://localhost:8080/auth/login
+POST http://{{host}}/auth/login
 Content-Type: application/json
 
 {
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 
 ###
-POST http://localhost:8080/api/queries/
+POST http://{{host}}/api/queries/
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAxIiwidXNlcm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoic3VwZXJfYWRtaW4iLCJvcmdhbml6YXRpb25faWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJvcmdfcm9sZSI6Im93bmVyIiwiaXNzIjoiaG9tZS1zZXJ2aWNlcyIsImV4cCI6MTc3NzQwNDA3MSwiaWF0IjoxNzc3MzE3NjcxfQ.rzgUSDRWd3dmAKpdHcu-LSJ5asRxPwz16ooulp-KkqI
 

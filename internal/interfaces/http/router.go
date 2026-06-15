@@ -2,6 +2,7 @@ package http
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/samurenkoroma/agro-platform/internal/application/commands"
@@ -18,6 +19,7 @@ type RouterConfig struct {
 	QueryRouter   queries.Router
 	Uow           uow.UnitOfWork
 	JWTService    *jwt.Service
+	Logger        *slog.Logger
 }
 
 // NewRouter создает новый HTTP роутер
@@ -59,13 +61,13 @@ func NewRouter(cfg RouterConfig) http.Handler {
 	})
 
 	// Применяем глобальные middleware (логирование, CORS, recovery)
-	return withGlobalMiddleware(mux)
+	return withGlobalMiddleware(mux, cfg.Logger)
 }
 
 // withGlobalMiddleware применяет глобальные middleware ко всем запросам
-func withGlobalMiddleware(next http.Handler) http.Handler {
+func withGlobalMiddleware(next http.Handler, log *slog.Logger) http.Handler {
 	// Цепочка middleware (порядок важен!)
-	handler := loggingMiddleware(next)
+	handler := loggingMiddleware(next, log)
 	handler = corsMiddleware(handler)
 	handler = recoveryMiddleware(handler)
 	return handler
