@@ -45,14 +45,16 @@ Authorization: Bearer {{token}}
 }
 
 ###
-POST http://localhost:8080/api/queries/
+POST http://{{host}}/api/queries/
 Content-Type: application/json
-Authorization: Bearer {{jwt_token}}
+Authorization: Bearer {{token}}
 
 {
   "query": "production.helpers",
   "data": {
   }
 }
+
+
 
 ###
