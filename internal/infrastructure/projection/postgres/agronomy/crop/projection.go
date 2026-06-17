@@ -41,8 +41,14 @@ func (p projection) Get(ctx context.Context, id string) (*crop.Detail, error) {
 
 func (p projection) List(ctx context.Context, filter crop.ListFilter) ([]crop.ListItem, error) {
 
-	query := `SELECT id,name,category,family, scientific_name, imageurl FROM crops ORDER BY name`
-	rows, err := p.db.Query(ctx, query)
+	query := `SELECT id,name,category,family, scientific_name, imageurl 
+FROM crops 
+WHERE (
+    COALESCE(array_length($1::text[], 1), 0) = 0
+    OR category = ANY($1::text[])
+)
+ORDER BY name`
+	rows, err := p.db.Query(ctx, query, filter.Category)
 
 	if err != nil {
 		return nil, err

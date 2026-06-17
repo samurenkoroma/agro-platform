@@ -21,8 +21,22 @@ Authorization: Bearer {{token}}
 }
 
 ###
-POST http://localhost:8080/api/commands/
+
+POST http://{{host}}/api/queries/
 Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "query": "agronomy.list_crops",
+  "data": {
+    "categories": ["овощные", "клубнеплоды"]
+  }
+}
+
+###
+POST http://{{host}}/api/commands/
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "command": "agronomy.create_variety",

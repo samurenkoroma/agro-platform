@@ -8,7 +8,7 @@ import (
 
 type ListFilter struct {
 	Search   *string
-	Category *string
+	Category []string
 	Archived *bool
 }
 

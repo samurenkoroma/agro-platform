@@ -14,9 +14,9 @@ type handler struct {
 }
 
 type Query struct {
-	Search   *string `json:"search"`
-	Category *string `json:"category"`
-	Archived *bool   `json:"archived"`
+	Search   *string  `json:"search"`
+	Category []string `json:"categories"`
+	Archived *bool    `json:"archived"`
 }
 
 func New(db uow.DB) queries.Handler {
