@@ -38,7 +38,7 @@ func (r *taskRepository) GetByID(ctx context.Context, id vo.ID) (*task.Task, err
 func (r *taskRepository) List(ctx context.Context, filter repository.TaskFilter) ([]*task.Task, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	var result []*task.Task
+	result := make([]*task.Task, 0)
 	for _, t := range r.items {
 		if t.FarmID != filter.FarmID {
 			continue

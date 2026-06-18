@@ -38,7 +38,7 @@ func (r *operationRepository) GetByID(ctx context.Context, id vo.ID) (*operation
 func (r *operationRepository) List(ctx context.Context, filter repository.OperationFilter) ([]*operationevent.OperationEvent, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	var result []*operationevent.OperationEvent
+	result := make([]*operationevent.OperationEvent, 0)
 	for _, e := range r.items {
 		if e.FarmID != filter.FarmID {
 			continue

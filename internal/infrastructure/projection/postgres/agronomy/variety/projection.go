@@ -36,7 +36,7 @@ func (p projection) Get(ctx context.Context, id string) (*variety.Detail, error)
 
 func (p projection) List(ctx context.Context, filter variety.ListFilter) ([]variety.ListItem, error) {
 
-	query := `SELECT v.id, v.name, c.id, c.name 
+	query := `SELECT v.id, v.name, c.id, c.name,  COALESCE(v.maturity->>'DaysToHarvest', '0')::int as maturity
 FROM varieties v 
     LEFT JOIN  
     public.crops c on v.crop_id = c.id
@@ -56,7 +56,7 @@ ORDER BY v.name`
 
 		var item variety.ListItem
 
-		err = rows.Scan(&item.ID, &item.Name, &item.CropId, &item.CropName)
+		err = rows.Scan(&item.ID, &item.Name, &item.CropId, &item.CropName, &item.DaysToHarvest)
 
 		if err != nil {
 			return nil, err

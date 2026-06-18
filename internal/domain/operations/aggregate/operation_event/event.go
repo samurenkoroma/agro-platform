@@ -33,7 +33,7 @@ func New(farmID vo.ID, opType OperationType) *OperationEvent {
 		Metadata:  vo.NewMetadata(),
 	}
 
-	//root.AddEvent(NewOperationCreated(root.ID))
+	root.AddEvent(NewOperationRecorded(root.ID))
 
 	return root
 }

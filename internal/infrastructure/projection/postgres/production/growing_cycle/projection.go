@@ -16,65 +16,41 @@ func New(db uow.DB) growingcycle.Projection {
 	return &projection{db: db}
 }
 
-func (p *projection) Get(ctx context.Context, id vo.ID) (*growingcycle.DTO, error) {
-	sql := `SELECT cycle.id,
-       cycle.name,
-       code,
-       c.name crop_aame,
-       v.name variety_name,
-       status,
-       stage,
-       cycle.created_at
-FROM production_growing_cycles cycle
-         left join crops c on crop_id = c.id
-         left join varieties v on variety_id = v.id  WHERE cycle.id = $1`
-
-	row := p.db.QueryRow(ctx, sql, id)
-
-	return scanDTO(row)
-}
+//func (p *projection) Get(ctx context.Context, id vo.ID) (*growingcycle.DTO, error) {
+//	sql := `SELECT cycle.id,
+//       cycle.name,
+//       code,
+//       c.name crop_aame,
+//       v.name variety_name,
+//       status,
+//       stage,
+//       cycle.created_at
+//FROM production_growing_cycles cycle
+//         left join crops c on crop_id = c.id
+//         left join varieties v on variety_id = v.id  WHERE cycle.id = $1`
+//
+//	row := p.db.QueryRow(ctx, sql, id)
+//
+//	return scanDTO(row)
+//}
 
 func (p *projection) List(ctx context.Context, ownerId vo.ID) ([]*growingcycle.DTO, error) {
 
 	sql := `
 SELECT
-    cycle.id,
+    crop.id,
     crop.name,
-    variety.name,
-
-    cycle.status,
-    cycle.stage,
-
-    COALESCE(SUM(a.area), 0) allocated_area,
-
-    NULL::integer tasks_count,
-    0 progress,
-
-    MIN(a.started_at) start_date,
-    MAX(a.ended_at) end_date
-
+       COALESCE(SUM(a.area), 0) allocated_area,
+       NULL::integer            tasks_count,
+       0                        progress,
+       count(crop.id)           count
 FROM production_growing_cycles cycle
-
-         INNER JOIN crops crop
-                    ON crop.id = cycle.crop_id
-
-         LEFT JOIN varieties variety
-                   ON variety.id = cycle.variety_id
-
-         LEFT JOIN production_allocations a
-                   ON a.cycle_id = cycle.id
-
+         INNER JOIN crops crop ON crop.id = cycle.crop_id
+         LEFT JOIN production_allocations a ON a.cycle_id = cycle.id
 WHERE cycle.farm_id = $1
 
-GROUP BY
-    cycle.id,
-    crop.name,
-    variety.name,
-    cycle.status,
-    cycle.stage,
-    cycle.created_at
-
-ORDER BY cycle.created_at DESC
+GROUP BY crop.name, crop.id
+ORDER BY crop.name DESC;
 `
 
 	rows, err := p.db.Query(ctx, sql, ownerId)
@@ -86,29 +62,23 @@ ORDER BY cycle.created_at DESC
 	defer rows.Close()
 
 	result := make([]*growingcycle.DTO, 0)
-	cycleIDs := make([]vo.ID, 0)
+	cropIDs := make([]vo.ID, 0)
 
 	index := make(map[vo.ID]*growingcycle.DTO)
 
 	for rows.Next() {
 
 		item := &growingcycle.DTO{}
-
+		var cropId vo.ID
 		if err := rows.Scan(
-			&item.ID,
+			&cropId,
 			&item.CropName,
-			&item.VarietyName,
-
-			&item.Status,
-			&item.Stage,
-
 			&item.AllocatedArea,
 
 			&item.TasksCount,
 			&item.Progress,
 
-			&item.StartDate,
-			&item.EndDate,
+			&item.Count,
 		); err != nil {
 			return nil, err
 		}
@@ -116,39 +86,36 @@ ORDER BY cycle.created_at DESC
 		item.Allocations = make([]growingcycle.AllocationDTO, 0)
 
 		result = append(result, item)
-		cycleIDs = append(cycleIDs, item.ID)
+		cropIDs = append(cropIDs, cropId)
 
-		index[item.ID] = item
+		index[cropId] = item
 	}
-
-	if len(cycleIDs) == 0 {
+	if len(cropIDs) == 0 {
 		return result, nil
 	}
 
 	sql = `
-SELECT
-    a.cycle_id,
-
-    a.production_unit_id,
-    pu.code,
-
-    a.area,
-
-    0 progress,
-
-    a.started_at,
-    a.ended_at
-
+SELECT c.id,
+       crop.id,
+       v.name ,
+       c.status,
+       c.stage,
+       a.production_unit_id,
+       pu.code,
+       a.area,
+       0 progress,
+       a.started_at,
+       a.ended_at
 FROM production_allocations a
-
-         INNER JOIN production_units pu
-                    ON pu.id = a.production_unit_id
-
-WHERE a.cycle_id = ANY($1)
+         INNER JOIN production_units pu ON pu.id = a.production_unit_id
+         right join production_growing_cycles c on c.id = a.cycle_id
+         left join crops crop on crop.id = c.crop_id
+         left join varieties v on v.id = c.variety_id
+WHERE c.crop_id = ANY($1)
 ORDER BY pu.code
 `
 
-	rows, err = p.db.Query(ctx, sql, cycleIDs)
+	rows, err = p.db.Query(ctx, sql, cropIDs)
 
 	if err != nil {
 		return nil, err
@@ -158,13 +125,16 @@ ORDER BY pu.code
 
 	for rows.Next() {
 
-		var cycleID vo.ID
+		var cropId vo.ID
 
 		var allocation growingcycle.AllocationDTO
 
 		if err := rows.Scan(
-			&cycleID,
-
+			&allocation.CycleId,
+			&cropId,
+			&allocation.VarietyName,
+			&allocation.Status,
+			&allocation.Stage,
 			&allocation.ProductionUnitId,
 			&allocation.ProductionUnitName,
 
@@ -178,7 +148,7 @@ ORDER BY pu.code
 			return nil, err
 		}
 
-		dto, ok := index[cycleID]
+		dto, ok := index[cropId]
 
 		if !ok {
 			continue
@@ -233,20 +203,11 @@ func scanDTO(row scanner) (*growingcycle.DTO, error) {
 	var item growingcycle.DTO
 
 	if err := row.Scan(
-		&item.ID,
 		&item.CropName,
-		&item.VarietyName,
-
-		&item.Status,
-		&item.Stage,
-
 		&item.AllocatedArea,
-
 		&item.TasksCount,
 		&item.Progress,
-
-		&item.StartDate,
-		&item.EndDate,
+		&item.Count,
 	); err != nil {
 		return nil, err
 	}

@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/samurenkoroma/agro-platform/internal/application/queries"
-	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
 
 type handler struct {
@@ -22,10 +21,10 @@ type GetOneQuery struct {
 }
 
 func (h *handler) Ask(ctx context.Context, payload any) (any, error) {
-	q, ok := payload.(*GetOneQuery)
+	_, ok := payload.(*GetOneQuery)
 	if !ok {
 		return nil, queries.ErrInvalidQueryType
 	}
 
-	return h.cycles.Get(ctx, vo.ID(q.Id))
+	return nil, nil //h.cycles.Get(ctx, vo.ID(q.Id))
 }

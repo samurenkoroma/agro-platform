@@ -46,10 +46,11 @@ type LightRequirement struct {
 }
 
 type ListItem struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	CropId   string `json:"cropId"`
-	CropName string `json:"cropName"`
+	ID            string `json:"id"`
+	Name          string `json:"name"`
+	CropId        string `json:"cropId"`
+	CropName      string `json:"cropName"`
+	DaysToHarvest int    `json:"daysToMaturity"`
 }
 
 type Projection interface {

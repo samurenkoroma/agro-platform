@@ -8,33 +8,25 @@ import (
 )
 
 type DTO struct {
-	ID          vo.ID   `json:"id"`
-	CropName    string  `json:"cropName"`
-	VarietyName *string `json:"varietyName"`
-
-	AllocatedArea float64 `json:"allocatedArea"`
-
-	Status string `json:"status"`
-	Stage  string `json:"stage"`
-
-	TasksCount *int `json:"tasksCount"`
-	Progress   int  `json:"progress"`
-
-	StartDate *time.Time `json:"startDate"`
-	EndDate   *time.Time `json:"endDate"`
-
-	Allocations []AllocationDTO `json:"allocations"`
+	CropName      string          `json:"cropName"`
+	AllocatedArea float64         `json:"allocatedArea"`
+	TasksCount    *int            `json:"tasksCount"`
+	Progress      int             `json:"progress"`
+	Count         int             `json:"count"`
+	Allocations   []AllocationDTO `json:"allocations"`
 }
 
 type AllocationDTO struct {
-	ProductionUnitId   string `json:"productionUnitId"`
-	ProductionUnitName string `json:"productionUnitName"`
-
-	Area     float64 `json:"area"`
-	Progress int     `json:"progress"`
-
-	StartDate *time.Time `json:"startDate"`
-	EndDate   *time.Time `json:"endDate"`
+	CycleId            string     `json:"cycleId"`
+	VarietyName        *string    `json:"varietyName"`
+	Status             string     `json:"status"`
+	Stage              string     `json:"stage"`
+	ProductionUnitId   *string    `json:"productionUnitId"`
+	ProductionUnitName *string    `json:"productionUnitName"`
+	Area               *float64   `json:"area"`
+	Progress           int        `json:"progress"`
+	StartDate          *time.Time `json:"startDate"`
+	EndDate            *time.Time `json:"endDate"`
 }
 
 type SummaryDTO struct {
@@ -48,7 +40,7 @@ type SummaryDTO struct {
 }
 
 type Projection interface {
-	Get(ctx context.Context, id vo.ID) (*DTO, error)
+	//Get(ctx context.Context, id vo.ID) (*DTO, error)
 	List(ctx context.Context, ownerId vo.ID) ([]*DTO, error)
 	Summary(ctx context.Context, ownerId vo.ID, cycleId vo.ID) (*SummaryDTO, error)
 }

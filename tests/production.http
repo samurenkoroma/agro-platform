@@ -22,14 +22,13 @@ Authorization: Bearer {{token}}
 
 ###
 
-POST http://localhost:8080/api/queries/
+POST http://{{host}}/api/queries/
 Content-Type: application/json
-Authorization: Bearer {{jwt_token}}
+Authorization: Bearer {{token}}
 
 {
   "query": "production.summary_growing_cycles",
   "data": {
-    "id": "28d20a25-f048-4ec0-a2d9-4a7e6e7b1d65"
   }
 }
 
