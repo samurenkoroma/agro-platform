@@ -81,7 +81,7 @@ func main() {
 	}
 	bus := inmemory.NewInMemoryEventBus()
 
-	uow := postgres.NewUnitOfWork(context.Background(), pool, bus)
+	uow := postgres.NewUnitOfWork(pool, bus)
 	data := readFile()
 
 	var parseData seedData
@@ -111,10 +111,10 @@ func main() {
 	log.Println("Seeding completed successfully!")
 }
 
-func seedVarieties(uow uow.UnitOfWork, data seedData, dryRun bool) error {
+func seedVarieties(u uow.UnitOfWork, data seedData, dryRun bool) error {
 	var crops []*crop2.Crop
 
-	uow.Execute(context.Background(), providers.NewAgronomyProvider, func(provider repository.RepositoryProvider) (any, error) {
+	u.Execute(context.Background(), providers.NewAgronomyProvider, func(provider repository.RepositoryProvider, exec uow.Execution) (any, error) {
 		agronomyProvider, ok := provider.(agronomy.AgronomyProvider)
 		if !ok {
 			return nil, repository.ErrInvalidProviderType
@@ -140,7 +140,7 @@ func seedVarieties(uow uow.UnitOfWork, data seedData, dryRun bool) error {
 		}
 
 		// Создаём обработчик
-		handler := variety.NewHandler(uow)
+		handler := variety.NewHandler(u)
 
 		// Выполняем команду
 		if _, err := handler.Create(context.Background(), cmd); err != nil {
