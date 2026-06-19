@@ -17,6 +17,7 @@ type DTO struct {
 }
 
 type AllocationDTO struct {
+	CycleName          string     `json:"cycleName"`
 	CycleId            string     `json:"cycleId"`
 	VarietyName        *string    `json:"varietyName"`
 	Status             string     `json:"status"`

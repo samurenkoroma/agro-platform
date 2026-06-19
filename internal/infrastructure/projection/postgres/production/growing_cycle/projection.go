@@ -96,6 +96,7 @@ ORDER BY crop.name DESC;
 
 	sql = `
 SELECT c.id,
+       c.name,
        crop.id,
        v.name ,
        c.status,
@@ -103,7 +104,7 @@ SELECT c.id,
        a.production_unit_id,
        pu.code,
        a.area,
-       0 progress,
+       COALESCE(((CURRENT_DATE - started_at::date )::float  / (maturity->>'DaysToHarvest')::int  * 100)::int, 0) progress,
        a.started_at,
        a.ended_at
 FROM production_allocations a
@@ -131,6 +132,7 @@ ORDER BY pu.code
 
 		if err := rows.Scan(
 			&allocation.CycleId,
+			&allocation.CycleName,
 			&cropId,
 			&allocation.VarietyName,
 			&allocation.Status,
