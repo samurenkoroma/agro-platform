@@ -8,7 +8,21 @@ import (
 	"github.com/samurenkoroma/agro-platform/internal/shared/repository"
 )
 
+// fakeExecution — минимальная реализация uow.Execution для тестов.
+// Собирает зарегистрированные агрегаты и пуллит их события после выполнения,
+// как это делает настоящий UoW после commit.
+type fakeExecution struct {
+	aggregates []aggregate.Aggregate
+}
+
+func (e *fakeExecution) RegisterAggregate(agg aggregate.Aggregate) {
+	e.aggregates = append(e.aggregates, agg)
+}
+
 // FakeUoW исполняет fn сразу с переданным провайдером — без БД и транзакций.
+// События зарегистрированных агрегатов дренируются (PullEvents), но никуда
+// не публикуются — если тесту нужно проверить факт публикации события,
+// используйте настоящий inmemory.EventBus напрямую в application-тесте.
 type FakeUoW struct {
 	Provider repository.RepositoryProvider
 }
@@ -16,11 +30,17 @@ type FakeUoW struct {
 func (f *FakeUoW) Execute(
 	ctx context.Context,
 	_ func(db uow.DB) repository.RepositoryProvider,
-	fn func(repository.RepositoryProvider) (any, error),
+	fn func(provider repository.RepositoryProvider, exec uow.Execution) (any, error),
 ) (any, error) {
-	return fn(f.Provider)
+	exec := &fakeExecution{}
+	data, err := fn(f.Provider, exec)
+	if err != nil {
+		return nil, err
+	}
+	for _, agg := range exec.aggregates {
+		agg.PullEvents() // дренируем, чтобы повторное использование агрегата не копило старые события
+	}
+	return data, nil
 }
-
-func (f *FakeUoW) RegisterAggregate(_ aggregate.Aggregate) {}
 
 var _ uow.UnitOfWork = (*FakeUoW)(nil)
