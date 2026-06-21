@@ -12,12 +12,12 @@ import (
 )
 
 type CreateCropCommand struct {
-	Name string `json:"name" validate:"required"`
+	Name     string `json:"name" validate:"required"`
+	Category string `json:"category" required:"true"`
+	Family   string `json:"family" required:"true"`
 
-	ScientificName string  `json:"scientificName"`
-	Category       string  `json:"category" required:"true"`
-	Family         string  `json:"family" required:"true"`
-	Description    *string `json:"description,omitempty"`
+	Agronomy    crop.AgronomyProfile `json:"agronomy"`
+	Description *string              `json:"description,omitempty"`
 }
 
 func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
@@ -29,14 +29,13 @@ func (h *Handler) Create(ctx context.Context, payload any) (any, error) {
 			return nil, repository.ErrInvalidProviderType
 		}
 
-		exist, _ := agronomyProvider.Crops().Exists(ctx, cmd.ScientificName)
+		exist, _ := agronomyProvider.Crops().Exists(ctx, cmd.Name)
 		if exist {
 			return nil, ErrCropAlreadyExist
 		}
 
-		root := crop.New(cmd.Name, crop.CropCategory(cmd.Category), cmd.Family, cmd.ScientificName)
+		root := crop.New(cmd.Name, crop.CropCategory(cmd.Category), cmd.Family, cmd.Agronomy)
 
-		root.ScientificName = cmd.ScientificName
 		if cmd.Description != nil {
 			root.Metadata["description"] = cmd.Description
 		}

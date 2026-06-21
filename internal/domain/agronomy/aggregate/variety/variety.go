@@ -9,51 +9,36 @@ import (
 
 type Variety struct {
 	ev.BaseAggregate
-	ID        vo.ID
-	CropID    vo.ID
-	Name      string
-	Breeder   *string
-	Maturity  MaturityProfile
-	Growth    GrowthProfile
-	Spacing   PlantSpacing
-	Harvest   HarvestProfile
-	Yield     YieldPotential
-	Tolerance EnvironmentTolerance
+	ID      vo.ID
+	CropID  vo.ID
+	Name    string
+	Breeder *string
 
-	BaseTemperature float64 // Tbase (ниже которой рост останавливается)
-	MaxTemperature  float64 // Tmax (выше которой рост не ускоряется)
+	Profile Profile
 
-	// Фенология (GDD требования)
-	PhenophaseGDD []PhenophaseGDD `json:"phenophaseGDD"`
-	// Водные требования
-	WaterRequirement WaterRequirement `json:"water_requirement"`
-	// Световые требования
-	LightRequirement LightRequirement `json:"light_requirement"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
 
-	// Характеристики
-	Characteristics map[string]string `json:"characteristics"`
-	Image           string            `json:"image"`
+type Profile struct {
+	Maturity vo.Maturity
+	Spacing  PlantSpacing
+}
 
-	Metadata   vo.Metadata
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	ArchivedAt *time.Time
+type PlantSpacing struct {
+	PlantDistanceCM      *float64
+	RowDistanceCM        *float64
+	PlantsPerSquareMeter *float64
+	RecommendedDensity   *float64
 }
 
 func New(cropID vo.ID, name string) *Variety {
 	now := time.Now()
 
 	root := &Variety{
-		ID:               vo.NewID(),
-		CropID:           cropID,
-		Name:             name,
-		Metadata:         vo.NewMetadata(),
-		Characteristics:  make(map[string]string),
-		PhenophaseGDD:    make([]PhenophaseGDD, 0),
-		WaterRequirement: WaterRequirement{},
-		LightRequirement: LightRequirement{},
-
-		Image:     "",
+		ID:        vo.NewID(),
+		CropID:    cropID,
+		Name:      name,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
@@ -61,43 +46,4 @@ func New(cropID vo.ID, name string) *Variety {
 	root.AddEvent(NewVarietyCreated(root.ID))
 
 	return root
-}
-
-func (a *Variety) UpdateMaturity(m MaturityProfile) {
-	a.Maturity = m
-	a.UpdatedAt = time.Now()
-
-	a.AddEvent(NewMaturityUpdated(a.ID))
-}
-
-func (a *Variety) UpdateGrowth(g GrowthProfile) {
-	a.Growth = g
-
-	a.AddEvent(NewGrowthUpdated(a.ID))
-}
-
-func (a *Variety) UpdateHarvest(h HarvestProfile) {
-	a.Harvest = h
-
-	a.AddEvent(NewHarvestUpdated(a.ID))
-}
-
-func (a *Variety) UpdateYield(y YieldPotential) {
-	a.Yield = y
-
-	a.AddEvent(NewYieldUpdated(a.ID))
-}
-
-func (a *Variety) UpdateTolerance(t EnvironmentTolerance) {
-	a.Tolerance = t
-
-	a.AddEvent(NewToleranceUpdated(a.ID))
-}
-
-func (a *Variety) Archive() {
-	now := time.Now()
-	a.ArchivedAt = &now
-	a.UpdatedAt = now
-
-	a.AddEvent(NewVarietyArchived(a.ID))
 }

@@ -26,6 +26,7 @@ type AllocationDTO struct {
 	ProductionUnitName *string    `json:"productionUnitName"`
 	Area               *float64   `json:"area"`
 	Progress           int        `json:"progress"`
+	DaysToMaturity     int        `json:"daysToMaturity"`
 	StartDate          *time.Time `json:"startDate"`
 	EndDate            *time.Time `json:"endDate"`
 }

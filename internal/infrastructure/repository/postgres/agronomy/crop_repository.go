@@ -20,8 +20,8 @@ func NewCropRepository(db uow.DB) repository.CropRepository {
 }
 
 func (r *cropRepository) GetByID(ctx context.Context, id vo.ID) (*entity.Crop, error) {
-	query := `SELECT id,name,scientific_name,category,metadata,created_at,updated_at
-				FROM crops
+	query := `SELECT id,name,category,metadata,created_at,updated_at
+				FROM agronomy_crops
 				WHERE id=$1`
 
 	row := r.db.QueryRow(ctx, query, id)
@@ -39,8 +39,8 @@ func (r *cropRepository) GetByID(ctx context.Context, id vo.ID) (*entity.Crop, e
 }
 
 func (r *cropRepository) GetAll(ctx context.Context) ([]*entity.Crop, error) {
-	query := `SELECT id,name,scientific_name,category,metadata,created_at,updated_at
-				FROM crops
+	query := `SELECT id,name,category,metadata,created_at,updated_at
+				FROM agronomy_crops
 				ORDER BY name`
 
 	rows, err := r.db.Query(ctx, query)
@@ -68,7 +68,7 @@ func (r *cropRepository) GetAll(ctx context.Context) ([]*entity.Crop, error) {
 }
 
 func (r *cropRepository) Exists(ctx context.Context, key string) (bool, error) {
-	query := `SELECT EXISTS(SELECT 1 FROM crops WHERE scientific_name=$1)`
+	query := `SELECT EXISTS(SELECT 1 FROM agronomy_crops WHERE name  LIKE $1)`
 
 	var exists bool
 
@@ -82,18 +82,17 @@ func (r *cropRepository) Exists(ctx context.Context, key string) (bool, error) {
 }
 
 func (r *cropRepository) Save(ctx context.Context, root *entity.Crop) error {
-	query := `INSERT INTO crops(id,name,scientific_name,category,family, metadata, created_at,updated_at)
-				VALUES($1,$2,$3,$4,$5,$6,$7,$8)
+	query := `INSERT INTO agronomy_crops(id,name,category,family, agronomy, metadata, created_at,updated_at)
+				VALUES($1,$2,$3,$4,$5,$6,$7, $8)
 				ON CONFLICT(id)
 				DO UPDATE SET
 			name=excluded.name,
-			scientific_name=excluded.scientific_name,
 			category=excluded.category,
 			metadata=excluded.metadata,
 			updated_at=excluded.updated_at`
 
 	_, err := r.db.Exec(ctx, query,
-		root.ID, root.Name, root.ScientificName, root.Category, root.Family, root.Metadata, root.CreatedAt, root.UpdatedAt)
+		root.ID, root.Name, root.Category, root.Family, root.Agronomy, root.Metadata, root.CreatedAt, root.UpdatedAt)
 
 	return err
 }

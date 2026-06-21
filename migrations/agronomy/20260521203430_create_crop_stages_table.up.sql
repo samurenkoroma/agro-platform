@@ -1,4 +1,4 @@
-CREATE TABLE crop_stages
+CREATE TABLE agronomy_crop_stages
 (
     id            UUID PRIMARY KEY,
     crop_id       UUID        NOT NULL,
@@ -12,11 +12,11 @@ CREATE TABLE crop_stages
     updated_at    TIMESTAMPTZ NOT NULL,
     archived_at   TIMESTAMPTZ NULL,
 
-    CONSTRAINT fk_crop_stage_crop FOREIGN KEY (crop_id) REFERENCES crops (id)
+    CONSTRAINT fk_crop_stage_crop FOREIGN KEY (crop_id) REFERENCES agronomy_crops (id)
 );
 
-CREATE INDEX idx_crop_stage_crop ON crop_stages (crop_id);
+CREATE INDEX idx_crop_stage_crop ON agronomy_crop_stages (crop_id);
 
-CREATE INDEX idx_crop_stage_bbch ON crop_stages (bbch);
+CREATE INDEX idx_crop_stage_bbch ON agronomy_crop_stages (bbch);
 
-CREATE INDEX idx_crop_stage_order ON crop_stages (order_index);
+CREATE INDEX idx_crop_stage_order ON agronomy_crop_stages (order_index);

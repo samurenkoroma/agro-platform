@@ -37,11 +37,7 @@ POST http://localhost:8080/api/queries/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-{
-  "query": "production.list_growing_cycles",
-  "data": {
-  }
-}
+{"query":"production.list_growing_cycles","data":{}}
 
 ###
 POST http://{{host}}/api/queries/

@@ -1,4 +1,4 @@
-CREATE TABLE diseases
+CREATE TABLE agronomy_diseases
 (
     id              UUID PRIMARY KEY,
     name            TEXT        NOT NULL,
@@ -13,6 +13,6 @@ CREATE TABLE diseases
     archived_at     TIMESTAMPTZ NULL
 );
 
-CREATE INDEX idx_disease_name ON diseases (name);
+CREATE INDEX idx_disease_name ON agronomy_diseases (name);
 
-CREATE INDEX idx_disease_pathogen ON diseases (pathogen_type);
+CREATE INDEX idx_disease_pathogen ON agronomy_diseases (pathogen_type);

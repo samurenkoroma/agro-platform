@@ -19,7 +19,7 @@ func New(db uow.DB) crop.Projection {
 
 func (p projection) Get(ctx context.Context, id string) (*crop.Detail, error) {
 
-	query := `SELECT id,name,category, family,scientific_name, imageurl FROM crops WHERE id=$1`
+	query := `SELECT id,name,category, family, agronomy, metadata FROM agronomy_crops WHERE id=$1`
 
 	var result crop.Detail
 
@@ -28,8 +28,8 @@ func (p projection) Get(ctx context.Context, id string) (*crop.Detail, error) {
 		&result.Name,
 		&result.Category,
 		&result.Family,
-		&result.ScientificName,
-		&result.ImageUrl,
+		&result.Agronomy,
+		&result.Metadata,
 	)
 
 	if err != nil {
@@ -41,8 +41,7 @@ func (p projection) Get(ctx context.Context, id string) (*crop.Detail, error) {
 
 func (p projection) List(ctx context.Context, filter crop.ListFilter) ([]crop.ListItem, error) {
 
-	query := `SELECT id,name,category,family, scientific_name, imageurl 
-FROM crops 
+	query := `SELECT id,name,category,family, image FROM agronomy_crops 
 WHERE (
     COALESCE(array_length($1::text[], 1), 0) = 0
     OR category = ANY($1::text[])
@@ -62,7 +61,7 @@ ORDER BY name`
 
 		var item crop.ListItem
 
-		err = rows.Scan(&item.ID, &item.Name, &item.Category, &item.Family, &item.ScientificName, &item.ImageUrl)
+		err = rows.Scan(&item.ID, &item.Name, &item.Category, &item.Family, &item.ImageUrl)
 
 		if err != nil {
 			return nil, err

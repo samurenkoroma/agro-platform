@@ -38,13 +38,7 @@ POST http://{{host}}/api/commands/
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-{
-  "command": "agronomy.create_variety",
-  "data": {
-    "name": "shalasawdada",
-    "cropId": "6b3eddf7-2947-4c0f-abbd-09df638902b0"
-  }
-}
+{"command":"agronomy.create_variety","data":{"cropId":"2a54abf6-3fb5-47e3-8424-392cb489f80c","name":"Шантане","profile":{"maturity":{},"spacing":{}},"characteristics":{}}}
 
 
 ###

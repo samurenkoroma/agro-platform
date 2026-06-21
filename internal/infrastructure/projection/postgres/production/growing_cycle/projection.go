@@ -4,6 +4,7 @@ import (
 	"context"
 
 	growingcycle "github.com/samurenkoroma/agro-platform/internal/application/queries/production/growing_cycle"
+	"github.com/samurenkoroma/agro-platform/internal/application/shared"
 	"github.com/samurenkoroma/agro-platform/internal/application/uow"
 	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
 )
@@ -45,7 +46,7 @@ SELECT
        0                        progress,
        count(crop.id)           count
 FROM production_growing_cycles cycle
-         INNER JOIN crops crop ON crop.id = cycle.crop_id
+         INNER JOIN agronomy_crops crop ON crop.id = cycle.crop_id
          LEFT JOIN production_allocations a ON a.cycle_id = cycle.id
 WHERE cycle.farm_id = $1
 
@@ -104,14 +105,16 @@ SELECT c.id,
        a.production_unit_id,
        pu.code,
        a.area,
-       COALESCE(((CURRENT_DATE - started_at::date )::float  / (maturity->>'DaysToHarvest')::int  * 100)::int, 0) progress,
+       (CURRENT_DATE - a.started_at::date )::int growing_days,
+       v.profile#>'{Maturity,DaysToHarvest}'  varietyDays,
+       crop.agronomy#>'{Maturity,DaysToHarvest}'  cropDays,
        a.started_at,
        a.ended_at
 FROM production_allocations a
          INNER JOIN production_units pu ON pu.id = a.production_unit_id
          right join production_growing_cycles c on c.id = a.cycle_id
-         left join crops crop on crop.id = c.crop_id
-         left join varieties v on v.id = c.variety_id
+         left join agronomy_crops crop on crop.id = c.crop_id
+         left join agronomy_varieties v on v.id = c.variety_id
 WHERE c.crop_id = ANY($1)
 ORDER BY pu.code
 `
@@ -127,7 +130,7 @@ ORDER BY pu.code
 	for rows.Next() {
 
 		var cropId vo.ID
-
+		var growingDays, varietyDays, cropDays *int
 		var allocation growingcycle.AllocationDTO
 
 		if err := rows.Scan(
@@ -141,8 +144,7 @@ ORDER BY pu.code
 			&allocation.ProductionUnitName,
 
 			&allocation.Area,
-
-			&allocation.Progress,
+			&growingDays, &varietyDays, &cropDays,
 
 			&allocation.StartDate,
 			&allocation.EndDate,
@@ -150,13 +152,19 @@ ORDER BY pu.code
 			return nil, err
 		}
 
+		allocation.DaysToMaturity = *shared.Override[int](cropDays, varietyDays)
+		allocation.Progress = int(float64(*growingDays) / float64(allocation.DaysToMaturity) * 100)
 		dto, ok := index[cropId]
 
 		if !ok {
 			continue
 		}
-
+		dto.Progress += allocation.Progress
 		dto.Allocations = append(dto.Allocations, allocation)
+	}
+
+	for _, dto := range result {
+		dto.Progress = dto.Progress / len(dto.Allocations)
 	}
 
 	return result, nil

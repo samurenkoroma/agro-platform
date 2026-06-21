@@ -1,4 +1,4 @@
-CREATE TABLE crop_protocols
+CREATE TABLE agronomy_crop_protocols
 (
     id             UUID PRIMARY KEY,
     crop_id        UUID        NOT NULL,
@@ -10,13 +10,13 @@ CREATE TABLE crop_protocols
     updated_at     TIMESTAMPTZ NOT NULL,
     archived_at    TIMESTAMPTZ NULL,
 
-    CONSTRAINT fk_crop_protocol_crop FOREIGN KEY (crop_id) REFERENCES crops (id)
+    CONSTRAINT fk_crop_protocol_crop FOREIGN KEY (crop_id) REFERENCES agronomy_crops (id)
 );
 
-CREATE INDEX idx_crop_protocol_crop ON crop_protocols (crop_id);
-CREATE INDEX idx_crop_protocol_method ON crop_protocols (growing_method);
+CREATE INDEX idx_crop_protocol_crop ON agronomy_crop_protocols (crop_id);
+CREATE INDEX idx_crop_protocol_method ON agronomy_crop_protocols (growing_method);
 
-CREATE TABLE crop_protocol_stage_profiles
+CREATE TABLE agronomy_crop_protocol_stage_profiles
 (
     id            UUID PRIMARY KEY,
     protocol_id   UUID    NOT NULL,
@@ -30,9 +30,9 @@ CREATE TABLE crop_protocol_stage_profiles
     order_index   INTEGER NOT NULL,
     metadata      JSONB   NOT NULL,
 
-    CONSTRAINT fk_protocol_stage_protocol FOREIGN KEY (protocol_id) REFERENCES crop_protocols (id) ON DELETE CASCADE
+    CONSTRAINT fk_protocol_stage_protocol FOREIGN KEY (protocol_id) REFERENCES agronomy_crop_protocols (id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_protocol_stage_protocol ON crop_protocol_stage_profiles (protocol_id);
-CREATE INDEX idx_protocol_stage_crop ON crop_protocol_stage_profiles (crop_stage_id);
+CREATE INDEX idx_protocol_stage_protocol ON agronomy_crop_protocol_stage_profiles (protocol_id);
+CREATE INDEX idx_protocol_stage_crop ON agronomy_crop_protocol_stage_profiles (crop_stage_id);
 

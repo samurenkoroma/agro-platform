@@ -1,4 +1,4 @@
-CREATE TABLE stresses
+CREATE TABLE agronomy_stresses
 (
     id UUID PRIMARY KEY,
     name TEXT NOT NULL,
@@ -12,6 +12,6 @@ CREATE TABLE stresses
     archived_at TIMESTAMPTZ NULL
 );
 
-CREATE INDEX idx_stress_name ON stresses(name);
+CREATE INDEX idx_stress_name ON agronomy_stresses(name);
 
-CREATE INDEX idx_stress_type ON stresses(type);
+CREATE INDEX idx_stress_type ON agronomy_stresses(type);

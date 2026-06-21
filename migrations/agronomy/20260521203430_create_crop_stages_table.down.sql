@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS crop_stages;
+DROP TABLE IF EXISTS agronomy_crop_stages;

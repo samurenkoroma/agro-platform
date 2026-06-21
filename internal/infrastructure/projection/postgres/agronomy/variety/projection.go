@@ -18,7 +18,7 @@ func New(db uow.DB) variety.Projection {
 }
 
 func (p projection) Get(ctx context.Context, id string) (*variety.Detail, error) {
-	query := `SELECT  id,name FROM varieties WHERE id=$1`
+	query := `SELECT  id,name FROM agronomy_varieties WHERE id=$1`
 
 	var result variety.Detail
 
@@ -36,10 +36,10 @@ func (p projection) Get(ctx context.Context, id string) (*variety.Detail, error)
 
 func (p projection) List(ctx context.Context, filter variety.ListFilter) ([]variety.ListItem, error) {
 
-	query := `SELECT v.id, v.name, c.id, c.name,  COALESCE(v.maturity->>'DaysToHarvest', '0')::int as maturity
-FROM varieties v 
+	query := `SELECT v.id, v.name, c.id, c.name,  COALESCE(v.profile->>'DaysToHarvest', '0')::int as maturity
+FROM agronomy_varieties v 
     LEFT JOIN  
-    public.crops c on v.crop_id = c.id
+    agronomy_crops c on v.crop_id = c.id
 WHERE v.crop_id = $1
 ORDER BY v.name`
 	rows, err := p.db.Query(ctx, query, filter.CropID)

@@ -1,2 +1,2 @@
 -- Down migration: create_varieties_table
-DROP TABLE IF EXISTS varieties;;
+DROP TABLE IF EXISTS agronomy_varieties;;

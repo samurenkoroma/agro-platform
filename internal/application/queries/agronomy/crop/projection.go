@@ -13,22 +13,19 @@ type ListFilter struct {
 }
 
 type Detail struct {
-	ID             vo.ID       `json:"id"`
-	Name           string      `json:"name"`
-	Category       string      `json:"category"`
-	Family         string      `json:"family"`
-	ScientificName *string     `json:"scientificName"`
-	Description    *string     `json:"description"`
-	Metadata       vo.Metadata `json:"metadata"`
-	ImageUrl       *string     `json:"imageUrl"`
+	ID       vo.ID       `json:"id"`
+	Name     string      `json:"name"`
+	Category string      `json:"category"`
+	Family   string      `json:"family"`
+	Agronomy string      `json:"agronomy"`
+	Metadata vo.Metadata `json:"metadata"`
 }
 type ListItem struct {
-	ID             vo.ID   `json:"id"`
-	Name           string  `json:"name"`
-	ScientificName *string `json:"scientificName"`
-	Category       string  `json:"category"`
-	Family         string  `json:"family"`
-	ImageUrl       *string `json:"imageUrl"`
+	ID       vo.ID   `json:"id"`
+	Name     string  `json:"name"`
+	Category string  `json:"category"`
+	Family   string  `json:"family"`
+	ImageUrl *string `json:"imageUrl"`
 }
 
 type Projection interface {

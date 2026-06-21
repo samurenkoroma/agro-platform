@@ -12,7 +12,6 @@ func scanCrop(root *crop.Crop) []any {
 	return []any{
 		&root.ID,
 		&root.Name,
-		&root.ScientificName,
 		&root.Category,
 		&root.Metadata,
 		&root.CreatedAt,
@@ -27,20 +26,8 @@ func scanVariety(root *variety.Variety) []any {
 		&root.Name,
 		&root.Breeder,
 
-		&root.Maturity,
-		&root.Growth,
-		&root.Spacing,
-
-		&root.Harvest,
-		&root.Yield,
-
-		&root.Tolerance,
-
-		&root.Metadata,
-
 		&root.CreatedAt,
 		&root.UpdatedAt,
-		&root.ArchivedAt,
 	}
 }
 
