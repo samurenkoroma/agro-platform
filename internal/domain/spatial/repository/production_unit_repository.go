@@ -10,7 +10,10 @@ import (
 
 type ProductionUnitRepository interface {
 	Save(ctx context.Context, unit *pu.ProductionUnit) error
-	GetByID(ctx context.Context, id vo.ID) (*pu.ProductionUnit, error)
+	GetByID(ctx context.Context, id vo.ID, orgId vo.ID) (*pu.ProductionUnit, error)
 	GetChildren(ctx context.Context, parentID vo.ID) ([]*pu.ProductionUnit, error)
 	Exists(ctx context.Context, id vo.ID) (bool, error)
+
+	GetNextSequence(ctx context.Context, orgID vo.ID, parentID *vo.ID, unitType pu.ProductionUnitType) (int, error)
+	GetParentCode(ctx context.Context, parentID vo.ID) (string, error)
 }

@@ -1,0 +1,33 @@
+{
+  "capacity": {
+    "areaM2": null,
+    "trayCount": null,
+    "channelCount": null,
+    "plantCapacity": null,
+    "waterVolumeLiters": null
+  },
+  "metadata": {
+    "name": "Грядка 2 (копия)",
+    "description": ""
+  },
+  "position": {
+    "X": 0,
+    "Y": 2.2,
+    "Z": null
+  },
+  "dimensions": {
+    "width": 10,
+    "length": 0.5
+  },
+  "capabilities": [],
+  "climateProfile": {
+    "co2Max": null,
+    "co2Min": null,
+    "humidityMax": null,
+    "humidityMin": null,
+    "lightPPFDMax": null,
+    "lightPPFDMin": null,
+    "temperatureMax": null,
+    "temperatureMin": null
+  }
+}

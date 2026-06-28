@@ -1,6 +1,8 @@
 package productionunit
 
-import vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
+import (
+	vo "github.com/samurenkoroma/agro-platform/internal/domain/shared/valueobject"
+)
 
 type Properties struct {
 	Capacity       Capacity       `json:"capacity"`

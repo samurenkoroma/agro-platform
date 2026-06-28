@@ -15,6 +15,16 @@ type productionUnitRepository struct {
 	items map[vo.ID]*pu.ProductionUnit
 }
 
+func (r *productionUnitRepository) GetNextSequence(ctx context.Context, orgID vo.ID, parentID *vo.ID, unitType pu.ProductionUnitType) (int, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *productionUnitRepository) GetParentCode(ctx context.Context, parentID vo.ID) (string, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (r *productionUnitRepository) Exists(ctx context.Context, id vo.ID) (bool, error) {
 	//TODO implement me
 	panic("implement me")
@@ -24,7 +34,7 @@ func (r *productionUnitRepository) Save(ctx context.Context, aggregate *pu.Produ
 	return nil
 }
 
-func (r *productionUnitRepository) GetByID(ctx context.Context, id vo.ID) (*pu.ProductionUnit, error) {
+func (r *productionUnitRepository) GetByID(ctx context.Context, id vo.ID, orgId vo.ID) (*pu.ProductionUnit, error) {
 	//TODO implement me
 	panic("implement me")
 }

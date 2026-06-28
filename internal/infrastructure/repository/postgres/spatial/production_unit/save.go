@@ -11,14 +11,15 @@ import (
 func (r *productionUnitRepository) Save(ctx context.Context, unit *pu.ProductionUnit) error {
 	query := `INSERT INTO 
     production_units(
-                     id,owner_id,parent_id, code, area,
+                     id,owner_id,parent_id, code, sequence, area,
                      status,type,properties,
                      created_at,updated_at
-                     ) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+                     ) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10, $11)
 				ON CONFLICT(id) 
 				DO UPDATE SET
 				    parent_id=excluded.parent_id,
 					updated_at=excluded.updated_at,
+					properties=excluded.properties,
 					status=excluded.status`
 
 	var propsJSON []byte
@@ -30,7 +31,7 @@ func (r *productionUnitRepository) Save(ctx context.Context, unit *pu.Production
 	}
 
 	_, err = r.db.Exec(ctx, query,
-		unit.ID, unit.OwnerID, unit.ParentID, unit.Code, unit.Area,
+		unit.ID, unit.OwnerID, unit.ParentID, unit.Code, unit.Sequence, unit.Area,
 		unit.Status, unit.Type, propsJSON,
 		unit.CreatedAt, unit.UpdatedAt,
 	)

@@ -35,7 +35,7 @@ func New(db uow.DB) growingcycle.Projection {
 //	return scanDTO(row)
 //}
 
-func (p *projection) List(ctx context.Context, ownerId vo.ID) ([]*growingcycle.DTO, error) {
+func (p *projection) List(ctx context.Context, filter growingcycle.FilterCycle) ([]*growingcycle.DTO, error) {
 
 	sql := `
 SELECT
@@ -54,7 +54,7 @@ GROUP BY crop.name, crop.id
 ORDER BY crop.name DESC;
 `
 
-	rows, err := p.db.Query(ctx, sql, ownerId)
+	rows, err := p.db.Query(ctx, sql, filter.OwnerId)
 
 	if err != nil {
 		return nil, err

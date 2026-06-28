@@ -1,6 +1,12 @@
 package productionunit
 
+import "strings"
+
 type ProductionUnitType string
+
+func (p ProductionUnitType) ToUpper() ProductionUnitType {
+	return ProductionUnitType(strings.ToUpper(string(p)))
+}
 
 const (
 	// ========== ПОЛЕВЫЕ ТИПЫ (Open Field) ==========

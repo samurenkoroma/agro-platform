@@ -18,8 +18,13 @@ func MakeSpatialModule(uow uow.UnitOfWork, db uow.DB) Module {
 			},
 			{
 				RouteName: "spatial.update_production_unit",
-				//Handler:   createproductionunit.New(uow).Create,
-				//Decoder:   utils.DecodeJSON[createproductionunit.CreateCommand],
+				Handler:   productionunitCmd.NewProductionUnitHandler(uow).Update,
+				Decoder:   utils.DecodeJSON[productionunitCmd.UpdateCommand],
+			},
+			{
+				RouteName: "spatial.configure_production_unit",
+				Handler:   productionunitCmd.NewProductionUnitHandler(uow).Configure,
+				Decoder:   utils.DecodeJSON[productionunitCmd.ConfigureCommand],
 			},
 			{
 				RouteName: "spatial.archive_production_unit",

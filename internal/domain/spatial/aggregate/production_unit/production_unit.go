@@ -1,6 +1,8 @@
 package productionunit
 
 import (
+	"encoding/json"
+	"fmt"
 	"time"
 
 	ev "github.com/samurenkoroma/agro-platform/internal/domain/shared/aggregate"
@@ -15,6 +17,20 @@ const (
 	Empty       ProductionUnitStatus = "empty"
 )
 
+type Element struct {
+	Id     string             `json:"id"`
+	Type   ProductionUnitType `json:"type"`
+	X      float64            `json:"x"`
+	Y      float64            `json:"y"`
+	Width  float64            `json:"width"`
+	Length float64            `json:"length"`
+	Name   string             `json:"name"`
+}
+
+type LayoutSchema struct {
+	Beds []Element `json:"beds"`
+}
+
 type ProductionUnit struct {
 	ev.BaseAggregate
 	OwnerID    vo.ID
@@ -26,6 +42,7 @@ type ProductionUnit struct {
 	Geometry   vo.Geometry
 	Properties *Properties
 	Status     ProductionUnitStatus
+	Sequence   int
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	ArchivedAt *time.Time
@@ -37,6 +54,7 @@ func New(
 	unitType ProductionUnitType,
 	code string,
 	name *string,
+	sequence int,
 ) *ProductionUnit {
 	now := time.Now()
 	root := &ProductionUnit{
@@ -44,6 +62,7 @@ func New(
 		ParentID:   ParentId,
 		OwnerID:    ownerID,
 		Code:       code,
+		Sequence:   sequence,
 		Type:       unitType,
 		Status:     Empty,
 		Properties: NewProps(*name, ""),
@@ -81,4 +100,19 @@ func (obj *ProductionUnit) SetPreparation() {
 	obj.Status = Preparation
 	obj.UpdatedAt = time.Now()
 	obj.AddEvent(NewProductionUnitInPreparation(obj.ID))
+}
+
+func (obj *ProductionUnit) UpdateSchema(schema json.RawMessage) {
+	obj.Properties.Metadata["schema"] = schema
+
+}
+
+func BuildCode(parentCode string, unitType ProductionUnitType, seq int) string {
+	part := fmt.Sprintf("%s%02d", unitType, seq)
+
+	if parentCode == "" {
+		return part
+	}
+
+	return parentCode + "-" + part
 }

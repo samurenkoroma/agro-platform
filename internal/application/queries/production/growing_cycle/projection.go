@@ -41,8 +41,13 @@ type SummaryDTO struct {
 	//ExpectedHarvestAt *time.Time
 }
 
+type FilterCycle struct {
+	OwnerId vo.ID
+	UnitId  *string
+}
+
 type Projection interface {
 	//Get(ctx context.Context, id vo.ID) (*DTO, error)
-	List(ctx context.Context, ownerId vo.ID) ([]*DTO, error)
+	List(ctx context.Context, filter FilterCycle) ([]*DTO, error)
 	Summary(ctx context.Context, ownerId vo.ID, cycleId vo.ID) (*SummaryDTO, error)
 }

@@ -22,7 +22,12 @@ func (p *projection) Get(ctx context.Context, id vo.ID) (*productionunit.DTO, er
 
 	row := p.db.QueryRow(ctx, sql, id)
 
-	return scanDTO(row)
+	dto, err := scanDTO(row)
+	if err != nil {
+		return nil, err
+	}
+
+	return p.Tree(ctx, &dto.ID)
 }
 
 func (p *projection) ListRoots(ctx context.Context, ownerId vo.ID) ([]*productionunit.DTO, error) {

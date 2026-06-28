@@ -19,11 +19,11 @@ func NewList(cycles Projection) queries.Handler {
 }
 
 type ListQuery struct {
-	Id string `json:"id,omitempty"`
+	Id *string `json:"id,omitempty"`
 }
 
 func (h *listHandler) Ask(ctx context.Context, payload any) (any, error) {
-	_, ok := payload.(*ListQuery)
+	cmd, ok := payload.(*ListQuery)
 	if !ok {
 		return nil, queries.ErrInvalidQueryType
 	}
@@ -31,5 +31,8 @@ func (h *listHandler) Ask(ctx context.Context, payload any) (any, error) {
 	if !ok {
 		return nil, errors.New("organization_id is required")
 	}
-	return h.cycles.List(ctx, vo.ID(orgID))
+	return h.cycles.List(ctx, FilterCycle{
+		OwnerId: vo.ID(orgID),
+		UnitId:  cmd.Id,
+	})
 }

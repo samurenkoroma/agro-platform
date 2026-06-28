@@ -8,15 +8,12 @@ import (
 	pu "github.com/samurenkoroma/agro-platform/internal/domain/spatial/aggregate/production_unit"
 )
 
-func (r *productionUnitRepository) GetByID(ctx context.Context, id vo.ID) (*pu.ProductionUnit, error) {
-	query := `SELECT 
-    id,owner_id,parent_id,
-    type,status,code,area,properties,
-       created_at,updated_at
+func (r *productionUnitRepository) GetByID(ctx context.Context, id vo.ID, orgId vo.ID) (*pu.ProductionUnit, error) {
+	query := `SELECT id,owner_id,parent_id,type,status,code,area,properties,created_at,updated_at
 				FROM production_units
-				WHERE id=$1`
+				WHERE id=$1 AND owner_id=$2`
 
-	row := r.db.QueryRow(ctx, query, id)
+	row := r.db.QueryRow(ctx, query, id, orgId)
 
 	var root pu.ProductionUnit
 	var propertiesRaw []byte
